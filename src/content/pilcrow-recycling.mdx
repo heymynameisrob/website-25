@@ -1,0 +1,89 @@
+---
+title: Reduce, reuse, and recycle
+description: A different way to organise notes in Pilcrow
+date: 2024-09-20
+---
+
+One of my least favorite things is being in an untidy space. My wife would probably scoff at that sentence. 
+Yet whenever I'm working, I hate to have things on my desk. Coffee cups, notebooks, my phone, airpods – they all have to go in their place so I don't start to freak out.
+
+I feel the same about my virtual workspace. Whenever I write code, how it's organised is just as important to me as how it works. 
+I'm a prolific code commenter and until I started working in teams, didn't realise that everyone didn't do that. 
+Whenever I take notes on my phone, I hate having to tidy things up and move things around. 
+One-off scribblings like shopping lists, reminders, and psuedo-diary entries need to be exterminated before I can sit down and really write.
+This makes organise lots of files, be it code or notes, a massive pain in the arse.
+
+One of the reasons I started to build [Pilcrow](https://pilcrow.xyz) was because I couldn't find a note-taking app that really fit with how I like to write things down.
+Everything was either bloated by a million other things, too basic, too complicated, or just plain shit.
+Whilst working on it, I've taken hundreds of notes. It started to occur to me that I wanted to avoid the pain of having to tidy things up. So I thought - wouldn't it be good if Pilcrow just tidied things up for you?
+
+This all hinges on Pilcrow's central approach which is similar to a [digital garden](https://joelhooks.com/digital-garden) where the metaphor of planting, tending, and blooming go hand-in-hand with your writing.
+The idea is that notes naturally bloom over time as you tend to them. The ones you plant and keep coming back too grow. The others wither and die. I wanted to take this a step further and have Pilcrow act as your 'assitant gardener' which'll tidy up after you.
+The Dimmock to your Tichmarsh. 
+
+<figure>
+    <img src="https://images.hellomagazine.com/horizon/square/c521732723e6-charlie-dimmock-alan-ground-force-t.jpg" alt="Vintage shot of Charlie Dimmock and Alan Titchmarsh from Ground Force" />
+    <figcaption>A match made in gardeners heaven</figcaption>
+</figure>
+
+## How it works
+All notes in Pilcrow are stored in a Postgresql database with a `json` blob containing the content as well as various metadata, such as `title` `last_edited` `tags` etc.
+The feature is fairly simple in theory: We'll set up a cron job to check if `last_edited` is older than a certain interval. If so, we'll mark it as `archived` and filter it out of the requests on the frontend.
+The approach means that we're not actually deleting or archiving anything. It's always recoverable. But we can filter these out of any results where we just want the most up-to-date notes.
+
+First we need to create the database function that'll perform the check. I'm not a backend dev whatsoever, so had to rely on Postgres documentation and little help from Claude AI to tweak things.
+
+```sql
+UPDATE docs d
+SET is_archived = true
+FROM users u
+WHERE d.user_id = u.id
+  AND u.archive_interval > 0
+  AND d.last_edited < CURRENT_DATE - CAST(u.archive_interval || ' days' AS INTERVAL)
+  AND d.is_archived = false;
+
+SELECT COUNT(*) AS archived_count
+FROM docs d
+JOIN users u ON d.user_id = u.id
+WHERE u.archive_interval > 0
+  AND d.last_edited < CURRENT_DATE - CAST(u.archive_interval || ' days' AS INTERVAL)
+  AND d.is_archived = true;
+```
+
+Breaking this down, we essentially make run through each users documents matching the `user_id`. Each user has a value in `archive_interval` that corrosponds to how many days we should allow between that last edit and now before we archive.
+If a user has `0` set, we don't do anything.
+
+This function is called by a remote procedure like so:
+```ts
+try {
+    const { data, error } = await supabase.rpc("auto_archive_docs");
+
+    if (error) {
+      console.error("Error calling auto_archive_docs:", error);
+      return NextResponse.json(
+        { error: "Failed to archive documents" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json(
+      { message: `Successfully archived ${data} documents` },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 },
+    );
+  }
+```
+
+A daily cron job pings this route and we secure everything with Authorization headers sent from Vercel.
+
+Then on the frontend, we just list out the notes in a page titled 'Recycling':
+
+<Image src="https://ucarecdn.com/8fbd6c2d-08d0-4203-8951-39f981b9fcfd/" width={1000} height={635} alt="Recycling view on Pilcrow, Sep 2024" />
+
+I've only just started trying this out but it helps keeps everything feeling fresh. I plan to keep recycled notes included in things like search, but mark them accordingly. 
+I've already found that it means I can just use the sidebar 'Recent' view for notes as I rarely work on more than ~10 or so at a time.

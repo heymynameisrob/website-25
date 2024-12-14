@@ -1,0 +1,77 @@
+---
+title: Pilcrow's Mobile Tray
+description: Mobile-friendly menu in animated bottom tray
+video_url: https://ucarecdn.com/77134047-20c6-469e-b397-ab7d0beb2f4a/
+date: 2024-08-01
+isHidden: true
+isProject: true
+---
+
+Menus are common, space-efficent ways to present options to users. Typically they 'reveal' a set of options based on a toggle that you can press.
+This pattern is part of our common interface language, something that anyone with experience using interfaces understands.
+The expectation is a button (another element in our common interface language) opens up a menu, contained within it a series of one or more options
+which trigger commands, change state etc.
+
+On desktop applications, typically these are presented in the form a of a "Dropdown menu". The toggle is typically acting as a label for the options underneath.
+E.g View will contain different states to view files in, Edit will contain manipulation options etc.
+This menu acts as a portal which overlays the UI, anchored to where the toggle is.
+
+However, on smaller devices like mobile, this dropdown has some ergonomic challenges.
+The relative space between the menu and the edge of the device viewport 'squashes' the menu options, making them harder to tap.
+Also, using your fingers instead of a device to point (e.g mouse) gives us additional gestures we can leverage which the the dropdown menu doesn't take advantage of.
+
+If you look at iOS menus, they don't act like menus on the desktop web. They allow for tapping and swiping, giving the UI a more intutive feel which you can leverage on mobile.
+
+## Inspiration
+- [this](https://www.uilabs.dev/) from [Mariana Castilho](https://twitter.com/mrncst)
+- Family iOS
+- Vaul
+
+## Responsive components
+Mariana's example leverages Vaul, a great library from another Vercel rockstar Emil.
+The great thing about Vaul is it covers a lot of painful gestures that are complex on web, such as touch events that move the drawer around.
+
+*Show animation of the drawer*
+
+Building out this drawer meant essentially building "two components". This always feels too much, but we avoid conflicts (e.g hydration issues, rendering issues) by just conditionally rendering based on screen size.
+
+I've written out this hook that checks the viewport size, which works both on load and resize.
+
+```tsx
+export function useMediaQuery(
+  query?:
+    | "(min-width: 640px)"
+    | "(min-width: 768px)"
+    | "(min-width: 1024px)"
+    | "(min-width: 1280px)",
+) {
+  const [value, setValue] = useState<boolean>(false);
+
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia(query || "(min-width: 768px)");
+
+    const onChange = (event: MediaQueryListEvent) => {
+      setValue(event.matches);
+    };
+
+    media.addEventListener("change", onChange);
+    setValue(media.matches);
+
+    return () => media.removeEventListener("change", onChange);
+  }, [query]);
+
+  return value;
+}
+```
+
+Originally I tried loading both and alternating the display with pure CSS, but then we load a lot of DOM elements that are essentially useless.
+So instead I looked for a way to conidtionally do this in a more React-y way. I first tried `window.innerWidth` and setting a fixed pixel value that we would then check if we were over or not.
+But instead, the MatchMedia API returns a truthy statement if the screen size matches the media query, which feels a lot cleaner. Also this can work well with the media queries we use in Tailwind, making sure the breakpoints match up.
+
+## The Tray
+- Pull out the code, leverage Emil's lesson
+
+<VideoPlayer ratio={4/3} src="https://ucarecdn.com/77134047-20c6-469e-b397-ab7d0beb2f4a/" />

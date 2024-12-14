@@ -1,22 +1,63 @@
+---
+import { SEO_TITLE, SEO_DESCRIPTION } from "@/lib/constants";
+
+import "@/styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  og?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title = SEO_TITLE,
+  description = SEO_DESCRIPTION,
+  og,
+  noIndex,
+} = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href="https://heymynameisrob.com" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:site_name" content={title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:url" content="https://nn1.dev" />
+    <meta property="og:type" content="page" />
+    <meta property="og:description" content={description} />
+    <meta
+      property="og:image"
+      content={`https://heymynameisrob.com/${og ?? "og.jpg"}`}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main
+      class="max-w-prose mx-auto px-4 py-12 min-h-screen lg:py-20 tracking-normal antialiased"
+    >
+      <slot />
+    </main>
+  </body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

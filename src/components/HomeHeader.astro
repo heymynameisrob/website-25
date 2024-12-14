@@ -1,0 +1,29 @@
+---
+import { Motion, useMotionVariants } from "@/components/Motion";
+import { SocialLinks } from "@/components/SocialLinks";
+const { initial, animate, transition } = useMotionVariants("fadeInUp");
+---
+
+<div class="flex flex-col gap-6">
+  <Motion
+    initial={initial}
+    animate={animate}
+    transition={{ ...transition }}
+    client:load
+  >
+    <h1 class="text-base text-primary font-medium">@heymynameisrob</h1>
+  </Motion>
+  <Motion
+    initial={initial}
+    animate={animate}
+    transition={{ ...transition, delay: 0.2 }}
+    client:load
+  >
+    <p class="text-balance">
+      I'm a design engineer based in the UK. I work almost exclusively with
+      early-stage, B2B startups. I also ship a few of my own products, usually
+      for free. I also like to travel, ride motorcycles, and collect records.
+    </p>
+  </Motion>
+  <SocialLinks client:load />
+</div>

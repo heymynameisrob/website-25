@@ -1,0 +1,75 @@
+---
+title: "AI Rota Builder"
+description: "Vision for Lantum's AI Rota Builder"
+image_url: https://ucarecdn.com/c42b62b4-747f-41af-a583-5e89e48d1968/
+date: "2024-01-12"
+isProject: true
+isHidden: true
+---
+
+# Lantum's AI Rota Builder
+
+The NHS spends £10bn a year on ‘short notice staff’. One the main reasons is ‘rota gaps’ - shifts that need to be filled by law but have nobody on staff that can fill them. Consultants create a rota using templates that are outdated, often on spreadsheets, manually tweaking and changing allocation over 3 months to try to meet requirements as well as please junior doctors.
+
+The result is over-worked consultant, under-served clinicians, and over-looked patients.
+
+At Lantum, I worked with our ML team as well as our HoP to see if ML/AI could provide the solution to our broken rota creation problem.
+
+<Image src="https://ucarecdn.com/ae80276c-ebdf-4020-8d2a-d83115c13e34/" width="1000" height="562" title="Main UI of the Rota builder with some annotations labelling what each part does" />
+
+## Conception
+We aquired a really clever bit of software from a group of doctors which leveraged a **Monte Carlo method** algorithm to generate many rota possibilities based on staff requirements inputted by managers.
+The software was crude but it ultimately replaced the consistent trial and error of humans (something we're not fast or good at) with a trial-and-error algorithm.
+
+To see if this would work as a product, we needed to answer two questions:
+
+**How would rota managers actually use this?** and **How can we improve it?**
+
+Our ML team built a service we dubbed 'SmartSolver', which would take in three requirements: The staffing needs, the contract rules, and preferences of the doctors involved.
+It would 'balance' these when attempting to 'solve' the rota, spitting out the best possible version over time.
+
+## Seperation of concerns
+At present, the product itself is just a service that takes in some requirements and spits out some CSV.
+
+To fit it into our product, we looked at the entire rota lifecycle and split it into three parts. Each part required different sets of tasks and context in order to complete and move on to the next phase.
+
+<VideoPlayer src="https://ucarecdn.com/ce25264e-0269-448e-bced-9a6bce3ad5d1/" title="We divided up Lantum into different workspaces based on the lifecycle. Each has their own colour-way and UI configuration around the same shell, like a different tool-belt for each set of tasks." />
+
+- **Plan**: Before a new rotation of doctors, the rota is planned and set out for the next 4-6 months. This is where our AI tool lives.
+- **Manage**: Whilst the rota is 'in-flight', changes will need to be made (e.g someone is sick, emergencies happen, or shfits are swapped). This is what Lantum already has and does well.
+- **Staff**: When changes happen, 'gaps' in the rota appear and sometimes short-term staff (e.g bank or agency) need to bought in last minute. This is what Lantum already does.
+
+These three parts were divided into separate workspaces. These workspaces provided different UI affordances within the same shell so that only useful actions that applied to the tasks at hand can be taken.
+The problem with complex software like this is usually overwhelming architecture. It's hard to find what you need because you have to wade through 90% of things that, whilst useful, aren't what you want right now.
+This is why most healthcare software sucks. Too many options, but none that you can remove.
+
+Knowing the rota lifecycle in depth allowed us to understand exactly what tasks managers needed to complete and when. The workspaces seperate these tasks giving the exact UI needed to for the task at hand.
+This came out of some in-depth research we did, which you can read about here.
+
+## Familiarity throughout
+
+The UI for the solver is fairly straight forward. Following the shell of what we have in our 'Manage' view, the UI instantly feels familiar.
+For example, actions to filter the view by <span className="px-2 py-px h-5 rounded-full bg-black/5 border border-primary dark:bg-white/5">Staff Type</span> sit in the top right toolbar - exactly where they sit in 'Manage' (even in the same order).
+
+<Image src="https://ucarecdn.com/c42b62b4-747f-41af-a583-5e89e48d1968/" height="562" width="1000" title="Close-up view of the Rota builder UI, where we leverage familiar patterns throughout the Lantum app but only show tasks relevant for rota building" />
+
+The X/Y axis show the types of shifts needed to be filled and the days of the week in this rota respectively. Individual staff members are then assigned to those cells by SmartSolver.
+The bottom row of Requests are incoming requests from clincians. These can be things like annual leave or preffered days not to work. These are triaged from the bottom, either via the SmartSolver or manually by the user dragging and dropping them into 'gap'.
+
+## Peek behind the curtain
+
+If rules are broken or requests not honoured, the UI will flag this up so managers have full visibility over what is being suggested.
+From our research, it's common that some requests cannot be honoured because they break certain rules (e.g limits on working nights).
+Third-parties such as HR and 'Guardians of Safe Working' will see the suggested rota and check that these requests are fairly denied or that no rules are broken.
+
+<VideoPlayer title="Users are kept informed of the solver progress with swift animations" src="https://ucarecdn.com/a447f9c2-786b-4216-92b7-e641debbe08a/" ratio={4/3} />
+
+Whilst the solver does it's thing, it can leave the user in limbo. You're waiting for magic to happen from behind the curtain. This can be exciting but also disconcerting if you're left out of it too much.
+We went to a lot of effort to make sure users were still able to have their say over the rota and that the status of the solver was always visible, pausable, or cancelable.
+
+## Impact
+Although these are initial prototype that set out the vision, we built a low-level prototype of this interface. We then ran 3 pilots with NHS departments to look how the actual rota that was produced performed.
+In all 3 trials, we saw an estimated short-staffing saving of **£230k per year** due to reduced gaps. Additionally, clinicians got over **90% of leave approved** compared to a typicaly **under 50%**.
+
+We also surveyed the clinicians to see if they thought the rota worked better for them. We found that all clinicians preferred the AI rota over their normal rota, but felt the process of giving their preferred working patterns cumbersome (currently taken via a Google Form).
+These learnings helped us shape the next iteration where we build this into our clinician Lantum App.
