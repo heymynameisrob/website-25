@@ -16,7 +16,7 @@ export const postSchema = z.object({
 export type Post = { id: string; data: z.infer<typeof postSchema> };
 
 const posts = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
   schema: postSchema,
 });
 

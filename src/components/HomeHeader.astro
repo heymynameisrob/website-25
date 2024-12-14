@@ -1,5 +1,9 @@
 ---
+import Avatar from "@/components/Avatar.astro";
+
+import { Tooltip } from "@/components/Tooltip";
 import { Motion, useMotionVariants } from "@/components/Motion";
+import { ScrambleText } from "@/components/ScrambleText";
 import { SocialLinks } from "@/components/SocialLinks";
 const { initial, animate, transition } = useMotionVariants("fadeInUp");
 ---
@@ -11,7 +15,13 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
     transition={{ ...transition }}
     client:load
   >
-    <h1 class="text-base text-primary font-medium">@heymynameisrob</h1>
+    <header class="flex items-center gap-1">
+      <div class="flex items-center gap-2">
+        <Avatar />
+        <ScrambleText client:only />
+      </div>
+      <div class="shrink-0 w-px h-4 bg-secondary animate-blink"></div>
+    </header>
   </Motion>
   <Motion
     initial={initial}
@@ -20,9 +30,15 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
     client:load
   >
     <p class="text-balance">
-      I'm a design engineer based in the UK. I work almost exclusively with
-      early-stage, B2B startups. I also ship a few of my own products, usually
-      for free. I also like to travel, ride motorcycles, and collect records.
+      Design Engineer, UK. I work almost exclusively with early B2B startups. I
+      ship a few of my own projects, usually for free. In my free time, I
+      travel, ride motorcycles, and collect records.
+      <a href="/now"
+        ><span
+          class="relative top-0.5 text-secondary inline-flex items-center p-1 h-3 rounded bg-gray-3"
+          >•••</span
+        ></a
+      >
     </p>
   </Motion>
   <SocialLinks client:load />

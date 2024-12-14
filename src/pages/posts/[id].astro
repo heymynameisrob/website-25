@@ -1,14 +1,17 @@
 ---
 import { getCollection, render } from "astro:content";
-import { fromNow } from "@/lib/utils";
+import Prose from "@/components/Prose.astro";
 import Layout from "@/layouts/Layout.astro";
+import { fromNow } from "@/lib/utils";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return posts.map((post) => ({
-    params: { id: post.id },
-    props: { post },
-  }));
+  return posts
+    .filter((post) => !post.data.isExternal)
+    .map((post) => ({
+      params: { id: post.id },
+      props: { post },
+    }));
 }
 // 2. For your template, you can get the entry directly from the prop
 const { post } = Astro.props;
@@ -16,11 +19,11 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
-  <h1 class="text-base font-medium text-primary">{post.data.title}</h1>
-  <time class="text-sm text-secondary">{fromNow(post.data.date)}</time>
-  <article
-    class="mt-8 prose prose-sm dark:prose-invert prose-headings:text-base prose-headings:font-medium prose-p:text-secondary lg:mt-8"
-  >
+  <header class="flex flex-col gap-2 pb-8">
+    <h1 class="text-base font-medium text-primary">{post.data.title}</h1>
+    <time class="text-sm text-secondary">{fromNow(post.data.date)}</time>
+  </header>
+  <Prose>
     <Content />
-  </article>
+  </Prose>
 </Layout>
