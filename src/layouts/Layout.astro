@@ -60,6 +60,16 @@ const {
     >
       {Astro.url.pathname !== "/" && <BackArrow client:load />}
       <slot />
+      <footer class="flex items-baseline justify-center gap-2">
+        <small>&copy; 2025 heymynameisrob</small>
+        <a class="text-sm text-gray-8 underline" href="/now">/now</a>
+        <a class="text-sm text-gray-8 underline" href="/yep">/yep</a>
+        <a class="text-sm text-gray-8 underline" href="/nope">/nope</a>
+        <a
+          class="text-sm text-gray-8 underline"
+          href="https://github.com/heymynameisrob/website-25">Source code</a
+        >
+      </footer>
     </main>
   </body>
 </html>

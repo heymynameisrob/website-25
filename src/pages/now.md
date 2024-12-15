@@ -1,3 +1,9 @@
+---
+layout: "@/layouts/PostLayout.astro"
+title: Now
+date: 2024-12-14
+---
+
 ### Recently working on
 - **artifical.io**: Building out new UI library with the design and eng team until end of the year.
 Also worked on redesigned their policy listing page.

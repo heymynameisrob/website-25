@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
-import Prose from "@/components/Prose.astro";
-import Layout from "@/layouts/Layout.astro";
+import PostLayout from "@/layouts/PostLayout.astro";
 import { fromNow } from "@/lib/utils";
 
 export async function getStaticPaths() {
@@ -13,17 +12,11 @@ export async function getStaticPaths() {
       props: { post },
     }));
 }
-// 2. For your template, you can get the entry directly from the prop
+
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
-  <header class="flex flex-col gap-2 pb-8">
-    <h1 class="text-base font-medium text-primary">{post.data.title}</h1>
-    <time class="text-sm text-secondary">{fromNow(post.data.date)}</time>
-  </header>
-  <Prose>
-    <Content />
-  </Prose>
-</Layout>
+<PostLayout frontmatter={post.data}>
+  <Content />
+</PostLayout>

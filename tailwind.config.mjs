@@ -46,6 +46,28 @@ export default {
       animation: {
         blink: "blink 1s step-end infinite",
       },
+      typography: () => ({
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": "var(--gray-11)",
+            "--tw-prose-headings": "var(--gray-12)",
+            "--tw-prose-lead": "var(--gray-12)",
+            "--tw-prose-links": "var(--gray-12)",
+            "--tw-prose-bold": "var(--gray-12)",
+            "--tw-prose-counters": "var(--gray-11)",
+            "--tw-prose-bullets": "var(--gray-9)",
+            "--tw-prose-hr": "var(--color-border)",
+            "--tw-prose-quotes": "var(--gray-12)",
+            "--tw-prose-quote-borders": "var(--color-border)",
+            "--tw-prose-captions": "var(--gray-11)",
+            "--tw-prose-code": "var(--gray-12)",
+            "--tw-prose-pre-code": "var(--gray-12)",
+            "--tw-prose-pre-bg": "var(--gray-3)",
+            "--tw-prose-th-borders": "var(--color-border)",
+            "--tw-prose-td-borders": "var(--color-border)",
+          },
+        },
+      }),
     },
   },
   plugins: [tailwindAnimate, tailwindTypography],
