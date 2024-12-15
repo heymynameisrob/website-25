@@ -5,14 +5,12 @@ import Prose from "@/components/Prose.astro";
 import { ClockIcon } from "@heroicons/react/16/solid";
 
 import { fromNow } from "@/lib/utils";
+import type {PostFrontmatter} from "@/content.config";
 
 interface Props {
-  frontmatter: {
-    title: string;
-    description: string;
-    pubDate: string;
+  frontmatter: PostFrontmatter & {
     og?: string;
-  };
+  }
 }
 
 const { frontmatter } = Astro.props;
