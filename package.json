@@ -9,7 +9,8 @@
     "astro": "astro",
     "prep": "astro check && yarn lint:fix",
     "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
