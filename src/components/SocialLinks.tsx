@@ -1,4 +1,3 @@
-import * as RadixTooltip from "@radix-ui/react-tooltip";
 import { Motion, useMotionVariants } from "@/components/Motion";
 import { Tooltip } from "@/components/Tooltip";
 import { AVAILABLE } from "@/lib/constants";

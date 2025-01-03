@@ -1,0 +1,36 @@
+---
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+
+interface Props {
+  src: string;
+  alt: string;
+  ratio?: number;
+}
+const { src, alt, ratio } = Astro.props;
+
+const srcBase = src.substring(0, src.lastIndexOf('.'));
+const srcExt = src.substring(src.lastIndexOf('.'));
+const src2x = `${srcBase}@2x${srcExt}`;
+---
+<a
+  href={src}
+  target="_blank"
+  rel="noopener nofollow"
+  class="block no-underline"
+>
+<figure class="flex flex-col justify-center gap-1">
+  <AspectRatio
+    ratio={ratio || 16 / 9}
+    className="w-full rounded-lg overflow-hidden border border-primary"
+  >
+<img
+  src={src}
+  alt={alt}
+  loading="lazy"
+  class="absolute inset-0 w-full h-full object-fit object-cover border-none !m-0"
+/> </AspectRatio>
+<figcaption class="text-center text-sm text-secondary">
+  {alt}
+</figcaption>
+</figure>
+</a>

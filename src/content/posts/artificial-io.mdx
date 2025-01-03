@@ -3,7 +3,12 @@ title: artificial.io
 description: AI-driven insuretech for UK insurers
 image_url: https://ucarecdn.com/9f32a371-b7ec-4ebf-a21a-308ec7b26356/-/scale_crop/1000x1000/
 date: 2025-01-01
+isExternal: true
+externalLink: "https://artificial.io"
 ---
+
+import Video from "@/components/Video.astro"
+import Image from "@/components/Image.astro"
 
 artificial.io builds tech products for the insurance industry, primarly in the UK.Working with Lloyds and beyond,
 artificial has their own properity programming language as well as various products aimed about both brokers
@@ -15,6 +20,29 @@ redesigning parts of their insurance "workbench", an all-in-one platform for bro
 I also led efforts to rebuild their UI library in React, giving them high-quality peices to rapidly build UI following increased customer growth.
 
 ## Policy Inbox
-All policies work
+
+The workbench platform has a lot of moving parts. One of the main ones was policy management. Underwriters and brokers would have hundreds, if not thousands of policies, all in different states with various actions needed to be taken on them.
+
+Originally the workbench had an Inbox, which listed all the policies available. Customers were struggling with finding the exact policy they needed. Existing filters were minimal and barely worked.
+Also different filter combinations would be repeated. Commercial teams were hearing from customers that their were problems with the filters.
+
+<Image src="https://ucarecdn.com/
+d07123b3-7be4-4365-a68b-daa186c6d3c4/
+-/preview/1000x562/" alt="Original policy inbox" />
+
+After diving into the problem it appears that users had lots of specific "views" they wanted to see.
+
+**"What policies are due to expire?" "What are the ones assigned to me?" "What are the at risk ones?"**
+
+We needed a better way to help customers answer these questions.
+
+We built a new "Saved Views" feature that allowed users to build filter configurations and then save them to the top bar. This gave them a quick-and-easy way to see that view, giving them a quick answer to their question.
+
+We also rebuilt the entire filter logic and menu as the existing version was full of UX issues and bugs.
+
+<Video src="https://utfs.io/f/0X1QxrmMTXAjv3kvOmweAJ46FwCmiUfbxtHjVu53qpT1EKln" title="New Policy Inbox for artificial.io workbench" />
+
+One of the coolest features saving whatever view the user was last on to our cache. That meant when users returned to the page, the results would load instantly.
+As users went cycled through their saved views, the results would display instantly and then call the API to get any updates.
 
 ## UI library
