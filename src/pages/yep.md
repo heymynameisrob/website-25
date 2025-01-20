@@ -36,3 +36,4 @@ date: 2024-12-14
 - Leicester City FC
 - Stilton Cheese
 - Apple computers
+- Scooby Doo
