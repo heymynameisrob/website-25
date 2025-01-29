@@ -35,7 +35,7 @@ export default {
       },
       fontFamily: {
         sans: ["Geist", "sans-serif"],
-        mono: ["Geist Mono", "monospace"],
+        mono: ["Berkley Mono", "monospace"],
       },
       keyframes: {
         blink: {
