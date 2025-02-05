@@ -1,5 +1,6 @@
 import tailwindAnimate from "tailwindcss-animate";
 import tailwindTypography from "@tailwindcss/typography";
+import tailwindMask from "@pyncz/tailwind-mask-image";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -70,5 +71,5 @@ export default {
       }),
     },
   },
-  plugins: [tailwindAnimate, tailwindTypography],
+  plugins: [tailwindAnimate, tailwindTypography, tailwindMask],
 };

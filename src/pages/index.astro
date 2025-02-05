@@ -5,15 +5,21 @@ import Layout from "@/layouts/Layout.astro";
 import { PostList } from "@/components/Posts";
 
 import { getCollection, getEntry } from "astro:content";
+import { NowPlaying } from "@/components/NowPlaying";
 
 // Get all entries from a collection.
 // Requires the name of the collection as an argument.
 const allPosts = await getCollection("posts");
+
+export const prerender = false
 ---
+
+
 
 <Layout>
   <HomeHeader />
   <section class="flex flex-col gap-2 py-6 lg:py-12">
     <PostList allPosts={allPosts} client:load />
   </section>
+  <NowPlaying client:load />
 </Layout>
