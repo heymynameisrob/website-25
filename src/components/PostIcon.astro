@@ -1,0 +1,43 @@
+---
+import {cn} from "@/lib/utils";
+import type { PostTypes } from "@/lib/types"
+type PostIconType = (typeof PostTypes)[number];
+
+interface Props {
+  type: PostIconType;
+  className?: string;
+}
+
+const { type, className = '' } = Astro.props;
+
+const colorMap: Record<PostIconType, string> = {
+  demo: 'text-emerald-500 bg-emerald-500/10',
+  link: 'text-blue-500 bg-blue-500/10',
+  post: 'text-violet-500 bg-violet-500/10',
+  photos: 'text-amber-500 bg-amber-500/10',
+  work: 'text-red-500 bg-red-500/10'
+};
+
+---
+
+<span class={cn("w-7 h-7 rounded-md flex items-center justify-center", colorMap[type], className)}>
+{type === "demo" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 3H5V5H3V3ZM7 13V7H13H21V13H13V21H7V13ZM9 3H7V5H9V3ZM3 7H5V9H3V7ZM5 11H3V13H5V11ZM3 15H5V17H3V15ZM13 3H11V5H13V3ZM15 3H17V5H15V3ZM17 15H21V17H19V19H17V21H15V17V15H17ZM19 19V21H21V19H19Z" fill="currentColor"/>
+</svg>)}
+{type === "link" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M4 6H11V8H4V16H11V18H4H2V16V8V6H4ZM20 6H13V8H20V16H13V18H20H22V16V8V6H20ZM17 11H7V13H17V11Z" fill="currentColor"/>
+</svg>)}
+
+{type === "post" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13 22H3V2H13H21V14V16H19V18H17V20H15V22H13ZM19 14H13V20H15V18H17V16H19V14Z" fill="currentColor"/>
+</svg>)}
+
+{type === "photos" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7 21H4.00024V21H2.00024V19H2V6.99998H2.00024V5.00005H4V4.99998H7V3H9H15H17L17 4.99998H20V5.00005H22V21H20V21H17V21H7V21ZM8 8.99998H10V11H8V8.99998ZM10 13H8V15H10V13ZM14.0002 15H10.0002V17H14.0002V15ZM16 15V13H14V15H16ZM14 11V8.99998H16V11H14Z" fill="currentColor"/>
+</svg>)}
+
+{type === "work" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1 3H3H11V19H3H1V3ZM21 3H13V19H21H23V3H21ZM15 11H19V13H15V11ZM21 7H15V9H21V7Z" fill="currentColor"/>
+<rect x="11" y="19" width="2" height="2" fill="currentColor"/>
+</svg>)}
+</span>

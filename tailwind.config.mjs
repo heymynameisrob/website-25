@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--bg)",
+        background: "var(--background)",
         primary: "var(--gray-12)",
         secondary: "var(--gray-11)",
         accent: "var(--accent)",

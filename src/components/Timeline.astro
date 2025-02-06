@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import PostIcon from '@/components/PostIcon.astro';
+import {TimelineGallery} from '@/components/TimelineGallery';
+
+// Get all content entries (assuming they're in a "posts" collection)
+const allPosts = await getCollection('posts');
+
+// Sort posts by date, newest first
+const sortedPosts = allPosts.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// Helper function to format dates
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(new Date(date));
+}
+---
+
+<section id="timeline-section" class="relative flex flex-col gap-8">
+<div class="absolute top-0 left-5 h-full [mask-image:linear-gradient(to_bottom,black_calc(100%-40%),transparent)]">
+    <svg id="timeline-svg" width="1">
+      <defs>
+        <pattern id="dotted-line" patternUnits="userSpaceOnUse" x="0" y="0" width="1" height="10">
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="5"
+            class="text-muted stroke-muted opacity-50"
+            stroke-width="1"
+            stroke-dasharray="1 1"
+          />
+        </pattern>
+      </defs>
+      <rect
+        width="1"
+        height="100%"
+        fill="url(#dotted-line)"
+        class="text-muted stroke-current opacity-20"
+      />
+    </svg>
+  </div>
+  {sortedPosts.map((post) => (
+    <div class="relative z-10 group flex gap-6">
+      <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
+      <PostIcon type={post.data.type} />
+      </aside>
+      <div class="flex-1 flex flex-col gap-4 pt-2">
+        <a href={`/posts/${post.id}`} class="flex flex-col gap-2">
+          <small class="text-sm font-mono uppercase text-secondary">{post.data.type} • {formatDate(post.data.date)}</small>
+          <h3 class="text-base font-medium text-primary">{post.data.title}</h3>
+          <p class="text-sm text-secondary">{post.data.description}</p>
+        </a>
+        <TimelineGallery client:load post={post} />
+      </div>
+    </div>
+  ))}
+</section>
+
+<script>
+  function updateSvgHeight() {
+    const section = document.getElementById('timeline-section');
+    const svg = document.getElementById('timeline-svg');
+
+    if (section && svg) {
+      const sectionHeight = section.offsetHeight;
+      svg.setAttribute('height', `${sectionHeight}px`);
+    }
+  }
+
+  // Update height initially
+  updateSvgHeight();
+
+  // Update height on window resize
+  window.addEventListener('resize', updateSvgHeight);
+
+  // Update height when content changes might affect layout
+  const observer = new ResizeObserver(updateSvgHeight);
+  const section = document.getElementById('timeline-section');
+  if (section) {
+    observer.observe(section);
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videos = document.querySelectorAll('video[data-src]');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const video = entry.target as HTMLVideoElement;
+          const source = video.querySelector('source');
+
+          // Set both video and source src attributes
+          video.src = video.dataset.src!;
+          if (source) source.src = video.dataset.src!;
+
+          // Load and play the video
+          video.load();
+          video.play()
+            .catch(err => console.log('Auto-play failed:', err));
+
+          video.classList.add('opacity-100');
+          observer.unobserve(video);
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+
+    videos.forEach(video => observer.observe(video));
+  });
+</script>
