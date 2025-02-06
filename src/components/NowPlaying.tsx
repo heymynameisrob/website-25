@@ -20,7 +20,7 @@ export function NowPlaying() {
           exit={{ y: 20, filter: "blur(4px)", opacity: 0 }}
           className="fixed bottom-8 left-0 right-0 grid place-items-center z-50"
         >
-          <div className="flex justify-between items-center gap-4 w-96 bg-gray-1 border rounded-xl p-2 shadow-lg dark:shadow-2xl relative after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-r dark:after:from-white/5 after:to-transparent">
+          <div className="flex justify-between items-center gap-4 w-96 bg-gray-1 border rounded-xl p-2 shadow-lg dark:shadow-2xl relative after:absolute after:inset-0 after:rounded-xl after:bg-gradient-to-r dark:after:from-white/5 after:to-transparent after:pointer-events-none">
             <a
               href={data.url}
               target="_blank"
