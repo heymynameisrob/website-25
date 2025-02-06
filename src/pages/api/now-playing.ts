@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { LastFmResponse, Track } from "@/lib/types";
 import type { APIRoute } from "astro";
 
+export const prerender = false;
+
 // Input validation schema
 const credentialsSchema = z.object({
   apiKey: z.string().min(1),
