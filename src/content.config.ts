@@ -15,6 +15,7 @@ export const postSchema = z.object({
   video_url: z.string().optional(),
   image_url: z.string().optional(),
   externalLink: z.string().optional(),
+  component: z.string().optional(),
 });
 
 // Export the type

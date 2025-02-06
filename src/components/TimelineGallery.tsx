@@ -1,5 +1,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/Dialog";
+
 import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
 
 interface Post {
@@ -22,36 +24,75 @@ interface MediaItemProps {
   alt?: string;
 }
 
+function MediaDialog({
+  children,
+  media,
+}: {
+  children: React.ReactNode;
+  media: { src: string; type: "image" | "video"; alt?: string };
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="cursor-pointer">{children}</div>
+      </DialogTrigger>
+      <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden">
+        {media.type === "video" ? (
+          <video
+            className="w-full h-full object-contain"
+            controls
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={media.src} type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={media.src}
+            alt={media.alt}
+            className="w-full h-full object-contain"
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Modify the MediaItem component to remove pointer-events-none and wrap content in MediaDialog
 function MediaItem({ src, type, alt }: MediaItemProps) {
   const { elementRef, isInView } = useIntersectionObserver();
 
   return (
     <div
       ref={elementRef}
-      className="relative aspect-square border rounded-lg select-none pointer-events-none group-hover:opacity-90 transition-opacity overflow-hidden lg:rounded-2xl min-w-[200px]"
+      className="relative aspect-video border rounded-lg select-none group-hover:opacity-90 transition-opacity overflow-hidden lg:rounded-2xl min-w-[200px]"
     >
-      {type === "video" && isInView && (
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-50 animate-in fade-in"
-          preload="none"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src={src} type="video/mp4" />
-        </video>
-      )}
-      {type === "image" && isInView && (
-        <motion.img
-          src={src}
-          alt={alt}
-          className="absolute inset-0 w-full h-full object-cover"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        />
-      )}
+      <MediaDialog media={{ src, type, alt }}>
+        {type === "video" && isInView && (
+          <video
+            className="absolute inset-0 w-full h-full object-cover object-left-top"
+            preload="none"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={src} type="video/mp4" />
+          </video>
+        )}
+        {type === "image" && isInView && (
+          <motion.img
+            src={`${src}-/preview/`}
+            alt={alt}
+            className="absolute inset-0 w-full h-full object-cover"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
+      </MediaDialog>
     </div>
   );
 }
