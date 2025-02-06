@@ -1,7 +1,7 @@
 ---
 import HomeHeader from "@/components/HomeHeader.astro";
 import Layout from "@/layouts/Layout.astro";
-
+import Timeline from "@/components/Timeline.astro";
 import { PostList } from "@/components/Posts";
 
 import { getCollection, getEntry } from "astro:content";
@@ -19,7 +19,8 @@ export const prerender = false
 <Layout>
   <HomeHeader />
   <section class="flex flex-col gap-2 py-6 lg:py-12">
-    <PostList allPosts={allPosts} client:load />
+    <!-- <PostList allPosts={allPosts} client:load /> -->
+    <Timeline />
   </section>
   <NowPlaying client:load />
 </Layout>
