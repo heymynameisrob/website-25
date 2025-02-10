@@ -6,11 +6,8 @@ import { PostTypes } from "@/lib/types";
 export const postSchema = z.object({
   title: z.string(),
   description: z.string(),
-  date: z.coerce.date(),
+  date: z.date(),
   type: z.enum([...PostTypes]),
-  media: z
-    .array(z.object({ type: z.enum(["image", "video"]), url: z.string() }))
-    .optional(),
   isExternal: z.boolean().default(false).optional(),
   video_url: z.string().optional(),
   image_url: z.string().optional(),

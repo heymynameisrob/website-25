@@ -12,9 +12,9 @@ const { type, className = '' } = Astro.props;
 
 const colorMap: Record<PostIconType, string> = {
   demo: 'text-emerald-500 bg-emerald-500/10',
-  link: 'text-blue-500 bg-blue-500/10',
+  project: 'text-amber-500 bg-amber-500/10',
   post: 'text-violet-500 bg-violet-500/10',
-  photos: 'text-amber-500 bg-amber-500/10',
+  photos: 'text-cyan-500 bg-cyan-500/10',
   work: 'text-red-500 bg-red-500/10'
 };
 
@@ -24,9 +24,10 @@ const colorMap: Record<PostIconType, string> = {
 {type === "demo" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M3 3H5V5H3V3ZM7 13V7H13H21V13H13V21H7V13ZM9 3H7V5H9V3ZM3 7H5V9H3V7ZM5 11H3V13H5V11ZM3 15H5V17H3V15ZM13 3H11V5H13V3ZM15 3H17V5H15V3ZM17 15H21V17H19V19H17V21H15V17V15H17ZM19 19V21H21V19H19Z" fill="currentColor"/>
 </svg>)}
-{type === "link" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M4 6H11V8H4V16H11V18H4H2V16V8V6H4ZM20 6H13V8H20V16H13V18H20H22V16V8V6H20ZM17 11H7V13H17V11Z" fill="currentColor"/>
-</svg>)}
+{type === "project" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8 2H16V4H18V6H20V12H18V14H16V18H8V14H6V12H4V6H6V4H8V2ZM16 20H8V22H16V20Z" fill="currentColor"/>
+</svg>
+)}
 
 {type === "post" && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M13 22H3V2H13H21V14V16H19V18H17V20H15V22H13ZM19 14H13V20H15V18H17V16H19V14Z" fill="currentColor"/>

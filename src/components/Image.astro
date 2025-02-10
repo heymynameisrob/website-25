@@ -8,9 +8,6 @@ interface Props {
 }
 const { src, alt, ratio } = Astro.props;
 
-const srcBase = src.substring(0, src.lastIndexOf('.'));
-const srcExt = src.substring(src.lastIndexOf('.'));
-const src2x = `${srcBase}@2x${srcExt}`;
 ---
 <a
   href={src}

@@ -30,7 +30,6 @@ export default {
       },
       borderColor: {
         DEFAULT: "var(--border)",
-        primary: "var(--border)",
         secondary: "var(--border-secondary)",
         accent: "var(--border-accent)",
       },

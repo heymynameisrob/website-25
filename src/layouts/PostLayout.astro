@@ -23,14 +23,11 @@ const { frontmatter } = Astro.props;
 >
   <div class="pb-12">
     <Prose>
-      <h1>{frontmatter.title}</h1>
+      <header class="flex flex-col gap-2">
+        <h1 class="mb-0">{frontmatter.title}</h1>
+        <small class="font-mono font-medium text-sm text-gray-8 uppercase">Last updated {fromNow(frontmatter.date, true)}</small>
+      </header>
       <slot />
-      <time
-        class="text-sm inline-flex items-center gap-1.5 text-secondary px-2 h-7 rounded-full bg-gray-2 border shadow cursor-default select-none"
-      >
-        <ClockIcon className="w-4 h-4 opacity-50" client:load />
-        Last updated {fromNow(frontmatter.date, true)}
-      </time>
     </Prose>
   </div>
 </Layout>

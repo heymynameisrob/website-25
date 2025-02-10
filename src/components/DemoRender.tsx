@@ -1,3 +1,4 @@
+import { Calculator } from "@/components/demos/Calculator";
 import type { Post } from "@/content.config";
 
 interface DemoRendererProps {
@@ -5,7 +6,7 @@ interface DemoRendererProps {
 }
 
 export const demoRegistry: Record<string, React.ReactNode> = {
-  comp1: <div>Blerg</div>,
+  calculator: <Calculator />,
   comp2: <div>Blarg</div>,
   // ... add other demos
 } as const;
@@ -17,5 +18,9 @@ export function DemoRenderer({ post }: DemoRendererProps) {
   const component = demoRegistry[post.data.component];
   if (!component) return null;
 
-  return component;
+  return (
+    <figure className="relative grid place-items-center w-full aspect-video border bg-background rounded-lg after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] lg:rounded-2xl">
+      {component}
+    </figure>
+  );
 }
