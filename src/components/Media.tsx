@@ -1,7 +1,11 @@
 import * as React from "react";
 import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
 import { motion } from "motion/react";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/Dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+} from "@/components/primitives/Dialog";
 
 interface MediaItemProps {
   src: string | undefined;

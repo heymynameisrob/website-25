@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/Tabs";
+import {
+  Tabs,
+  TabsTrigger,
+  TabsList,
+  TabsContent,
+} from "@/components/primitives/Tabs";
 import {
   FilterMenu,
   FilterMenuContent,

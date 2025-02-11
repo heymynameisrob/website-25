@@ -21,12 +21,12 @@ const { frontmatter } = Astro.props;
   description={frontmatter.description}
   og={frontmatter.og}
 >
-  <div class="pb-12">
+  <div class="flex flex-col gap-4 pb-12 lg:gap-8">
+    <header class="flex flex-col gap-2">
+      <h1 class="mb-0 text-primary font-medium text-base">{frontmatter.title}</h1>
+      <small class="font-mono font-medium text-sm text-gray-8 uppercase">Last updated {fromNow(frontmatter.date, true)}</small>
+    </header>
     <Prose>
-      <header class="flex flex-col gap-2">
-        <h1 class="mb-0">{frontmatter.title}</h1>
-        <small class="font-mono font-medium text-sm text-gray-8 uppercase">Last updated {fromNow(frontmatter.date, true)}</small>
-      </header>
       <slot />
     </Prose>
   </div>

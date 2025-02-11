@@ -1,5 +1,5 @@
 import { Motion, useMotionVariants } from "@/components/Motion";
-import { Tooltip } from "@/components/Tooltip";
+import { Tooltip } from "@/components/primitives/Tooltip";
 import { AVAILABLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";

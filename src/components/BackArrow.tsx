@@ -1,4 +1,4 @@
-import { Tooltip } from "@/components/Tooltip";
+import { Tooltip } from "@/components/primitives/Tooltip";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import * as RadixTooltip from "@radix-ui/react-tooltip";
 
