@@ -6,17 +6,17 @@ import { cn } from "@/lib/utils";
 import { Tooltip } from "@/components/primitives/Tooltip";
 
 const buttonVariants = cva(
-  "inline-flex items-center whitespace-nowrap justify-center rounded-lg text-sm leading-4 font-medium transition-colors outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
+  "inline-flex items-center whitespace-nowrap border justify-center rounded-lg text-sm leading-4 font-medium transition-colors outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-background shadow hover:opacity-90",
+        default: "bg-primary text-background shadow-sm hover:opacity-90",
         accent:
-          "bg-accent text-white border border-accent shadow hover:opacity-90",
-        destructive: "bg-red-600 shadow text-white hover:bg-destructive/90",
+          "bg-accent text-white border border-accent shadow-sm hover:opacity-90",
+        destructive: "bg-red-600 shadow-sm text-white hover:bg-destructive/90",
         secondary:
-          "bg-background text-primary hover:bg-gray-2 shadow dark:bg-gray-3 dark:hover:bg-gray-4",
-        ghost: "hover:bg-gray-3",
+          "bg-background text-primary hover:bg-gray-2 shadow-sm dark:bg-gray-3 dark:hover:bg-gray-4",
+        ghost: "border-transparent hover:bg-gray-3",
         link: "underline-offset-4 hover:underline text-accent",
       },
       size: {
@@ -28,7 +28,7 @@ const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "secondary",
-      size: "sm",
+      size: "default",
     },
   },
 );

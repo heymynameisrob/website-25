@@ -26,4 +26,10 @@ export type Track = {
   nowPlaying: boolean;
 };
 
-export const PostTypes = ["post", "work", "demo", "photos", "project"] as const;
+export const PostTypes = [
+  "post",
+  "case-study",
+  "demo",
+  "photos",
+  "project",
+] as const;

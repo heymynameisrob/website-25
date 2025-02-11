@@ -7,9 +7,8 @@ import { NowPlaying } from "@/components/NowPlaying";
 ---
 
 <Layout>
-  <HomeHeader />
+  <h1 class="text-base font-medium text-primary">Posts</h1>
   <section class="flex flex-col gap-2 py-6 lg:py-12">
-    <Timeline limit={5} />
+    <Timeline />
   </section>
-  <NowPlaying client:load />
 </Layout>

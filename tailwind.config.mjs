@@ -4,7 +4,8 @@ import tailwindMask from "@pyncz/tailwind-mask-image";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
+  darkMode: "class",
+  content: ["./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -45,6 +46,9 @@ export default {
       },
       animation: {
         blink: "blink 1s step-end infinite",
+      },
+      transitionTimingFunction: {
+        easeOut: "cubic-bezier(0.215, 0.61, 0.355, 1)",
       },
       typography: () => ({
         DEFAULT: {

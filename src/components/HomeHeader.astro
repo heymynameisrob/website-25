@@ -1,7 +1,7 @@
 ---
 import Avatar from "@/components/Avatar.astro";
 
-import { Tooltip } from "@/components/primitives/Tooltip";
+import {ReactAvatar} from "@/components/ReactAvatar";
 import { Motion, useMotionVariants } from "@/components/Motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { SocialLinks } from "@/components/SocialLinks";
@@ -17,7 +17,9 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
   >
     <header class="flex items-center gap-1">
       <div class="flex items-center gap-2">
-        <Avatar />
+        <ReactAvatar client:only="react">
+          <Avatar slot="fallback" />
+        </ReactAvatar>
         <ScrambleText client:load />
       </div>
       <div class="shrink-0 w-[2px] h-4 bg-secondary animate-blink"></div>

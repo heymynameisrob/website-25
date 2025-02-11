@@ -1,22 +1,37 @@
 ---
+interface Props {
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+
 import { getCollection } from 'astro:content';
-import { format } from "date-fns";
+import { format, isBefore, isEqual } from "date-fns";
 
 import PostIcon from '@/components/PostIcon.astro';
+
+import { Button } from "@/components/primitives/Button";
 import {DemoRenderer} from '@/components/DemoRender';
 import { Media } from '@/components/Media';
+import { cn } from "@/lib/utils"
 
 // Get all content entries (assuming they're in a "posts" collection)
 const allPosts = await getCollection('posts');
 
+const today = new Date();
+const allValidPosts = allPosts.filter(post => {
+  const postDate = new Date(post.data.date);
+  return isBefore(postDate, today) || isEqual(postDate, today);
+});
+
 // Sort posts by date, newest first
-const sortedPosts = allPosts.sort((a, b) =>
+const sortedPosts = allValidPosts.sort((a, b) =>
   new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+).slice(0, limit ? limit : allValidPosts.length)
 
 ---
 
-<section id="timeline-section" class="relative flex flex-col gap-8">
+<section id="timeline-section" class={cn("relative flex flex-col gap-8 fade-in-0 slide-in-from-bottom-2 animate-in duration-300 transition-opacity ease-out fill-mode-both", limit && "delay-700")}>
 <div class="absolute top-0 left-5 h-full [mask-image:linear-gradient(to_bottom,black_calc(100%-40%),transparent)]">
     <svg id="timeline-svg" width="1">
       <defs>
@@ -41,27 +56,32 @@ const sortedPosts = allPosts.sort((a, b) =>
     </svg>
   </div>
   {sortedPosts.map((post) => {
-  const href = post.data.type === "project"
-    ? post.data.externalLink
-    : post.data.type === "demo"
-      ? undefined
-      : `/posts/${post.id}`;
+    const isPostClickable = post.data.type === "project" || post.data.type !== "demo";
+    const href = post.data.type === "project" ? post.data.externalLink : `/posts/${post.id}`;
 
     return(<div class="relative z-10 group flex gap-6">
       <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
-      <PostIcon type={post.data.type} />
+        <PostIcon type={post.data.type} />
       </aside>
       <div class="flex-1 flex flex-col gap-4 pt-3">
-        <a href={href} target={post.data.type === "project" ? "_blank" : undefined} rel={post.data.type === "project" ? "noopener noreferrer" : undefined} class="flex flex-col gap-2 rounded-lg focus">
-          <small class="text-xs font-mono uppercase text-secondary">{post.data.type} • {format(new Date(post.data.date), 'MMMM d, yyyy')}</small>
-          <h3 class="text-base font-medium text-primary mt-1">{post.data.title}</h3>
-          <p class="text-sm text-secondary text-balance">{post.data.description}</p>
-        </a>
+        {isPostClickable ? (
+          <a href={href} target={post.data.type === "project" ? "_blank" : undefined} rel={post.data.type === "project" ? "noopener noreferrer" : undefined} class="flex flex-col gap-2 rounded-lg hover:opacity-70 transition-opacity duration-200 ease focus">
+            <small class="text-xs font-mono uppercase text-secondary">{post.data.type} • {format(new Date(post.data.date), 'MMMM d, yyyy')}</small>
+            <h3 class="text-base font-medium text-primary mt-1">{post.data.title}{post.data.type === "project" && <span class="ml-1 text-xs text-gray-8 inline-block align-baseline">↗</span>}</h3>
+            <p class="text-sm text-secondary text-balance">{post.data.description}</p>
+          </a>
+        ) : (
+          <div class="flex flex-col gap-2 rounded-lg">
+            <small class="text-xs font-mono uppercase text-secondary">{post.data.type} • {format(new Date(post.data.date), 'MMMM d, yyyy')}</small>
+            <h3 class="text-base font-medium text-primary mt-1">{post.data.title}</h3>
+            <p class="text-sm text-secondary text-balance">{post.data.description}</p>
+          </div>
+        )}
         {post.data.type === "demo" ? <DemoRenderer client:load post={post} /> : <Media client:load src={post.data.video_url || post.data.image_url} type={post.data.video_url ? "video" : "image"} alt={post.data.title} />}
-
       </div>
     </div>)
   })}
+  {limit && (<div class="pl-4 lg:pl-16"><a href="/posts"><Button className="w-full">See all posts</Button></a></div>)}
 </section>
 
 <script>

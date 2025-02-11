@@ -1,5 +1,6 @@
 ---
 import { BackArrow } from "@/components/BackArrow";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 import { SEO_TITLE, SEO_DESCRIPTION } from "@/lib/constants";
 
 import "@/styles/globals.css";
@@ -9,6 +10,7 @@ interface Props {
   description?: string;
   og?: string;
   noIndex?: boolean;
+  canonical?: string;
 }
 
 const {
@@ -16,6 +18,7 @@ const {
   description = SEO_DESCRIPTION,
   og,
   noIndex,
+  canonical
 } = Astro.props;
 ---
 
@@ -41,6 +44,9 @@ const {
       content={`https://heymynameisrob.com/${og ?? "og-image.png"}`}
     />
     <meta name="twitter:card" content="summary_large_image" />
+    {canonical && (
+      <link rel="canonical" href={canonical} />
+    )}
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -51,6 +57,7 @@ const {
     <title>{title}</title>
   </head>
   <body>
+    <ThemeToggle />
     <main
       class="relative max-w-prose mx-auto px-4 py-20 min-h-screen tracking-normal antialiased"
     >

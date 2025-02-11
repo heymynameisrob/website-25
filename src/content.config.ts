@@ -13,6 +13,7 @@ export const postSchema = z.object({
   image_url: z.string().optional(),
   externalLink: z.string().optional(),
   component: z.string().optional(),
+  canonical: z.string().optional(),
 });
 
 // Export the type

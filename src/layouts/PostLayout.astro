@@ -20,6 +20,7 @@ const { frontmatter } = Astro.props;
   title={`${frontmatter.title} - @heymynameisrob`}
   description={frontmatter.description}
   og={frontmatter.og}
+  canonical={frontmatter.canonical}
 >
   <div class="flex flex-col gap-4 pb-12 lg:gap-8">
     <header class="flex flex-col gap-2">
