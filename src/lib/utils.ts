@@ -38,3 +38,7 @@ export function fromNow(date: Date, verbose?: boolean) {
 
   return `${value} ${abbreviatedUnit} ago`;
 }
+
+export async function waitFor(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

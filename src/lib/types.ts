@@ -25,3 +25,11 @@ export type Track = {
   }>;
   nowPlaying: boolean;
 };
+
+export const PostTypes = [
+  "post",
+  "case-study",
+  "demo",
+  "photos",
+  "project",
+] as const;

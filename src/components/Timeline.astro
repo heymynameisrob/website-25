@@ -1,0 +1,142 @@
+---
+interface Props {
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+
+import { getCollection } from 'astro:content';
+import { format, isBefore, isEqual } from "date-fns";
+
+import PostIcon from '@/components/PostIcon.astro';
+
+import { Button } from "@/components/primitives/Button";
+import {DemoRenderer} from '@/components/DemoRender';
+import { Media } from '@/components/Media';
+import { cn } from "@/lib/utils"
+
+// Get all content entries (assuming they're in a "posts" collection)
+const allPosts = await getCollection('posts');
+
+const today = new Date();
+const allValidPosts = allPosts.filter(post => {
+  const postDate = new Date(post.data.date);
+  return isBefore(postDate, today) || isEqual(postDate, today);
+});
+
+// Sort posts by date, newest first
+const sortedPosts = allValidPosts.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+).slice(0, limit ? limit : allValidPosts.length)
+
+---
+
+<section id="timeline-section" class={cn("relative flex flex-col gap-8 fade-in-0 slide-in-from-bottom-2 animate-in duration-300 transition-opacity ease-out fill-mode-both", limit && "delay-700")}>
+<div class="absolute top-0 left-5 h-full [mask-image:linear-gradient(to_bottom,black_calc(100%-40%),transparent)]">
+    <svg id="timeline-svg" width="1">
+      <defs>
+        <pattern id="dotted-line" patternUnits="userSpaceOnUse" x="0" y="0" width="1" height="10">
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="5"
+            class="text-muted stroke-muted opacity-50"
+            stroke-width="1"
+            stroke-dasharray="1 1"
+          />
+        </pattern>
+      </defs>
+      <rect
+        width="1"
+        height="100%"
+        fill="url(#dotted-line)"
+        class="text-muted stroke-current opacity-20"
+      />
+    </svg>
+  </div>
+  {sortedPosts.map((post) => {
+    const isPostClickable = post.data.type === "project" || post.data.type !== "demo";
+    const href = post.data.type === "project" ? post.data.externalLink : `/posts/${post.id}`;
+
+    return(<div class="relative z-10 group flex gap-2 md:gap-6">
+      <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
+        <PostIcon type={post.data.type} />
+      </aside>
+      <div class="flex-1 flex flex-col gap-4 pt-3">
+        {isPostClickable ? (
+          <a href={href} target={post.data.type === "project" ? "_blank" : undefined} rel={post.data.type === "project" ? "noopener noreferrer" : undefined} class="flex flex-col gap-2 rounded-lg hover:opacity-70 transition-opacity duration-200 ease focus">
+            <small class="text-xs font-mono uppercase text-secondary">{post.data.type} • {format(new Date(post.data.date), 'MMMM d, yyyy')}</small>
+            <h3 class="text-base font-medium text-primary mt-1">{post.data.title}{post.data.type === "project" && <span class="ml-1 text-xs text-gray-8 inline-block align-baseline">↗</span>}</h3>
+            <p class="text-sm text-secondary text-balance">{post.data.description}</p>
+          </a>
+        ) : (
+          <div class="flex flex-col gap-2 rounded-lg">
+            <small class="text-xs font-mono uppercase text-secondary">{post.data.type} • {format(new Date(post.data.date), 'MMMM d, yyyy')}</small>
+            <h3 class="text-base font-medium text-primary mt-1">{post.data.title}</h3>
+            <p class="text-sm text-secondary text-balance">{post.data.description}</p>
+          </div>
+        )}
+        {post.data.type === "demo" ? <DemoRenderer client:load post={post} /> : <Media client:load src={post.data.video_url || post.data.image_url} type={post.data.video_url ? "video" : "image"} alt={post.data.title} />}
+      </div>
+    </div>)
+  })}
+  {limit && (<div class="pl-4 lg:pl-16"><a href="/posts"><Button className="w-full">See all posts</Button></a></div>)}
+</section>
+
+<script>
+  function updateSvgHeight() {
+    const section = document.getElementById('timeline-section');
+    const svg = document.getElementById('timeline-svg');
+
+    if (section && svg) {
+      const sectionHeight = section.offsetHeight;
+      svg.setAttribute('height', `${sectionHeight}px`);
+    }
+  }
+
+  // Update height initially
+  updateSvgHeight();
+
+  // Update height on window resize
+  window.addEventListener('resize', updateSvgHeight);
+
+  // Update height when content changes might affect layout
+  const observer = new ResizeObserver(updateSvgHeight);
+  const section = document.getElementById('timeline-section');
+  if (section) {
+    observer.observe(section);
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videos = document.querySelectorAll('video[data-src]');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const video = entry.target as HTMLVideoElement;
+          const source = video.querySelector('source');
+
+          // Set both video and source src attributes
+          video.src = video.dataset.src!;
+          if (source) source.src = video.dataset.src!;
+
+          // Load and play the video
+          video.load();
+          video.play()
+            .catch(err => console.log('Auto-play failed:', err));
+
+          video.classList.add('opacity-100');
+          observer.unobserve(video);
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+
+    videos.forEach(video => observer.observe(video));
+  });
+</script>

@@ -6,8 +6,12 @@ import { cn } from "@/lib/utils";
   class={cn(
     "prose dark:prose-invert prose-headings:text-base prose-headings:font-medium prose-p:text-secondary",
     "prose-pre:border",
+    "prose-h1:first-of-type:hidden",
     "prose-img:rounded-lg prose-img:border",
-    " prose-li:text-secondary",
+    "prose-li:leading-[2em] prose-li:text-secondary prose-li:list-[disc] prose-li:marker:text-accent",
+    "prose-code:font-mono prose-code:font-normal prose-code:bg-gray-2 prose-code:before:content-none prose-code:after:content-none prose-code:px-1 prose-code:leading-normal prose-code:rounded dark:prose-code:bg-gray-5",
+    "prose-[&_.astro-code]:block prose-pre:[&_code]:bg-transparent",
+    "prose-ol:[&_li]:before:content-none prose-ol:[&_li]:list-decimal prose-ol:[&_*]:text-xs prose-ol:[&_*]:opacity-70",
   )}
 >
   <slot />

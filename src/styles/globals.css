@@ -33,27 +33,31 @@
 
     --background: var(--gray-1);
     --border: hsla(48, 8%, 12%, 0.1);
-    --accent: #cc4e00;
+    --accent: #218090;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --gray-1: hsl(60, 3%, 6%);
-      --gray-2: hsl(60, 2%, 10%);
-      --gray-3: hsl(60, 1%, 13%);
-      --gray-4: hsl(60, 2%, 16%);
-      --gray-5: hsl(60, 3%, 19%);
-      --gray-6: hsl(45, 4%, 22%);
-      --gray-7: hsl(48, 4%, 28%);
-      --gray-8: hsl(43, 4%, 37%);
-      --gray-9: hsl(47, 4%, 42%);
-      --gray-10: hsl(53, 3%, 47%);
-      --gray-11: hsl(45, 5%, 69%);
-      --gray-12: hsl(60, 6%, 93%);
+  .dark {
+    --gray-1: hsl(60, 3%, 6%);
+    --gray-2: hsl(60, 2%, 10%);
+    --gray-3: hsl(60, 1%, 13%);
+    --gray-4: hsl(60, 2%, 16%);
+    --gray-5: hsl(60, 3%, 19%);
+    --gray-6: hsl(45, 4%, 22%);
+    --gray-7: hsl(48, 4%, 28%);
+    --gray-8: hsl(43, 4%, 37%);
+    --gray-9: hsl(47, 4%, 42%);
+    --gray-10: hsl(53, 3%, 47%);
+    --gray-11: hsl(45, 5%, 69%);
+    --gray-12: hsl(60, 6%, 93%);
 
-      --background: var(--gray-1);
-      --border: hsla(60, 6%, 93%, 0.1);
-    }
+    --background: var(--gray-1);
+    --border: hsla(60, 6%, 93%, 0.1);
+    --accent: #20b8cd;
+  }
+
+  ::selection {
+    background: rgb(32 184 205 / 0.2);
+    color: var(--accent);
   }
 
   body {
@@ -79,12 +83,13 @@
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
     min-width: 0;
+    border-color: var(--border);
   }
 
   *,
   ::before,
   ::after {
-    @apply border-primary;
+    border-color: var(--border);
   }
 
   ::-webkit-scrollbar-track {
@@ -101,5 +106,25 @@
 
   strong {
     @apply font-medium;
+  }
+
+  .focus {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  .astro-code code {
+    background-color: transparent !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      animation-delay: 0 !important;
+    }
   }
 }

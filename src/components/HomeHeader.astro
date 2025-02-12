@@ -1,7 +1,7 @@
 ---
 import Avatar from "@/components/Avatar.astro";
 
-import { Tooltip } from "@/components/Tooltip";
+import {ReactAvatar} from "@/components/ReactAvatar";
 import { Motion, useMotionVariants } from "@/components/Motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { SocialLinks } from "@/components/SocialLinks";
@@ -17,7 +17,9 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
   >
     <header class="flex items-center gap-1">
       <div class="flex items-center gap-2">
-        <Avatar />
+        <ReactAvatar client:only="react">
+          <Avatar slot="fallback" />
+        </ReactAvatar>
         <ScrambleText client:load />
       </div>
       <div class="shrink-0 w-[2px] h-4 bg-secondary animate-blink"></div>
@@ -31,11 +33,11 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
   >
     <p class="text-balance">
       Design Engineer, UK. I work almost exclusively with early B2B startups. I
-      also ship a few of my own projects. I also speak about design. Elsewhere,
-      I travel in my camper, ride motorcycles, and collect records.
+      also ship a few of my own projects. Other than that,
+      I travel in my campervan, ride motorcycles, and collect records.
       <a href="/now"
         ><span
-          class="relative top-0.5 text-secondary inline-flex items-center p-1 h-3 rounded bg-gray-3"
+          class="relative top-0.5 text-secondary text-[13px] inline-flex items-center p-1 h-3 rounded bg-gray-3"
           >•••</span
         ></a
       >

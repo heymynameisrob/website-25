@@ -1,0 +1,21 @@
+<svg width="1" height="8522" viewBox="0 0 1 8522">
+  <defs>
+    <pattern id="dotted-line" patternUnits="userSpaceOnUse" x="0" y="0" width="1" height="10">
+      <line
+        x1="0"
+        y1="0"
+        x2="0"
+        y2="5"
+        class="text-foreground stroke-current"
+        stroke-width="1"
+        stroke-dasharray="1 1"
+      />
+    </pattern>
+  </defs>
+  <rect
+    width="1"
+    height="100%"
+    fill="url(#dotted-line)"
+    class="text-foreground stroke-current"
+  />
+</svg>

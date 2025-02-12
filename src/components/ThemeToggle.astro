@@ -1,0 +1,65 @@
+---
+import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
+---
+
+<button
+  id="themeToggle"
+  aria-label="Toggle theme"
+  class="absolute z-10 top-2 right-2 flex items-center justify-center w-9 h-9 rounded-md text-primary bg-transparent transition-all focus hover:bg-gray-2"
+>
+  <SunIcon className="hidden w-4 h-4 opacity-70 dark:block" />
+  <MoonIcon className="visible w-4 h-4 opacity-70 dark:hidden" />
+</button>
+<script is:inline>
+
+  // Stop animations firing on theme change. Style doesn't trigger an animation but class change does.
+  const disableAnimations = () => {
+    document.documentElement.style.setProperty('animation', 'none', 'important');
+    document.documentElement.style.setProperty('transition', 'none', 'important');
+    document.documentElement.style.setProperty('transform', 'none', 'important');
+  }
+
+  // Initial setup
+  disableAnimations();
+
+  const setTheme = (() => {
+    const localStorageTheme = localStorage?.getItem("theme") ?? "";
+    console.log("Setting themes...");
+    if (["dark", "light"].includes(localStorageTheme)) {
+      localStorageTheme === "dark"
+        ? document.documentElement.classList.add("dark")
+        : document.documentElement.classList.remove("dark");
+      return localStorage.setItem("theme", localStorageTheme);
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.classList.add("dark");
+      return localStorage.setItem("theme", "dark");
+    }
+    document.documentElement.classList.remove("dark");
+    return localStorage.setItem("theme", "light");
+  })();
+
+  const handleToggleClick = () => {
+    disableAnimations();
+
+    const element = document.documentElement;
+    const isDark = element.classList.contains("dark");
+
+    // Toggle theme
+    element.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "light" : "dark");
+
+    requestAnimationFrame(() => {
+      document.documentElement.style = "";
+    });
+  };
+
+  // Remove initial transition blocking after a short delay
+  requestAnimationFrame(() => {
+    document.documentElement.style = "";
+  });
+
+  document
+    .getElementById("themeToggle")
+    ?.addEventListener("click", handleToggleClick);
+</script>

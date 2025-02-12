@@ -1,12 +1,13 @@
 ---
-title: lantum.com
-description: Workforce management for NHS clinical staff
-image_url: https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a/-/preview/1000x562/
+title: Re-designing Lantum's Rota UI
+description: Redesigning the core web product, including a visual refresh, for managers to schedule clinical staff in NHS hospitals
+image_url: https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a
 date: 2023-09-12
-isProject: true
-isExternal: true
-externalLink: "https://lantum.com"
+type: "case-study"
 ---
+
+import { LantumGrid } from "@/components/demos/LantumGrid";
+import { LantumBulk } from "@/components/demos/LantumBulk";
 
 Lantum is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
 It helps schedule and manage clinical staff, enables clinicians to find extra (locum) work, and allows them to manage their shifts and time-off.
@@ -43,28 +44,22 @@ From talking to *a lot* of deparment managers, there are few things Lantum's Rot
 
 These design principles were drawn out of lots of conversations with our early adopting departments.
 
-## Changing the view, fast
-In an effort to make the UI feel *comfortable*, we looked at tasks that were being repeated frequently and needing a fast response.
-In this scenario, the UI should feel like a tool in your toolbelt. Exactly by your side, ready to grab it when you need.
-
-These dropdown menus with searchable lists are one of the many small UI affordances we built that optimised for comfortable, rapid UI.
-As frequent users, managers would zip around the rota and having use of keyboard shortcuts and responsive, searchable lists shaved seconds of finding a staff member to assign to a new shift.
-
-In Lantum, we built this using Radix UI's popover component to handle the menu. This ensures a good base for building out the menu, with out-of-box ARIA support, keyboard events etc.
-You can see how a long list of ~50 staff members, all with different names can be hard to scan.
-So the search filter allows for quick access.
-
-The user doesn't even need to lift their mouse up to filter each staff member on/off the rota.
-
 ## Draggin' me around
 We watched lots of early customers use both Lantum and their previous methods, typically Excel spreasheets.
 It would be easy to scoff at Excel but we took our lead from it.
 
 Even though *everybody* complained about it, it was comfortable and you could move things around at will.
-The interface afforded you something that matched the users mental model. In to say, if there are items organised on a plain - the natural thing is to move them around freely across both `X` and `Y` axis.
+The interface afforded you something that matched the users mental model.
+In to say, if there are items organised on a plain - the natural thing is to move them around freely across both `X` and `Y` axis.
+
+<figure className="flex flex-col">
+  <LantumGrid client:only />
+  <figcaption className="text-xs text-center">
+    Drag and drop the shift to re-assign to someone else
+  </figcaption>
+</figure>
 
 Having such familiarity with their rota and it's software was the gold standard for us to replicate.
-
 
 If managers can drag and drop items, it creates a more friendly way to move things around.
 
@@ -78,7 +73,12 @@ This way the UI feels fast and slick, but we don't run the risk of messing thing
 Often times lots of similar actions need to be taken at once. A row of shifts might need to be re-assigned to someone else or even removed.
 Additionally, powerful bulk actions like 'Delete' or 'Re-assign' can shave lots of repetative work.
 
-On <kbd className="mr-1">⇧</kbd><kbd>Click</kbd> over the sessions, we turn on `selecting` mode.
+<figure className="flex flex-col">
+  <LantumBulk client:only />
+  <figcaption className="text-xs text-center">
+    On <kbd className="mr-1">⇧</kbd><kbd>Click</kbd> over the sessions, we turn on `selecting` mode.
+  </figcaption>
+</figure>
 
 Users are presented with a toolbar containing bulk action options.
 These are specific actions which we've found users repeat over and over again in one go.
