@@ -61,6 +61,7 @@ export function DemoRenderer({ post }: DemoRendererProps) {
         <Button
           size="icon"
           variant="ghost"
+          aria-label="Reset demo"
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
