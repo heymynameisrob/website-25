@@ -7,6 +7,7 @@ import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import type { Post } from "@/content.config";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { motion, useAnimation } from "motion/react";
+import { Photos } from "@/components/demos/Photos";
 
 interface DemoRendererProps {
   post: Post;
@@ -15,6 +16,7 @@ interface DemoRendererProps {
 export const demoRegistry: Record<string, React.ReactNode> = {
   calculator: <Calculator />,
   form: <Form />,
+  photos: <Photos />,
 } as const;
 
 export type DemoId = keyof typeof demoRegistry;

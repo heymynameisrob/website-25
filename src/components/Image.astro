@@ -1,5 +1,5 @@
 ---
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import { Image as AstroImage } from '@astrojs/image/components';
 
 interface Props {
   src: string;
@@ -15,19 +15,18 @@ const { src, alt, ratio } = Astro.props;
   rel="noopener nofollow"
   class="block no-underline"
 >
-<figure class="flex flex-col justify-center gap-1">
-  <AspectRatio
-    ratio={ratio || 16 / 9}
-    className="w-full rounded-lg overflow-hidden border border-primary"
-  >
-<img
-  src={src}
-  alt={alt}
-  loading="lazy"
-  class="absolute inset-0 w-full h-full object-fit object-cover border-none !m-0"
-/> </AspectRatio>
-<figcaption class="text-center text-sm text-secondary">
-  {alt}
-</figcaption>
-</figure>
+  <figure class="flex flex-col justify-center gap-1">
+    <div class="w-full rounded-lg overflow-hidden border border-primary" style={`aspect-ratio: ${ratio || 16/9}`}>
+      <AstroImage
+        src={src}
+        alt={alt}
+        class="w-full h-full object-cover"
+        width={800}
+        height={450}
+      />
+    </div>
+    <figcaption class="text-center text-sm text-secondary">
+      {alt}
+    </figcaption>
+  </figure>
 </a>
