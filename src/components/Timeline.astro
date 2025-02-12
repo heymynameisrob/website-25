@@ -59,7 +59,7 @@ const sortedPosts = allValidPosts.sort((a, b) =>
     const isPostClickable = post.data.type === "project" || post.data.type !== "demo";
     const href = post.data.type === "project" ? post.data.externalLink : `/posts/${post.id}`;
 
-    return(<div class="relative z-10 group flex gap-6">
+    return(<div class="relative z-10 group flex gap-2 md:gap-6">
       <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
         <PostIcon type={post.data.type} />
       </aside>
