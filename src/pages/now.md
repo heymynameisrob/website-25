@@ -1,15 +1,13 @@
 ---
 layout: "@/layouts/PostLayout.astro"
 title: Now
-date: 2025-01-20
+date: 2025-02-12
 ---
-__Here's what I'm doing now:__
+This is a [now page](http://nownownow.com/about), inspired by [Derek Sivers](https://sivers.org/nowff)  — a nearly-always updated page of what I’m up to these days. Let’s get to it!
 
-### Work
-- **Refreshed this website**: Sssh. More here soon.
-- **Lantum**: I'm contracting with Lantum, where I used to be Head of Design, hekping them build products for secondary care clinicians. It's fun getting the band back together. As well as working on React Native again.
-- **artifical.io**: Building out new UI library with the design and eng team until end of the year.
-Also worked on redesigned their policy listing page.
+## What I'm doing now
+Just refreshed my personal website to add lots of new stuff. Firstly, I've started to put more public posts on here, instead of posting things across social media.
+But there's not only blog posts. I've got little design prototypes and projects I've worked on too.
 
-### Milo news
-Our kid is now about 7/8 months and the bugger is huge! He's so well trained. Walks perfectly on the lead, comes back when calls, really calm and non-reactive. I've had dogs before but it's been a while. I keep wanting to write a little blog on his training which I think would be interesting to look back on.
+Also I'm currently working Lantum again to help build out some of their AI rota capabilities.
+It's really fun jumping back into things again.
