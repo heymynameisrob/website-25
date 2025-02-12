@@ -81,8 +81,8 @@ export function Photos() {
     <div className="p-2">
       <Masonry
         breakpointCols={BREAKPOINT_COLS}
-        className="flex -ml-2 w-auto"
-        columnClassName="pl-2 bg-clip-padding"
+        className="flex items-start -ml-2 w-auto"
+        columnClassName=" pl-2 bg-clip-padding"
       >
         {IMAGES.map((img) => (
           <motion.button
@@ -94,7 +94,7 @@ export function Photos() {
           >
             <img
               src={img.url}
-              className="w-full h-auto object-cover rounded-lg border"
+              className="!m-0 w-full h-auto object-cover rounded-lg border"
               alt="Preview image"
             />
           </motion.button>

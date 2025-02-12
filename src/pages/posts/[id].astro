@@ -2,11 +2,11 @@
 import { isBefore } from "date-fns";
 import { getCollection, render } from "astro:content";
 import PostLayout from "@/layouts/PostLayout.astro";
+import { DemoRenderer } from "@/components/DemoRender";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   return posts
-    .filter((post) => !post.data.isExternal)
     .filter((post) => isBefore(post.data.date, new Date()))
     .map((post) => ({
       params: { id: post.id },
@@ -19,5 +19,5 @@ const { Content } = await render(post);
 ---
 
 <PostLayout frontmatter={post.data}>
-  <Content />
+{post.data.type === "demo" ? <DemoRenderer client:load post={post} /> : <Content />}
 </PostLayout>
