@@ -5,6 +5,10 @@ import {ReactAvatar} from "@/components/ReactAvatar";
 import { Motion, useMotionVariants } from "@/components/Motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { SocialLinks } from "@/components/SocialLinks";
+
+import { NowPlaying } from "@/components/NowPlaying";
+
+
 const { initial, animate, transition } = useMotionVariants("fadeInUp");
 ---
 
@@ -30,6 +34,7 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
     animate={animate}
     transition={{ ...transition, delay: 0.2 }}
     client:load
+    className="flex flex-col gap-4"
   >
     <p class="text-balance">
       Design Engineer, UK. I work almost exclusively with early B2B startups. I
@@ -42,6 +47,7 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
         ></a
       >
     </p>
+    <NowPlaying client:load />
   </Motion>
   <SocialLinks client:load />
 </div>
