@@ -58,7 +58,7 @@ const IMAGES: Image[] = [
   },
 ];
 
-export function Photos() {
+export function Gallery() {
   const [currentImage, setCurrentImage] = React.useState<string | null>(null);
   const [transitionType, setTransitionType] =
     React.useState<TransitionType>("open");
@@ -101,7 +101,7 @@ export function Photos() {
         ))}
       </Masonry>
 
-      <PhotoDialog
+      <GalleryDialog
         image={currentImage}
         onImageChange={setCurrentImage}
         transitionType={transitionType}
@@ -111,7 +111,7 @@ export function Photos() {
   );
 }
 
-function PhotoDialog({
+function GalleryDialog({
   image,
   onImageChange,
   setTransitionType,
@@ -194,7 +194,7 @@ function PhotoDialog({
 
       <AnimatePresence initial={false} mode="popLayout">
         {image ? (
-          <div className="absolute inset-0 grid place-items-center z-10 pointer-events-none">
+          <div className="fixed inset-0 grid place-items-center z-10 pointer-events-none">
             <motion.div
               key={image}
               layoutId={transitionType === "open" ? image : undefined}
