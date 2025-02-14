@@ -1,12 +1,12 @@
 ---
 interface Props {
-  limit?: number;
+  posts: Post[];
+  showRail?:boolean;
 }
 
-const { limit } = Astro.props;
+const { posts, showRail = true } = Astro.props;
 
-import { getCollection } from 'astro:content';
-import { format, isBefore, isEqual } from "date-fns";
+import { format } from "date-fns";
 
 import PostIcon from '@/components/PostIcon.astro';
 
@@ -14,25 +14,16 @@ import { Button } from "@/components/primitives/Button";
 import {DemoRenderer} from '@/components/DemoRender';
 import { Media } from '@/components/Media';
 import { cn } from "@/lib/utils"
+import { HOME_POST_LIMIT} from "@/lib/constants";
 
-// Get all content entries (assuming they're in a "posts" collection)
-const allPosts = await getCollection('posts');
+import type { Post } from '@/content.config';
 
-const today = new Date();
-const allValidPosts = allPosts.filter(post => {
-  const postDate = new Date(post.data.date);
-  return isBefore(postDate, today) || isEqual(postDate, today);
-});
-
-// Sort posts by date, newest first
-const sortedPosts = allValidPosts.sort((a, b) =>
-  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-).slice(0, limit ? limit : allValidPosts.length)
+const isHome = Astro.url.pathname === "/";
 
 ---
 
-<section id="timeline-section" class={cn("relative flex flex-col gap-8 fade-in-0 slide-in-from-bottom-2 animate-in duration-300 transition-opacity ease-out fill-mode-both", limit && "delay-700")}>
-<div class="absolute top-0 left-5 h-full [mask-image:linear-gradient(to_bottom,black_calc(100%-40%),transparent)]">
+<section id="timeline-section" class={cn("relative flex flex-col gap-8 fade-in-0 slide-in-from-bottom-2 animate-in duration-300 transition-opacity ease-out fill-mode-both", isHome && "delay-700")}>
+  {showRail && <div class="absolute top-0 left-5 h-full [mask-image:linear-gradient(to_bottom,black_calc(100%-40%),transparent)]">
     <svg id="timeline-svg" width="1">
       <defs>
         <pattern id="dotted-line" patternUnits="userSpaceOnUse" x="0" y="0" width="1" height="10">
@@ -54,15 +45,15 @@ const sortedPosts = allValidPosts.sort((a, b) =>
         class="text-muted stroke-current opacity-20"
       />
     </svg>
-  </div>
-  {sortedPosts.map((post) => {
+  </div>}
+  {posts.map((post, index) => {
     const isPostClickable = post.data.type === "project" || post.data.type !== "demo";
     const href = post.data.type === "project" ? post.data.externalLink : `/posts/${post.id}`;
 
-    return(<div class="relative z-10 group flex gap-2 md:gap-6">
-      <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
+    return(<div id={`post-${index+1}`} class="relative z-10 group flex gap-2 md:gap-6">
+      {showRail && <aside class="w-10 h-10 bg-background grid place-items-center text-secondary">
         <PostIcon type={post.data.type} />
-      </aside>
+      </aside>}
       <div class="flex-1 flex flex-col gap-4 pt-3">
         {isPostClickable ? (
           <a href={href} target={post.data.type === "project" ? "_blank" : undefined} rel={post.data.type === "project" ? "noopener noreferrer" : undefined} class="flex flex-col gap-2 rounded-lg hover:opacity-70 transition-opacity duration-200 ease focus">
@@ -81,7 +72,7 @@ const sortedPosts = allValidPosts.sort((a, b) =>
       </div>
     </div>)
   })}
-  {limit && (<div class="pl-4 lg:pl-16"><a href="/posts"><Button className="w-full">See all posts</Button></a></div>)}
+  {isHome && (<div class="pl-4 lg:pl-16"><a href={`/posts#post-${HOME_POST_LIMIT + 1}`}><Button className="w-full">See all posts</Button></a></div>)}
 </section>
 
 <script>

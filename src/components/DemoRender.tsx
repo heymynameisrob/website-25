@@ -8,6 +8,7 @@ import type { Post } from "@/content.config";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { motion, useAnimation } from "motion/react";
 import { Gallery } from "@/components/demos/Gallery";
+import { Calendar } from "@/components/demos/Calendar";
 
 interface DemoRendererProps {
   post: Post;
@@ -17,6 +18,7 @@ export const demoRegistry: Record<string, React.ReactNode> = {
   calculator: <Calculator />,
   form: <Form />,
   photos: <Gallery />,
+  calendar: <Calendar />,
 } as const;
 
 export type DemoId = keyof typeof demoRegistry;

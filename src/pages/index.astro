@@ -2,13 +2,27 @@
 import HomeHeader from "@/components/HomeHeader.astro";
 import Layout from "@/layouts/Layout.astro";
 import Timeline from "@/components/Timeline.astro";
-import { NowPlaying } from "@/components/NowPlaying";
+import { getCollection } from "astro:content";
+import { isBefore, isEqual } from "date-fns";
+import { HOME_POST_LIMIT } from "@/lib/constants";
+
+const allPosts = await getCollection('posts');
+
+const today = new Date();
+const allValidPosts = allPosts.filter(post => {
+  const postDate = new Date(post.data.date);
+  return isBefore(postDate, today) || isEqual(postDate, today);
+});
+
+const sortedPosts = allValidPosts.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+).slice(0, HOME_POST_LIMIT ? HOME_POST_LIMIT : allValidPosts.length)
 
 ---
 
 <Layout>
   <HomeHeader />
   <section class="flex flex-col gap-2 py-6 lg:py-12">
-    <Timeline limit={5} />
+    <Timeline posts={sortedPosts} />
   </section>
 </Layout>
