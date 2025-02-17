@@ -1,7 +1,7 @@
 ---
 title: Building your own toolbox
 description: The goal of design is to find the winning solution to the problem your given. The only way to do that is try lots of ideas and get lots of feedback - fast.
-date: 2025-02-10
+date: 2026-02-10
 type: "post"
 ---
 
