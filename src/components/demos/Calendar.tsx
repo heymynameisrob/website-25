@@ -12,19 +12,37 @@ import {
   subMonths,
   type EachDayOfIntervalResult,
 } from "date-fns";
-import { AnimatePresence, motion, MotionConfig } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  MotionConfig,
+  useMotionValue,
+  useTransform,
+  type PanInfo,
+} from "motion/react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import { cn } from "@/lib/utils";
 
 const variants = {
-  enter: (direction: number) => {
-    return { x: `${40 * direction}%`, opacity: 0, filter: "blur(2px)" };
+  enter: (direction: number) => ({
+    x: `${40 * direction}%`,
+    opacity: 0,
+    filter: "blur(2px)",
+  }),
+  middle: {
+    x: "0%",
+    opacity: 1,
+    filter: "blur(0px)",
+    transition: {
+      opacity: { duration: 0.1 },
+    },
   },
-  middle: { x: "0%", opacity: 1, filter: "blur(0px)" },
-  exit: (direction: number) => {
-    return { x: `${-40 * direction}%`, opacity: 0, filter: "blur(2px)" };
-  },
+  exit: (direction: number) => ({
+    x: `${-40 * direction}%`,
+    opacity: 0,
+    filter: "blur(2px)",
+  }),
 };
 
 type Days = EachDayOfIntervalResult<{ start: Date; end: Date }, undefined>;
@@ -82,6 +100,24 @@ export function Calendar() {
     end: endOfWeek(endOfMonth(month)),
   });
 
+  /** Handle swipe gestures */
+  const x = useMotionValue(0);
+  const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
+
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
+    const threshold = 50; // minimum distance to trigger month change
+    if (Math.abs(info.offset.x) > threshold) {
+      if (info.offset.x > 0) {
+        handlePrevMonth();
+      } else {
+        handleNextMonth();
+      }
+    }
+  };
+
   React.useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "ArrowLeft") handlePrevMonth();
@@ -117,22 +153,31 @@ export function Calendar() {
             <div className="py-6 lg:py-8">
               <div className="flex flex-col justify-center rounded text-center">
                 <Resizeable>
-                  <AnimatePresence
-                    mode="popLayout"
-                    initial={false}
-                    custom={direction}
-                    onExitComplete={() => setIsAnimating(false)}
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0}
+                    style={{ x, opacity }}
+                    className="touch-pan-y"
+                    onDragEnd={handleDragEnd}
                   >
-                    <motion.div
-                      key={monthLabel}
-                      initial="enter"
-                      animate="middle"
-                      exit="exit"
+                    <AnimatePresence
+                      mode="popLayout"
+                      initial={false}
+                      custom={direction}
+                      onExitComplete={() => setIsAnimating(false)}
                     >
-                      <CalendarHeader />
-                      <CalendarMonth />
-                    </motion.div>
-                  </AnimatePresence>
+                      <motion.div
+                        key={monthLabel}
+                        initial="enter"
+                        animate="middle"
+                        exit="exit"
+                      >
+                        <CalendarHeader />
+                        <CalendarMonth />
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
                 </Resizeable>
               </div>
             </div>
