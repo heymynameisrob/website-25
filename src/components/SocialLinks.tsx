@@ -43,7 +43,7 @@ export function SocialLinks() {
       <Link
         delay={0.3}
         title="LinkedIn"
-        link="https://github.com/heymynameisrob"
+        link="https://www.linkedin.com/in/heymynameisrob/"
       >
         <LinkedInLogoIcon className="w-4 h-4" />
         <small className="md:hidden">LinkedIn</small>
