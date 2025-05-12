@@ -1,4 +1,4 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection, z, type CollectionEntry } from "astro:content";
 import { glob } from "astro/loaders";
 import { PostTypes } from "@/lib/types";
 
@@ -17,7 +17,7 @@ export const postSchema = z.object({
 });
 
 // Export the type
-export type Post = { id: string; data: z.infer<typeof postSchema> };
+export type Post = CollectionEntry<"posts">;
 export type PostFrontmatter = z.infer<typeof postSchema>;
 
 const posts = defineCollection({

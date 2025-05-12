@@ -1,13 +1,12 @@
 ---
 import Avatar from "@/components/Avatar.astro";
 
-import {ReactAvatar} from "@/components/ReactAvatar";
+import { ReactAvatar } from "@/components/ReactAvatar";
 import { Motion, useMotionVariants } from "@/components/Motion";
 import { ScrambleText } from "@/components/ScrambleText";
 import { SocialLinks } from "@/components/SocialLinks";
 
 import { NowPlaying } from "@/components/NowPlaying";
-
 
 const { initial, animate, transition } = useMotionVariants("fadeInUp");
 ---
@@ -37,9 +36,14 @@ const { initial, animate, transition } = useMotionVariants("fadeInUp");
     className="flex flex-col gap-6"
   >
     <p class="text-balance">
-      Design Engineer, UK. I work almost exclusively with early B2B startups. I
-      also ship a few of my own projects. Other than that,
-      I travel in my campervan, ride motorcycles, and collect records.
+      Design Engineer, UK. I work almost exclusively with B2B startups. I also
+      bootstrap my own projects like <a
+        href="https://cushion.so"
+        target="_blank"
+        rel="noopener nofollow"
+        class="text-primary underline">cushion.so</a
+      >. Other than that, I travel in my campervan, ride motorcycles, and
+      collect records.
       <a href="/now"
         ><span
           class="relative top-0.5 text-secondary text-[13px] inline-flex items-center p-1 h-3 rounded bg-gray-3"

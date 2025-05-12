@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, isBefore } from "date-fns";
 import { twMerge } from "tailwind-merge";
+
+import type { Post } from "@/content.config";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -41,4 +43,16 @@ export function fromNow(date: Date, verbose?: boolean) {
 
 export async function waitFor(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function filterPosts(posts: Post[]) {
+  const isDev = process.env.NODE_ENV === "development";
+
+  /** If prod, then filter out future posts */
+  const validPosts = !isDev
+    ? posts.filter((post) => isBefore(post.data.date, new Date()))
+    : posts;
+  return validPosts.sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+  );
 }

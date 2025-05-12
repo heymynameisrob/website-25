@@ -7,8 +7,6 @@ import tailwind from "@astrojs/tailwind";
 
 import mdx from "@astrojs/mdx";
 
-import image from "@astrojs/image";
-
 // https://astro.build/config
 export default defineConfig({
   site: getBaseUrl(),
@@ -19,9 +17,13 @@ export default defineConfig({
       theme: "andromeeda",
     },
   },
-  integrations: [react(), tailwind({
-    applyBaseStyles: false, // Stops tailwind styles being added twice
-  }), mdx(), image()],
+  integrations: [
+    react(),
+    tailwind({
+      applyBaseStyles: false, // Stops tailwind styles being added twice
+    }),
+    mdx(),
+  ],
 });
 
 function getBaseUrl() {

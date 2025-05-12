@@ -13,7 +13,7 @@ export function SocialLinks() {
         className={cn(
           "md:w-auto md:px-3 rounded-full",
           AVAILABLE
-            ? "bg-green-700/20 text-green-800 hover:bg-green-700/20 hover:text-green-800 dark:text-green dark:hover:text-green-500"
+            ? "bg-green-700/20 text-green-800 hover:bg-green-700/20 hover:text-green-800 dark:text-green-400 dark:hover:text-green-500"
             : "bg-cyan-700/20 text-cyan-800 hover:bg-cyan-700/20 hover:text-cyan-800 hover:scale-100 dark:text-cyan-500 dark:hover:text-cyan-500"
         )}
       >
@@ -43,7 +43,7 @@ export function SocialLinks() {
       <Link
         delay={0.3}
         title="LinkedIn"
-        link="https://github.com/heymynameisrob"
+        link="https://www.linkedin.com/in/heymynameisrob/"
       >
         <LinkedInLogoIcon className="w-4 h-4" />
         <small className="md:hidden">LinkedIn</small>

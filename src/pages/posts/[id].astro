@@ -3,11 +3,12 @@ import { isBefore } from "date-fns";
 import { getCollection, render } from "astro:content";
 import PostLayout from "@/layouts/PostLayout.astro";
 import { DemoRenderer } from "@/components/DemoRender";
+import { filterPosts } from "@/lib/utils";
+import type { Post } from "@/content.config";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return posts
-    .filter((post) => isBefore(post.data.date, new Date()))
+  return filterPosts(posts)
     .map((post) => ({
       params: { id: post.id },
       props: { post },
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content } = await render(post)
 ---
 
 <PostLayout frontmatter={post.data}>
