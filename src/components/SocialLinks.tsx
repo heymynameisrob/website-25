@@ -9,12 +9,12 @@ export function SocialLinks() {
     <div className="flex flex-wrap gap-2 md:items-center md:flex-row">
       <Link
         title={AVAILABLE ? "Available now" : "Let's chat"}
-        link="https://cal.com/heymynameisrob/30min"
+        link="https://calendar.notion.so/meet/robhough180/7xa14o4j"
         className={cn(
           "md:w-auto md:px-3 rounded-full",
           AVAILABLE
             ? "bg-green-700/20 text-green-800 hover:bg-green-700/20 hover:text-green-800 dark:text-green dark:hover:text-green-500"
-            : "bg-cyan-700/20 text-cyan-800 hover:bg-cyan-700/20 hover:text-cyan-800 hover:scale-100 dark:text-cyan-500 dark:hover:text-cyan-500",
+            : "bg-cyan-700/20 text-cyan-800 hover:bg-cyan-700/20 hover:text-cyan-800 hover:scale-100 dark:text-cyan-500 dark:hover:text-cyan-500"
         )}
       >
         <small>{AVAILABLE ? "Book me" : "Available Summer '25"}</small>
@@ -94,7 +94,7 @@ function Link({
             className={cn(
               "inline-flex justify-center items-center w-auto px-3 gap-1.5 h-8 text-secondary bg-gray-1 rounded-full font-medium transition-all duration-200 ease-out hover:scale-110 hover:text-primary hover:bg-gray-3 md:px-px md:w-8",
               "outline-none focus-visible:ring-2 focus-visible:ring-ring ",
-              className,
+              className
             )}
           >
             {children}
