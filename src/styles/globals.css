@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+p.is-empty::before {
+  color: var(--gray-9);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 @layer base {
   @font-face {
     font-family: "Berkley Mono";

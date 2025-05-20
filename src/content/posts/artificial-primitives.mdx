@@ -6,7 +6,7 @@ date: 2025-03-01
 type: "case-study"
 ---
 
-import {UIExample} from "@/components/demos/UIExample"
+import {UIExample, FilterMenuExample} from "@/components/demos/UIExample"
 import {Media} from "@/components/Media"
 import Image from "@/components/Image.astro"
 
@@ -60,36 +60,8 @@ Compound components are natural and easy to write. They are closer to the native
 
 Look at this Menu example.
 
-<UIExample client:load>
-```tsx
-import { Avatar } from "@primitives/avatar";
-import {
-  FilterMenu,
-  FilterMenuContent,
-  FilterMenuInput,
-  FilterMenuItem,
-  FilterMenuList,
-  FilterMenuTrigger,
-} from "@primitives/filter-menu";
-
-<FilterMenu>
-  <FilterMenuTrigger>
-    <Avatar src={user.avatar} />
-    {selectedUser}
-  </FilterMenuTrigger>
-  <FilterMenuContent>
-    <FilterMenuInput />
-    <FilterMenuList>
-      {users.map((user) => (
-        <FilterMenuItem value={user.id}>
-          <Avatar src={user.avatar} />
-          {user.name}
-        </FilterMenuItem>
-      ))}
-    </FilterMenuList>
-  </FilterMenuContent>
-</FilterMenu>
-```
+<UIExample component="filter-menu" client:load>
+Primitive example of a filterable dropdown menu AKA combobox
 </UIExample>
 
 Each piece (`<FilterMenuTrigger />`, `<FilterMenuContent />`, etc.) handles a specific concern while maintaining a connection to the parent `<FilterMenu />` component through React's context.

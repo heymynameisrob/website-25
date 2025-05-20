@@ -14,6 +14,7 @@ import {
   FilterMenuTrigger,
 } from "@/components/demos/FilterMenu";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { Checkin } from "@/components/demos/Checkin";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -27,26 +28,25 @@ export interface ButtonProps
   className?: string;
 }
 
-export function UIExample({ children }: any) {
+export function UIExample({
+  component,
+  children,
+}: {
+  component: "filter-menu" | "checkin";
+  children: React.ReactNode;
+}) {
+  const COMPONENT_MAP = {
+    "filter-menu": <FilterMenuExample />,
+    checkin: <Checkin />,
+  };
+
   return (
-    <Tabs defaultValue="preview">
-      <TabsList>
-        <TabsTrigger value="preview" variant="underlined">
-          Preview
-        </TabsTrigger>
-        <TabsTrigger value="code" variant="underlined">
-          Code
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="preview">
-        <figure className="relative grid place-items-center w-full aspect-video border bg-background rounded-lg after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] lg:rounded-2xl">
-          <Example />
-        </figure>
-      </TabsContent>
-      <TabsContent value="code" className="prose dark:prose-inverted">
-        {children}
-      </TabsContent>
-    </Tabs>
+    <div className="flex flex-col justify-center items-center gap-2 my-[2em]">
+      <figure className="relative grid place-items-center w-full aspect-video border bg-background rounded-lg after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] lg:rounded-2xl my-0">
+        {COMPONENT_MAP[component]}
+      </figure>
+      <figcaption className="text-xs text-secondary">{children}</figcaption>
+    </div>
   );
 }
 
@@ -57,7 +57,7 @@ const USERS = [
   { value: "tim-bates", label: "Tim Bates" },
 ];
 
-const Example = () => {
+export const FilterMenuExample = () => {
   const [selected, setSelected] = React.useState("");
 
   return (
