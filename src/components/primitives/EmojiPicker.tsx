@@ -38,7 +38,7 @@ export const EmojiPicker = ({
           className={cn(
             "h-7 w-7 rounded-md bg-gray-1 hover:bg-gray-2 p-px !text-base focus",
             disabled && "pointer-events-none",
-            className
+            className,
           )}
         >
           {emoji || fallback}

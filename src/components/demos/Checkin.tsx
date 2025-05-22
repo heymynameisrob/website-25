@@ -49,7 +49,7 @@ interface CheckinContextType {
 }
 
 const CheckinContext = React.createContext<CheckinContextType | undefined>(
-  undefined
+  undefined,
 );
 
 function useCheckin() {
@@ -462,7 +462,7 @@ function CheckinActivity() {
                 className={cn(
                   "relative flex items-center justify-center size-5 rounded-md ring-2 ring-gray-2 z-10",
                   getActionStyle(activity.action),
-                  "bg-gray-2 dark:bg-gray-2"
+                  "bg-gray-2 dark:bg-gray-2",
                 )}
               >
                 {activity.icon}
@@ -521,7 +521,7 @@ function CheckinReactions() {
         acc[emoji] = (acc[emoji] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
   }, [reactions]);
 
@@ -539,7 +539,7 @@ function CheckinReactions() {
             <Button
               variant="ghost"
               className={cn(
-                "w-auto bg-gray-3 border border-primary/10 h-7 px-2 rounded-full hover:bg-gray-4"
+                "w-auto bg-gray-3 border border-primary/10 h-7 px-2 rounded-full hover:bg-gray-4",
               )}
               onClick={() => setReactions((prev) => [...prev, { emoji }])}
             >
