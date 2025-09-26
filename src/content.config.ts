@@ -11,6 +11,7 @@ export const postSchema = z.object({
   isExternal: z.boolean().default(false).optional(),
   video_url: z.string().optional(),
   image_url: z.string().optional(),
+  image: z.string().optional(),
   externalLink: z.string().optional(),
   component: z.string().optional(),
   canonical: z.string().optional(),

@@ -1,57 +1,32 @@
 ---
-import Avatar from "@/components/Avatar.astro";
-
-import { ReactAvatar } from "@/components/ReactAvatar";
-import { Motion, useMotionVariants } from "@/components/Motion";
-import { ScrambleText } from "@/components/ScrambleText";
-import { SocialLinks } from "@/components/SocialLinks";
-
-import { NowPlaying } from "@/components/NowPlaying";
-
-const { initial, animate, transition } = useMotionVariants("fadeInUp");
+import CushionIcon from "@/assets/cushion.svg";
 ---
 
-<div class="flex flex-col gap-6">
-  <Motion
-    initial={initial}
-    animate={animate}
-    transition={{ ...transition }}
-    client:load
+<header
+  class="py-32 lg:py-[10vh] xl:py-56 x-5 flex flex-col justify-center items-center text-center animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200"
+>
+  <h1
+    class="text-lg max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
   >
-    <header class="flex items-center gap-1">
-      <div class="flex items-center gap-2">
-        <ReactAvatar client:only="react">
-          <Avatar slot="fallback" />
-        </ReactAvatar>
-        <ScrambleText client:load />
-      </div>
-      <div class="shrink-0 w-[2px] h-4 bg-secondary animate-blink"></div>
-    </header>
-  </Motion>
-  <Motion
-    initial={initial}
-    animate={animate}
-    transition={{ ...transition, delay: 0.2 }}
-    client:load
-    className="flex flex-col gap-6"
-  >
-    <p class="text-balance">
-      Design Engineer, UK. I work almost exclusively with B2B startups. I also
-      bootstrap my own projects like <a
-        href="https://cushion.so"
-        target="_blank"
-        rel="noopener nofollow"
-        class="text-primary underline">cushion.so</a
-      >. Other than that, I travel in my campervan, ride motorcycles, and
-      collect records.
-      <a href="/now"
-        ><span
-          class="relative top-0.5 text-secondary text-[13px] inline-flex items-center p-1 h-3 rounded bg-gray-3"
-          >•••</span
-        ></a
+    <span>Rob Hough is an independent design engineer based in the</span>
+    <div class="inline-block align-middle size-8 rounded-full bg-gray-4 mx-0.5">
+    </div>
+    <span>English countryside. </span>
+    <br />
+    <span
+      >Partnering with B2B startups, his work focuses on performant and engaging
+      customer experiences. He also co-founded</span
+    >
+    <a href="https://cushion.so" class="group">
+      <div
+        class="relative inline-block align-middle size-8 rounded-full mx-0.5 shadow-md bg-black bg-gradient-to-t from-black to-gray-12 text-white scale-100 transition-all will-change-auto duration-200 ease-out group-hover:scale-110 dark:to-gray-3"
       >
-    </p>
-    <NowPlaying client:load />
-  </Motion>
-  <SocialLinks client:load />
-</div>
+        <div class="absolute inset-0 grid place-items-center scale-125">
+          <CushionIcon />
+        </div>
+      </div>
+      <span class="text-accent underline-offset-2 underline">cushion.so</span>
+    </a>
+    <span>, an async alternative to Slack for small remote teams.</span>
+  </h1>
+</header>

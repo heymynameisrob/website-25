@@ -1,21 +1,19 @@
 ---
-import HomeHeader from "@/components/HomeHeader.astro";
-import Layout from "@/layouts/Layout.astro";
-import Timeline from "@/components/Timeline.astro";
 import { getCollection } from "astro:content";
-import { HOME_POST_LIMIT } from "@/lib/constants";
+import Layout from "@/layouts/Layout.astro";
+import HomeNav from "@/components/HomeNav.astro";
+import HomeHeader from "@/components/HomeHeader.astro";
+
+import { ScrollStrip } from "@/components/ScrollStrip";
+
 import { filterPosts } from "@/lib/utils";
 
-const allPosts = await getCollection('posts');
+const allPosts = await getCollection("posts");
 const allValidPosts = filterPosts(allPosts);
-
-const sortedPosts = allValidPosts.slice(0, HOME_POST_LIMIT ? HOME_POST_LIMIT : allValidPosts.length)
-
 ---
 
 <Layout>
+  <HomeNav />
   <HomeHeader />
-  <section class="flex flex-col gap-2 py-6 lg:py-12">
-    <Timeline posts={sortedPosts} />
-  </section>
+  <ScrollStrip posts={allValidPosts} client:load />
 </Layout>

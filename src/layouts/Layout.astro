@@ -18,7 +18,7 @@ const {
   description = SEO_DESCRIPTION,
   og,
   noIndex,
-  canonical
+  canonical,
 } = Astro.props;
 ---
 
@@ -44,9 +44,7 @@ const {
       content={`https://heymynameisrob.com/og-image.png`}
     />
     <meta name="twitter:card" content="summary_large_image" />
-    {canonical && (
-      <link rel="canonical" href={canonical} />
-    )}
+    {canonical && <link rel="canonical" href={canonical} />}
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -57,22 +55,21 @@ const {
     <title>{title}</title>
   </head>
   <body>
-    <ThemeToggle />
     <main
-      class="relative max-w-prose mx-auto px-4 py-16 min-h-screen tracking-normal antialiased xl:py-20"
+      class="relative text-primary font-sans overscroll-none min-h-screen tracking-normal antialiased"
     >
       {Astro.url.pathname !== "/" && <BackArrow client:load />}
       <slot />
-      <footer class="flex items-baseline justify-center gap-2">
+      <!-- <footer class="flex items-baseline justify-center gap-2">
         <small>&copy; 2025 heymynameisrob</small>
-        <a class="text-sm text-gray-8 underline" href="/now">/now</a>
-        <a class="text-sm text-gray-8 underline" href="/yep">/yep</a>
-        <a class="text-sm text-gray-8 underline" href="/nope">/nope</a>
+        <a class="text-sm text-gray-10 underline" href="/now">/now</a>
+        <a class="text-sm text-gray-10 underline" href="/yep">/yep</a>
+        <a class="text-sm text-gray-10 underline" href="/nope">/nope</a>
         <a
-          class="text-sm text-gray-8 underline"
+          class="text-sm text-gray-10 underline"
           href="https://github.com/heymynameisrob/website-25">Source code</a
         >
-      </footer>
+      </footer> -->
     </main>
   </body>
 </html>

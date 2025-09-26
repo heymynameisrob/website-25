@@ -5,7 +5,7 @@ import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
 <button
   id="themeToggle"
   aria-label="Toggle theme"
-  class="absolute z-10 top-2 right-2 flex items-center justify-center w-9 h-9 rounded-md text-primary bg-transparent transition-all focus hover:bg-gray-2"
+  class="flex items-center justify-center size-8 text-primary bg-transparent transition-all focus hover:bg-gray-4 rounded-full"
 >
   <SunIcon className="hidden w-4 h-4 opacity-70 dark:block" />
   <MoonIcon className="visible w-4 h-4 opacity-70 dark:hidden" />
@@ -14,9 +14,10 @@ import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
 
   // Stop animations firing on theme change. Style doesn't trigger an animation but class change does.
   const disableAnimations = () => {
-    document.documentElement.style.setProperty('animation', 'none', 'important');
-    document.documentElement.style.setProperty('transition', 'none', 'important');
-    document.documentElement.style.setProperty('transform', 'none', 'important');
+    document.documentElement.style.setProperty('animation-duration', '0s', 'important');
+    document.documentElement.style.setProperty('transition-duration', '0s', 'important');
+    document.body.style.setProperty('animation-duration', '0s', 'important');
+    document.body.style.setProperty('transition-duration', '0s', 'important');
   }
 
   // Initial setup
@@ -51,12 +52,14 @@ import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
 
     requestAnimationFrame(() => {
       document.documentElement.style = "";
+      document.body.style = "";
     });
   };
 
   // Remove initial transition blocking after a short delay
   requestAnimationFrame(() => {
     document.documentElement.style = "";
+    document.body.style = "";
   });
 
   document

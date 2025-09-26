@@ -56,3 +56,7 @@ export function filterPosts(posts: Post[]) {
     (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
   );
 }
+
+export function clamp(val: number, [min, max]: [number, number]): number {
+  return Math.min(Math.max(val, min), max);
+}
