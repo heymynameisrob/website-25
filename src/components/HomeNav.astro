@@ -9,7 +9,7 @@ import { ProfileMenu } from "./ProfileMenu";
 ---
 
 <nav role="navigation" class="flex items-center justify-between p-5 lg:p-8">
-  <ProfileMenu client:load
+  <ProfileMenu client:only="react"
     ><div slot="fallback" class="size-8 rounded-full bg-gray-3"></div>
   </ProfileMenu>
   <div class="shrink-0 flex items-center justify-end gap-1 -mx-2">
