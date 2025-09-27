@@ -50,8 +50,10 @@ export function filterPosts(posts: Post[]) {
 
   /** If prod, then filter out future posts */
   const validPosts = !isDev
-    ? posts.filter((post) => isBefore(post.data.date, new Date()))
-    : posts;
+    ? posts.filter(
+        (post) => isBefore(post.data.date, new Date()) && !post.data.hide,
+      )
+    : posts.filter((post) => !post.data.hide);
   return validPosts.sort(
     (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
   );

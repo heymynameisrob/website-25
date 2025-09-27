@@ -1,13 +1,17 @@
 ---
-title: Re-designing Lantum's Rota UI
+title: Rota Manager
 description: Redesigning the core web product, including a visual refresh, for managers to schedule clinical staff in NHS hospitals
-image_url: https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a/
+image: /src/assets/lantum-light.jpg
+imageDark: /src/assets/lantum-dark.jpg
 date: 2023-09-12
 type: "case-study"
+company: Lantum
 ---
 
 import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
+import { Media } from "@/components/Media";
+import { UIExample } from "@/components/demos/UIExample";
 
 Lantum is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
 It helps schedule and manage clinical staff, enables clinicians to find extra (locum) work, and allows them to manage their shifts and time-off.
@@ -16,28 +20,46 @@ The NHS spends billions every year on 'short-staffing'. This is partly due to no
 But other factors such as large swathes of staff leaving because of [poor working conditions](https://www.hospitaltimes.co.uk/poor-work-life-balance-driving-nhs-exodus) as well as [out-of-date processes](https://www.bma.org.uk/pay-and-contracts/working-hours/work-schedule/managing-rotas-and-duty-rosters-for-junior-doctors-in-england/good-rostering-guide) are to blame
 
 Lantum's mission is to save the NHS £1bn a year by solving these two problems. We do this by building a state-of-the-art rostering system that both clinicians and managers
-the platform to work *together* to create a working environment that helps everyone from staff to patients.
+the platform to work _together_ to create a working environment that helps everyone from staff to patients.
 
 ## Foundations
+
 There's essentially two parts to Lantum: **The manager view** and the **clinicians view**. The former is a web-based application where managers (sometimes senior clincians too)
 manage and plan their departments rota. The latter have a mobile app which consumes this rota as well as allows them to book leave, message their manager and swap shifts.
 
-![The main 'Schedule' view that shows the rota on a week-by-week basis that's updated in real-time. Managers can customise this view with powerful filter combinations and display variables.](https://ucarecdn.com/6533aded-526c-4740-80e7-7b722db888c3/)
+<Media
+  src="https://ucarecdn.com/6533aded-526c-4740-80e7-7b722db888c3/"
+  type="image"
+  alt="The main 'Schedule' view that shows the rota on a week-by-week basis that's updated in real-time. Managers can customise this view with powerful filter combinations and display variables."
+  client:load
+/>
 
 This post is mostly about the manager's view.
 
 Our UI is built out in React, which I worked with Ash, the FE lead.
 We kept a minimal design system, organised in Figma and Storybook. You can see a stripped down version of that [here](https://www.figma.com/design/w03c73kH5FXFGLsJ7q2xN0/Lantum-Web-UI?m=auto&t=U9ceIQ8Dl0ktdX2n-6)
 
-![A snapshot of Figma boards in our Web UI file. The design and engineering teams used this as visual reference as well as design guidelines on how to use components correctly.](https://ucarecdn.com/ee530e58-e254-40c8-a6b9-0f355acb75f6/)
+<Media
+  src="https://ucarecdn.com/ee530e58-e254-40c8-a6b9-0f355acb75f6/"
+  type="image"
+  alt="A snapshot of Figma boards in our Web UI file. The design and engineering teams used this as visual reference as well as design guidelines on how to use components correctly."
+  client:load
+/>
 
 ## Rota UI
+
 The Rota is essentially a large schedule. Rotas are planned in advance and loaded onto the system using various templating systems. We built an [AI rota builder](/portfolio/p/lantum-ai-rota.mdx) that dramatically improved how these rotas are built.
 Most of the managers role is to manage any incoming changes to their initial rota. Things like leave, shift swaps, sickness, or unexpected demand need to be managed and approved by this person on Lantum.
 
-![Close-up shot of the UI showing the navigational tabs that organise the view below](https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a/)
+<Media
+  src="https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a/"
+  type="image"
+  alt="Close-up shot of the UI showing the navigational tabs that organise the view below"
+  client:load
+/>
 
-From talking to *a lot* of deparment managers, there are few things Lantum's Rota needs to be successful:
+From talking to _a lot_ of deparment managers, there are few things Lantum's Rota needs to be successful:
+
 1. **Comfortable** – Managers typically sit with Lantum open on their desktop all day. They're either in the weeds managing the rota or away from the screen performing other duties. Making sure when they jump into Lantum, everything is where they left it and feels familiar and easy.
 2. **Reliable** – Rotas are planned in advance. Most of what managers use Lantum for is responding to changes. Lantum should be fast, responsive, and reliable so when shit hits the fan - the software can handle it.
 3. **Compliant** – Rostering staff requires lots of rules to be obyed. Lantum should help rota managers try out changes without the risk of making rule-breaking decisions, permanently.
@@ -45,19 +67,17 @@ From talking to *a lot* of deparment managers, there are few things Lantum's Rot
 These design principles were drawn out of lots of conversations with our early adopting departments.
 
 ## Draggin' me around
+
 We watched lots of early customers use both Lantum and their previous methods, typically Excel spreasheets.
 It would be easy to scoff at Excel but we took our lead from it.
 
-Even though *everybody* complained about it, it was comfortable and you could move things around at will.
+Even though _everybody_ complained about it, it was comfortable and you could move things around at will.
 The interface afforded you something that matched the users mental model.
 In to say, if there are items organised on a plain - the natural thing is to move them around freely across both `X` and `Y` axis.
 
-<figure className="flex flex-col">
-  <LantumGrid client:only />
-  <figcaption className="text-xs text-center">
-    Drag and drop the shift to re-assign to someone else
-  </figcaption>
-</figure>
+<UIExample component="lantum-grid" client:load>
+  Drag and drop the shift to re-assign to someone else
+</UIExample>
 
 Having such familiarity with their rota and it's software was the gold standard for us to replicate.
 
@@ -70,15 +90,14 @@ We optimistically update the UI after the drag, but indicate that the UI is savi
 This way the UI feels fast and slick, but we don't run the risk of messing things up.
 
 ## Making big changes
+
 Often times lots of similar actions need to be taken at once. A row of shifts might need to be re-assigned to someone else or even removed.
 Additionally, powerful bulk actions like 'Delete' or 'Re-assign' can shave lots of repetative work.
 
-<figure className="flex flex-col">
-  <LantumBulk client:only />
-  <figcaption className="text-xs text-center">
-    On <kbd className="mr-1">⇧</kbd><kbd>Click</kbd> over the sessions, we turn on `selecting` mode.
-  </figcaption>
-</figure>
+<UIExample component="lantum-bulk" client:load>
+  On <kbd className="mr-1">⇧</kbd>
+  <kbd>Click</kbd> over the sessions, we turn on `selecting` mode.
+</UIExample>
 
 Users are presented with a toolbar containing bulk action options.
 These are specific actions which we've found users repeat over and over again in one go.
@@ -87,6 +106,7 @@ Actions are held in limbo for a few seconds, giving us the ability to `undo` it 
 We optimistically update the UI but hold off updating on the server side until the time has elapsed.
 
 ## Learnings
+
 The Lantum Rota is our core product and has been built brick-by-brick. Lots of smaller decisions come together to create a polished, useful product.
 This was a great learning moment for myself and the rest of the design team.
 

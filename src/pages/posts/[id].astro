@@ -1,24 +1,50 @@
 ---
-import { isBefore } from "date-fns";
 import { getCollection, render } from "astro:content";
 import PostLayout from "@/layouts/PostLayout.astro";
 import { DemoRenderer } from "@/components/DemoRender";
 import { filterPosts } from "@/lib/utils";
-import type { Post } from "@/content.config";
+import { getImage } from "astro:assets";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return filterPosts(posts)
-    .map((post) => ({
+  const pathsPromises = posts.map(async (post) => {
+    let images: any = {};
+    if (post.data.image) {
+      const optimizedImage = await getImage({
+        src: post.data.image,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageSrc = optimizedImage.src;
+    }
+
+    if (post.data.imageDark) {
+      const optimizedImageDark = await getImage({
+        src: post.data.imageDark,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageDarkSrc = optimizedImageDark.src;
+    }
+
+    return {
       params: { id: post.id },
-      props: { post },
-    }));
+      props: { post: { ...post, ...images } },
+    };
+  });
+
+  return Promise.all(pathsPromises);
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post)
+const { Content } = await render(post);
 ---
 
 <PostLayout frontmatter={post.data}>
-{post.data.type === "demo" ? <DemoRenderer client:load post={post} /> : <Content />}
+  {post.data.type === "demo" && <DemoRenderer client:load post={post} />}
+  <Content />
 </PostLayout>

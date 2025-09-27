@@ -1,4 +1,4 @@
-import { NowPlaying } from "@/components/NowPlaying";
+import { BackArrow } from "@/components/BackArrow";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,25 +8,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/primitives/DropdownMenu";
-import { ReactAvatar } from "@/components/ReactAvatar";
 import { AVAILABLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { SquareArrowOutUpRightIcon, SquareArrowUpLeftIcon } from "lucide-react";
-import * as React from "react";
+import { SquareArrowOutUpRightIcon } from "lucide-react";
 
 export function ProfileMenu() {
+  const isNotHomePage =
+    typeof window !== undefined && window.location.pathname !== "/";
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="size-8 rounded-full focus">
-        <div className="size-8 rounded-full bg-gray-3 ring-2 ring-offset-2 ring-gray-9 ring-offset-background overflow-hidden">
-          <img
-            src="https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/-/preview/100x100/"
-            loading="lazy"
-            alt="Rob Hough"
-            className="object-fit w-full h-full"
-          />
-        </div>
-      </DropdownMenuTrigger>
+      <div className="flex items-center gap-2">
+        <DropdownMenuTrigger className="size-8 rounded-full focus">
+          <div className="size-8 rounded-full bg-gray-3 ring-2 ring-offset-2 ring-gray-9 ring-offset-background overflow-hidden">
+            <img
+              src="https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/-/preview/100x100/"
+              loading="lazy"
+              alt="Rob Hough"
+              className="object-fit w-full h-full"
+            />
+          </div>
+        </DropdownMenuTrigger>
+        {isNotHomePage && <BackArrow />}
+      </div>
       <DropdownMenuContent align="start">
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
@@ -61,15 +65,6 @@ export function ProfileMenu() {
           <DropdownMenuLabel className="text-xs text-gray-9 px-1">
             Links
           </DropdownMenuLabel>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
-            <a
-              href="https://cushion.so"
-              className="flex items-center justify-between gap-2 font-medium"
-            >
-              Cushion
-              <SquareArrowOutUpRightIcon className="size-3.5 opacity-40" />
-            </a>
-          </DropdownMenuItem>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
             <a
               href="https://github.com/heymynameisrob"

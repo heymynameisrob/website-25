@@ -15,6 +15,8 @@ import {
 } from "@/components/demos/FilterMenu";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { Checkin } from "@/components/demos/Checkin";
+import { LantumGrid } from "@/components/demos/LantumGrid";
+import { LantumBulk } from "@/components/demos/LantumBulk";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -38,15 +40,17 @@ export function UIExample({
   const COMPONENT_MAP = {
     "filter-menu": <FilterMenuExample />,
     checkin: <Checkin />,
+    "lantum-grid": <LantumGrid />,
+    "lantum-bulk": <LantumBulk />,
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-2 my-[2em]">
-      <figure className="relative grid place-items-center w-full aspect-video border bg-background rounded-lg after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] lg:rounded-2xl my-0">
+    <figure className="flex flex-col justify-center items-center gap-2 my-[2em] demo">
+      <div className="relative grid place-items-center w-full aspect-[3/2] border bg-gray-3 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
         {COMPONENT_MAP[component]}
-      </figure>
-      <figcaption className="text-xs text-secondary">{children}</figcaption>
-    </div>
+      </div>
+      <span className="text-xs text-secondary">{children}</span>
+    </figure>
   );
 }
 

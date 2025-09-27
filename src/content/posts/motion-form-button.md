@@ -4,6 +4,7 @@ description: Simple animations can not only bring life to boring, utilitarian pa
 date: 2024-11-28
 type: "demo"
 component: form
+hide: true
 ---
 
 # Form

@@ -5,13 +5,15 @@ image_url: https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/
 og: https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/
 date: 2025-05-13
 type: "case-study"
+company: cushion
 ---
-import {Media} from "@/components/Media"
-import Image from "@/components/Image.astro"
-import {Checkin} from "@/components/demos/Checkin"
-import {UIExample} from "@/components/demos/UIExample";
 
-Ernest Hemingway kept a chart beside his office desk to log his daily word count. 
+import { Media } from "@/components/Media";
+import Image from "@/components/Image.astro";
+import { Checkin } from "@/components/demos/Checkin";
+import { UIExample } from "@/components/demos/UIExample";
+
+Ernest Hemingway kept a chart beside his office desk to log his daily word count.
 When asked why, he said it 'kept him honest.'
 
 Most companies track progress in some form. While this is often used for management oversight, progress logging offers benefits beyond micro-management. These reports serve as journals, providing a window into not just what you accomplished, but how you felt about the work.
@@ -19,13 +21,19 @@ Most companies track progress in some form. While this is often used for managem
 When reflecting on your workday, you typically ask yourself: 'What did I get done today?'
 This question helps you review your accomplishments. While people tend to focus on measurable outputs - emails sent, meetings attended, code written - it's equally important to consider your emotional response to the work:
 
-- Were you productive? 
-- Did you struggle with something? 
+- Were you productive?
+- Did you struggle with something?
 - Did you have your best idea yet?
 
-In cushion.so, we built **Automatic Checkins** for this purpose. 
+In cushion.so, we built **Automatic Checkins** for this purpose.
 
-<Media src="https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/" type="image" alt="A list view of 3 checkins from different people outlining what they did today" caption="UI design for checkins on cushion.so" client:load />
+<Media
+  src="https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/"
+  type="image"
+  alt="A list view of 3 checkins from different people outlining what they did today"
+  caption="UI design for checkins on cushion.so"
+  client:load
+/>
 
 Cushion is a collaboration app that helps distributed teams organize projects, communicate, and accomplish their goals. Checkins help team members update each other about their progress, keeping everyone aligned - like a standup, but better.
 
@@ -35,9 +43,12 @@ Team owners can configure checkins in their 'Workspace settings' by setting a re
 
 We maintain an open format for checkins. There are no mandatory questions or required responses. This flexibility allows people to express what they consider important in their own words.
 
-<UIExample component="checkin" client:load>Example component of the checkin flow</UIExample>
+<UIExample component="checkin" client:load>
+  Example component of the checkin flow
+</UIExample>
 
 ### Connecting Your Work
+
 Work happens across multiple platforms - whether it's writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
 
 This automation eliminates the need to manually track daily activities, allowing users to focus on meaningful reflection about their work.
@@ -48,35 +59,37 @@ We also offer key integrations. Since most Cushion users are technical teams, we
 
 To build this integration, we allowed users to authenticate Github using OAuth.
 
-When a user clicks "Connect GitHub", we redirect them to GitHub's authorization page. 
-This page asks the user to approve specific permissions (scopes) that our app is requesting. 
+When a user clicks "Connect GitHub", we redirect them to GitHub's authorization page.
+This page asks the user to approve specific permissions (scopes) that our app is requesting.
 We include a randomly generated state parameter to prevent CSRF attacks, which is stored in our KV.
 
-If the user approves, GitHub redirects back to our callback URL with a temporary code. 
+If the user approves, GitHub redirects back to our callback URL with a temporary code.
 We exchange this code for an access token by making a server-side request to GitHub's token endpoint:
 
 ```ts
-  const { code, state } = req.query;
+const { code, state } = req.query;
 
-  // Verify state to prevent CSRF
-  const oauthState = await kv.get(`github_oauth_state:${userId}`);
-  if (state !== oauthState) {
-    return res.status(400).json({ message: "Invalid state parameter." });
-  }
+// Verify state to prevent CSRF
+const oauthState = await kv.get(`github_oauth_state:${userId}`);
+if (state !== oauthState) {
+  return res.status(400).json({ message: "Invalid state parameter." });
+}
 
-  const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        client_id,
-        client_secret,
-        code,
-      }),
-    });
+const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
+  method: "POST",
+  headers,
+  body: JSON.stringify({
+    client_id,
+    client_secret,
+    code,
+  }),
+});
 
-  const { access_token } = await tokenRes.json();
+const { access_token } = await tokenRes.json();
 
-  await db.insert(userIntegrations).value({type: "GITHUB", access_token, userId, teamId });
+await db
+  .insert(userIntegrations)
+  .value({ type: "GITHUB", access_token, userId, teamId });
 ```
 
 Once users have connected their personal github account, we can start to look for their activity using the Github API and Octokit SDK.
@@ -89,7 +102,6 @@ On the client, we then manage the states like so:
 
 ```tsx
 function CheckinActivity() {
-
   const { githubActivity } = useGetCurrentUsersGithubActivity();
   const { cushionActivity } = useGetCurrentUsersCushionActivity();
 
@@ -97,7 +109,7 @@ function CheckinActivity() {
   const activities = [...githubActivity, ...cushionActivity].reduce<
     Record<string, ActivityItem[]>
   >((acc, item) => {
-    const {id, type} = item;    
+    const { id, type } = item;
     const key = `${id}-${type}`;
     if (!acc[key]) {
       acc[key] = [];
@@ -136,72 +148,70 @@ function CheckinActivity() {
     }
   }
 
-  return (    
-      <AnimatePresence mode="popLayout">
-        <ul className="flex flex-col p-0 m-0 gap-3">
-          {activities.map((activity, index) => (
-            <motion.li
-              key={index}
-              initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(2px)" }}
-              transition={{
-                type: "spring",
-                bounce: 0,
-                duration: 0.2,
-                delay: index * 0.1,
-              }}
-              className="flex items-center gap-2 p-0 m-0"
+  return (
+    <AnimatePresence mode="popLayout">
+      <ul className="flex flex-col p-0 m-0 gap-3">
+        {activities.map((activity, index) => (
+          <motion.li
+            key={index}
+            initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(2px)" }}
+            transition={{
+              type: "spring",
+              bounce: 0,
+              duration: 0.2,
+              delay: index * 0.1,
+            }}
+            className="flex items-center gap-2 p-0 m-0"
+          >
+            <div
+              className={cn(
+                "relative flex items-center justify-center size-5 rounded-md ring-2 ring-gray-2 z-10",
+                getActionStyle(activity.action),
+                "bg-gray-2 dark:bg-gray-2",
+              )}
             >
-              <div
-                className={cn(
-                  "relative flex items-center justify-center size-5 rounded-md ring-2 ring-gray-2 z-10",
-                  getActionStyle(activity.action),
-                  "bg-gray-2 dark:bg-gray-2",
-                )}
-              >
-                {activity.icon}
-              </div>
-              <div className="flex items-center gap-1.5 text-sm flex-wrap">
-                <span className="font-medium text-primary">Rob Hough</span>
-                <span className="text-secondary">
-                  {getActionStatus(activity.action)}
-                </span>
-                {activity.type !== "github" &&
-                  activity.item.map((item) => {
-                    return (
-                      <button
+              {activity.icon}
+            </div>
+            <div className="flex items-center gap-1.5 text-sm flex-wrap">
+              <span className="font-medium text-primary">Rob Hough</span>
+              <span className="text-secondary">
+                {getActionStatus(activity.action)}
+              </span>
+              {activity.type !== "github" &&
+                activity.item.map((item) => {
+                  return (
+                    <button
+                      key={item.id}
+                      className="px-1 py-0.5 h-6 leading-none rounded-md bg-gray-3 hover:bg-gray-4 text-primary font-medium text-sm flex items-center justify-center"
+                    >
+                      {item.emoji && <span className="mr-1">{item.emoji}</span>}
+                      <span className="truncate max-w-[190px]">
+                        {item.title}
+                      </span>
+                    </button>
+                  );
+                })}
+              {activity.type === "github" &&
+                activity.item.map((item) => {
+                  return (
+                    <Tooltip content={item.tip}>
+                      <a
                         key={item.id}
-                        className="px-1 py-0.5 h-6 leading-none rounded-md bg-gray-3 hover:bg-gray-4 text-primary font-medium text-sm flex items-center justify-center"
+                        href={item.url}
+                        className="text-sm font-medium text-primary underline"
                       >
-                        {item.emoji && (
-                          <span className="mr-1">{item.emoji}</span>
-                        )}
-                        <span className="truncate max-w-[190px]">
-                          {item.title}
-                        </span>
-                      </button>
-                    );
-                  })}
-                {activity.type === "github" &&
-                  activity.item.map((item) => {
-                    return (
-                      <Tooltip content={item.tip}>
-                        <a
-                          key={item.id}
-                          href={item.url}
-                          className="text-sm font-medium text-primary underline"
-                        >
-                          {item.title}
-                        </a>
-                      </Tooltip>
-                    );
-                  })}
-              </div>
-            </motion.li>
-          ))}
-        </ul>
-      </AnimatePresence>    
+                        {item.title}
+                      </a>
+                    </Tooltip>
+                  );
+                })}
+            </div>
+          </motion.li>
+        ))}
+      </ul>
+    </AnimatePresence>
   );
 }
 ```
@@ -213,7 +223,7 @@ Motion React is added so we can animate in the activity items nicely.
 ## What users think
 
 Checkins remain in beta as we continue testing and improving the feature. Our beta users have found checkins to be a useful alternative to daily standups.
-One user said that the checkin feature alone would be a product he would use as keeping a work log really helps him know how he's progressing. 
+One user said that the checkin feature alone would be a product he would use as keeping a work log really helps him know how he's progressing.
 Another user found that the checkins 'really help me and my co-founder stay on top of who has done what'.
 
 We've also recieved feedback that added further integrations with other apps like Google Drive or Hubspot would be useful as well as providing an option to automatically write the checkins for you.

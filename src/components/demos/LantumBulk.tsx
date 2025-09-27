@@ -102,7 +102,7 @@ export const LantumBulk = () => {
   }, [toolbarIsToast]);
 
   return (
-    <div className="relative border rounded-md overflow-clip shadow-sm">
+    <div className="relative rounded-md overflow-clip w-full max-w-3xl [box-shadow:var(--shadow-raised)]">
       <div className="grid justify-end grid-cols-7 gap-0">
         {[...Array(28)].map((_, id) => {
           return (

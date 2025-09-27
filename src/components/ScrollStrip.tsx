@@ -2,10 +2,14 @@ import * as React from "react";
 import { motion, useMotionValue, animate } from "motion/react";
 import type { Post } from "@/content.config";
 import { clamp } from "@/lib/utils";
+import { ScrollStripPost } from "@/components/ScrollPost";
+import { ArrowRightIcon } from "@heroicons/react/16/solid";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const PADDING = 32;
 
 export function ScrollStrip({ posts }: { posts: Post[] }) {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const translateX = useMotionValue(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -18,7 +22,7 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
     // Left bound: can't scroll past the beginning (translateX = 0)
     const leftBound = 0;
     // Right bound: can't scroll past the end
-    const rightBound = -(containerWidth - viewportWidth);
+    const rightBound = -(containerWidth - viewportWidth) + PADDING;
 
     return { leftBound, rightBound };
   }, []);
@@ -77,13 +81,15 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
       switch (e.key) {
         case "ArrowLeft": {
           e.preventDefault();
-          const prevElement = currentElement.previousElementSibling as HTMLAnchorElement;
+          const prevElement =
+            currentElement.previousElementSibling as HTMLAnchorElement;
           if (prevElement) prevElement.focus();
           break;
         }
         case "ArrowRight": {
           e.preventDefault();
-          const nextElement = currentElement.nextElementSibling as HTMLAnchorElement;
+          const nextElement =
+            currentElement.nextElementSibling as HTMLAnchorElement;
           if (nextElement) nextElement.focus();
           break;
         }
@@ -109,10 +115,12 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
       const newX = clamp(currentX - delta, [rightBound, leftBound]);
       translateX.set(newX);
     },
-    [translateX, getBounds]
+    [translateX, getBounds],
   );
 
   React.useEffect(() => {
+    if (isMobile) return;
+
     // Prevent document scrolling entirely
     document.body.style.overflow = "hidden";
     window.history.scrollRestoration = "manual";
@@ -124,7 +132,36 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
       document.body.style.overflow = "";
       window.removeEventListener("wheel", handleWheel);
     };
-  }, [handleWheel]);
+  }, [handleWheel, isMobile]);
+
+  if (isMobile) {
+    return (
+      <div className="p-4 space-y-4">
+        <div className="flex flex-col gap-4">
+          {posts.map((post) => (
+            <ScrollStripPost
+              key={post.id}
+              post={post}
+              onFocus={() => {}}
+              onKeyDown={() => {}}
+            />
+          ))}
+          <a
+            href="/posts"
+            className="group grid place-items-center p-8 gap-8 bg-gray-2 aspect-square h-full shrink-0 rounded transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4"
+          >
+            <div className="text-center space-y-1">
+              <div className="flex items-center justify-center gap-2">
+                <h3 className="text-gray-10">Blog</h3>
+                <ArrowRightIcon className="size-4 opacity-70" />
+              </div>
+              <p>Read more</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed p-8 bottom-0 h-[50vh] flex items-end justify-start overflow-hidden pointer-events-none">
@@ -135,26 +172,27 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
         className="flex gap-8 pointer-events-auto h-full"
       >
         {posts.map((post) => (
-          <a
-            href={`/posts/${post.id}`}
+          <ScrollStripPost
             key={post.id}
-            className="group flex flex-col p-8 gap-8 bg-gray-3 aspect-square h-full shrink-0 rounded-2xl transition-all focus"
-            onFocus={(e) => scrollElementIntoView(e.currentTarget)}
+            post={post}
+            onFocus={(e) => scrollElementIntoView(e)}
             onKeyDown={handleKeyDown}
-          >
-            <div className="flex items-center justify-between gap-4">
-              <h3>{post.data.title}</h3>
-              <p className="text-gray-9">{post.data.type}</p>
-            </div>
-            <div className="relative bg-gray-5 w-full h-full rounded-lg overflow-hidden">
-              <img
-                src={post.data.image_url}
-                loading="lazy"
-                className="absolute inset-0 object-cover h-full w-full rounded-lg grayscale group-hover:grayscale-0 transition-all duration-400 ease-out"
-              />
-            </div>
-          </a>
+          />
         ))}
+        <a
+          href="/posts"
+          className="group grid place-items-center p-8 gap-8 bg-gray-2 aspect-square h-full shrink-0 rounded transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4"
+          onFocus={(e) => scrollElementIntoView(e.currentTarget)}
+          onKeyDown={handleKeyDown}
+        >
+          <div className="text-center space-y-1">
+            <div className="flex items-center justify-center gap-2">
+              <h3 className="text-gray-10">Blog</h3>
+              <ArrowRightIcon className="size-4 opacity-70" />
+            </div>
+            <p>Read more</p>
+          </div>
+        </a>
       </motion.div>
     </div>
   );

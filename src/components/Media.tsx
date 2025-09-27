@@ -60,7 +60,7 @@ export function Media({ src, type, alt, caption }: MediaItemProps) {
     <figure className="flex flex-col">
       <div
         ref={elementRef}
-        className="relative aspect-video border rounded-lg select-none group-hover:opacity-90 transition-opacity overflow-hidden lg:rounded-2xl min-w-[200px]"
+        className="relative aspect-video border rounded-md select-none group-hover:opacity-90 transition-opacity overflow-hidden min-w-[200px]"
       >
         <MediaDialog media={{ src, type, alt }}>
           {type === "video" && isInView && (
@@ -76,13 +76,10 @@ export function Media({ src, type, alt, caption }: MediaItemProps) {
             </video>
           )}
           {type === "image" && isInView && (
-            <motion.img
+            <img
               src={`${src}/-/preview/`}
               alt={alt}
               className="!m-0 absolute inset-0 w-full h-full object-cover"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
             />
           )}
         </MediaDialog>

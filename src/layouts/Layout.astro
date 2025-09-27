@@ -58,7 +58,6 @@ const {
     <main
       class="relative text-primary font-sans overscroll-none min-h-screen tracking-normal antialiased"
     >
-      {Astro.url.pathname !== "/" && <BackArrow client:load />}
       <slot />
       <!-- <footer class="flex items-baseline justify-center gap-2">
         <small>&copy; 2025 heymynameisrob</small>

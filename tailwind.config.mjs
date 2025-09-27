@@ -53,7 +53,7 @@ export default {
       typography: () => ({
         DEFAULT: {
           css: {
-            "--tw-prose-body": "var(--gray-11)",
+            "--tw-prose-body": "var(--gray-12)",
             "--tw-prose-headings": "var(--gray-12)",
             "--tw-prose-lead": "var(--gray-12)",
             "--tw-prose-links": "var(--gray-12)",

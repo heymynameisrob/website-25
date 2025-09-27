@@ -3,30 +3,50 @@ import CushionIcon from "@/assets/cushion.svg";
 ---
 
 <header
-  class="py-32 lg:py-[10vh] xl:py-56 x-5 flex flex-col justify-center items-center text-center animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200"
+  class="py-20 lg:py-32 xl:py-52 px-5 flex flex-col justify-start items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:justify-center md:items-center md:text-center"
 >
   <h1
-    class="text-lg max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
+    class="text-xl max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-[-0.015em] xl:text-balance"
   >
-    <span>Rob Hough is an independent design engineer based in the</span>
-    <div class="inline-block align-middle size-8 rounded-full bg-gray-4 mx-0.5">
-    </div>
-    <span>English countryside. </span>
-    <br />
-    <span
-      >Partnering with B2B startups, his work focuses on performant and engaging
-      customer experiences. He also co-founded</span
+    <span class="block md:hidden"
+      >Rob Hough is an independent design engineer based in the English
+      countryside. Partnering with B2B startups, his work focuses on performant
+      and engaging customer experiences.</span
     >
-    <a href="https://cushion.so" class="group">
+    <span class="block md:hidden mt-4"
+      >He also runs <a
+        href="https://cushion.so"
+        class="text-accent underline-offset-2 underline"
+        target="_blank">cushion.so</a
+      > an async alternative to Slack for distributed teams.</span
+    >
+    <div class="hidden md:block">
+      <span>Rob Hough is an independent design engineer based in the</span>
       <div
-        class="relative inline-block align-middle size-8 rounded-full mx-0.5 shadow-md bg-black bg-gradient-to-t from-black to-gray-12 text-white scale-100 transition-all will-change-auto duration-200 ease-out group-hover:scale-110 dark:to-gray-3"
+        class="hidden align-middle size-8 rounded-full bg-gray-4 mx-0.5 md:inline-block"
       >
-        <div class="absolute inset-0 grid place-items-center scale-125">
-          <CushionIcon />
-        </div>
       </div>
-      <span class="text-accent underline-offset-2 underline">cushion.so</span>
-    </a>
-    <span>, an async alternative to Slack for small remote teams.</span>
+      <span>English countryside. </span>
+      <span
+        >Partnering with B2B startups, his work focuses on performant and
+        engaging customer experiences.</span
+      >
+      <span>He also runs</span>
+      <a
+        href="https://cushion.so"
+        target="_blank"
+        class="group focus rounded-lg"
+      >
+        <div
+          class="relative hidden align-middle size-8 rounded-full mx-0.5 shadow-md bg-black bg-gradient-to-t from-black to-gray-12 text-white scale-100 transition-all will-change-auto duration-200 ease-out group-hover:scale-110 dark:to-gray-3 md:inline-block"
+        >
+          <div class="absolute inset-0 grid place-items-center scale-125">
+            <CushionIcon />
+          </div>
+        </div>
+        <span class="text-accent underline-offset-2 underline">cushion.so</span>
+      </a>
+      <span>, an async alternative to Slack for distributed teams.</span>
+    </div>
   </h1>
 </header>
