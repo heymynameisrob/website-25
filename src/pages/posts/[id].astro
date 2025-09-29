@@ -18,6 +18,16 @@ export async function getStaticPaths() {
         quality: 100,
       });
       images.optimizedImageSrc = optimizedImage.src;
+
+      // Generate OG image (1200x630 is the recommended OG image size)
+      const ogImage = await getImage({
+        src: post.data.image,
+        width: 1200,
+        height: 630,
+        format: "png",
+        quality: 90,
+      });
+      images.ogImageSrc = `${Astro.site || "https://heymynameisrob.com"}${ogImage.src}`;
     }
 
     if (post.data.imageDark) {
@@ -44,7 +54,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<PostLayout frontmatter={post.data}>
+<PostLayout frontmatter={{...post.data, og: post.ogImageSrc}}>
   {post.data.type === "demo" && <DemoRenderer client:load post={post} />}
   <Content />
 </PostLayout>

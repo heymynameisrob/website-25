@@ -1,19 +1,63 @@
 ---
-
 import { getCollection } from "astro:content";
-import { isBefore, isEqual } from "date-fns";
+import PostItem from "@/components/PostItem.astro";
+
 import Layout from "@/layouts/Layout.astro";
-import Timeline from "@/components/Timeline.astro";
 import { filterPosts } from "@/lib/utils";
+import { getImage } from "astro:assets";
+import HomeNav from "@/components/HomeNav.astro";
 
-const allPosts = await getCollection('posts');
-const sortedPosts = filterPosts(allPosts);
+const allPosts = await getCollection("posts");
+const allValidPosts = filterPosts(allPosts);
 
+const postsWithOptimizedImages = await Promise.all(
+  allValidPosts.map(async (post) => {
+    let images: any = {};
+    if (post.data.image) {
+      const optimizedImage = await getImage({
+        src: post.data.image,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageSrc = optimizedImage.src;
+    }
+
+    if (post.data.imageDark) {
+      const optimizedImageDark = await getImage({
+        src: post.data.imageDark,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageDarkSrc = optimizedImageDark.src;
+    }
+
+    return { ...post, ...images };
+  }),
+);
 ---
 
 <Layout>
-  <h1 class="text-base font-medium text-primary">Posts</h1>
-  <section class="flex flex-col gap-2 py-6 lg:py-12">
-  <Timeline posts={sortedPosts} />
-  </section>
+  <HomeNav />
+  <div class="max-w-7xl mx-auto">
+    <header
+      class="py-16 lg:py-32 px-5 flex flex-col justify-center items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:items-center md:text-center"
+    >
+      <h1
+        class="text-lg max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
+      >
+        Posts
+      </h1>
+    </header>
+    <section class="flex flex-col gap-2 py-6 md:grid md:grid-cols-2 lg:py-12">
+      {
+        postsWithOptimizedImages.map((post) => (
+          <PostItem key={post.id} post={post} />
+        ))
+      }
+    </section>
+  </div>
 </Layout>

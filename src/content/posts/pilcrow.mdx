@@ -6,6 +6,86 @@ image: /src/assets/pilcrow-light.jpg
 imageDark: /src/assets/pilcrow-dark.jpg
 date: 2023-11-01
 type: "case-study"
+hide: true
 ---
 
-Notion-style writing app for lab notes or working notes. Originally it started as a experiment to build an editor but eventually I found I writing in this scrappy-way was better than spinning up a huge Notion doc - so I built it as real product. Try it!
+import MediaWrapper from "@/components/MediaWrapper.astro";
+import pilcrowDashboard from "@/assets/pilcrow-dashboard.png";
+import pilcrowEditor from "@/assets/pilcrow-editor.png";
+
+<MediaWrapper src={pilcrowDashboard} type="image" alt="New Inbox design" />
+
+> If you're thinking without writing, you only think that you're thinking - Leslie Lamport
+
+Every project I've worked on turned out better when I started it by writing.
+
+This realisation came to me a few years ago, and since I've always tried to start any new project with the written word. This often takes the form of scribbles and notes, however going beyond writing to remember into using as a tool for thinking pays dividends.
+
+Text editing on computers have existed since the 60's. Evolving from punch-cards into modern WYSIWYG editors, typing characters to screen is a fundamental part of our computing experience. There are countless apps available to write with. So I decided to build my own.
+
+I think it should be a project of every builder to create their own notes app or task manager. Not because these products are difficult to build or have room for lots of innovation (or maybe they do). But because they way you use them becomes incredibly personal. What makes it easy for me to write and read things is unlikely going to be the same for everyone.
+
+Writing notes is hard. Remembering what you've written and using it is harder.
+
+Storing a thought in written form created a pointer to pick up that thought, more fully formed, later in the future. This appealed to me because I'm the sort of person who regularly can't sleep at 3am because ideas suddenly flood into their brain. I'll never know if any of these ideas are good because they're often forgotten or written down, never to be found again. What I needed was a computer to do the remembering for me.
+
+It's very easy for me to get distracted and sucked into the rabbit hole of an idea. So writing things down helps me feel like I've started to explore the idea without dropping everything else and jumping head-first into it. Maybe the idea won't ever go anywhere, but until I've written it - I don't know if it's even an _idea_ yet.
+
+Ideas often branch from each other. Linking indvidual notes together helps create connections between ideas that may not be obvious at first.
+
+_One of my favourite bloggers, Maggie Appleton, introduced me to the idea of 'Evergeen Notes'. The idea opposes the typical view of notes as transient and emphemeral. Evergeen notes on the other hand are constantly a work in progress.
+You tend to them and let them grow over time._
+
+What matters to me ultimately is not 'better note taking' but 'better thinking'. I want to be able to think through ideas more thorougly, pick them back up, and connect the dots of smaller, atomic ideas into novel insights.
+
+Reading is just as important. Being able to go back and read through notes, helps refresh that idea. These ideas should be units of thought that I can come back to and build upon. The act of writing out ideas, reviewing them, and building on them acts as a sort of 'weightlifting' for knowledge work.
+
+Much of the day-to-day thinking during creative projects are lost. They are seen as a means to an end. Perhaps they are. But being able to review those ideas and use them again seems like a huge productivity boost. I have an unreliable memory so writing things down acts as a functional practice as much as it does creative. Writing notes can be used as a 'unit of thinking' - a complete thought that can be stored and built on again.
+
+## Plan
+
+The plan for Pilcrow was to create a writing application that helped me store and surface ideas. Almost like my personal library of ideas. I could refer to it when I needed to research ideas, look up references, or understand how something worked. I'd store learnings from previous projects, web development hacks, and notes on design. I could have easily used something like Notion or Obsidian but I have little patience to invest in creating the system to organise the writing. I want to write and have the system organise itself.
+
+Around this time, GPT4 was released and like everybody else - I was interested to see what this thing could do. So my idea was GPT-4 would help me tag and organise these documents which, over time, could start to form collections and links between notes based on the similarity of their ideas.
+
+For example, If I wrote something about Martin Heidegger's theory of "Ready at Hand', instead of having to remember exactly who Martin is and what the fuck 'Ready at Hand' means I could write associative words like 'german philsopher theory hand'. For some reason, this is how I remember things.
+
+## Writing
+
+The core of the application was obvious the writing experience. It had to feel modern and natural. It's difficult to build a high-quality writing experience on the web compared to native ones. The responsiveness just won't be the same. It won't _feel_ as good.
+
+But apps like Notion and Google Docs have set a standard for what we expect from a writing experience. The engine powering the text editor was TipTap, which is built on ProseMirror. This gives you _a lot_ out of the box. However, to make something feel right you need to write a lot of your own code on top of it.
+
+<MediaWrapper src={pilcrowEditor} type="image" alt="New Inbox design" />
+
+It was particularly important that Pilcrow used Markdown as that's what I was familiar with. Also, having access to common commands via the `/` menu is a pattern I love using in Notion. Luckily TipTap has a nice built-in library which you can use to to do the heavy lifting and add you own UI on top.
+
+Whenever you created a new note, users are taken to that note straight away where they can start writing. Updates are automatically saved and stored temporarily in a `localStorage` cache. This gives you a frinctionless path to writing a note. As soon as an idea strikes you can hit `N` on Pilcrow and start writing.
+
+You don't need to worry about "saving" your changes or accidentally losing them.
+
+## Forming connections
+
+Connections between individual idea are formed two ways: directly through @ mentions or indirectly through a similarity match.
+
+Users can @ mention any note directly to create a backlink between the current note and their target. This record is stored unless that @ mention is removed from the note itself. This is most frequently used way of creating links as the connections you make personally help you find things later on.
+
+I also added a 'Similar notes' section that performed a similarity search for that document against all the others you have access to. Periodically we would chunk up your note and add them to a `notes_vectors` table marked by the original ID. We'd run a semantic search against those vectorised chunks and then show any documents that passed a certain confidence threshold (`k`).
+
+This was a neat idea but my knowledge at the time was lacking, so it wasn't very performant. We'd run an expensive search each time, instead of caching the results. Also, in retrospect, the chunking strategy wasn't quite up to scratch.
+
+Also the search often resulted in narrow similarities. What the system needed was additional topical analysis where we would add themes for the document (e.g #philosophy, #journal) and use these to suggest similar notes. This would ensure they were thematically the same instead of trying to run them against large chunks.
+
+## Stacked layout
+
+Eventually I removed all the AI features and simiplified it to work in 'stacked layout', inspired by Andy Matushack notes. I stumbled across his website and loved the way that when navigating through backlinks, the notes "stacked" on top of each other. So I stole it.
+
+## Why I abandoned it
+
+Ultimately I've left Pilcrow in maintenance mode. I ran out of free time to justifyably keep it going when I had little interest (both from myself and others) in monetising it.
+
+I also hit limits on how well I could make the RAG work. My experience with building RAG systems was non-existant at the time. It was a great learning experience and I'd love to revive the project at some point. I still have the need to have something organise my thoughts for me, as I find myself very easily distracted and ill disciplined at managing multiple big ideas at time.
+
+A lot of the ideas around writing complete thoughts as notes, then building on them feeds into what I'm working on with [cushion.so](https://cushion.so). Also all the mistakes I made when building the text editor I was able to dodge the second time around.
+
+If you want to play around with the app, go [here](https://pilcrow.xyz)

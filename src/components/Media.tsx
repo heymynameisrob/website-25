@@ -9,6 +9,7 @@ import {
 
 interface MediaItemProps {
   src: string | undefined;
+  previewSrc?: string;
   type: "image" | "video";
   alt: string;
   caption?: string;
@@ -21,37 +22,41 @@ function MediaDialog({
   children: React.ReactNode;
   media: { src: string; type: "image" | "video"; alt?: string };
 }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="cursor-nesw-resize">{children}</div>
       </DialogTrigger>
       <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden">
-        {media.type === "video" ? (
-          <video
-            className="w-full h-full object-contain"
-            controls
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src={media.src} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={media.src}
-            alt={media.alt}
-            className="w-full h-full object-contain"
-          />
-        )}
+        {isOpen &&
+          (media.type === "video" ? (
+            <video
+              className="w-full h-full object-contain"
+              controls
+              autoPlay
+              loop
+              muted
+              playsInline
+            >
+              <source src={media.src} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={media.src}
+              alt={media.alt}
+              className="w-full h-full object-contain"
+              loading="lazy"
+            />
+          ))}
       </DialogContent>
     </Dialog>
   );
 }
 
 // Modify the MediaItem component to remove pointer-events-none and wrap content in MediaDialog
-export function Media({ src, type, alt, caption }: MediaItemProps) {
+export function Media({ src, previewSrc, type, alt, caption }: MediaItemProps) {
   const { elementRef, isInView } = useIntersectionObserver();
 
   if (!src) return null;
@@ -77,7 +82,7 @@ export function Media({ src, type, alt, caption }: MediaItemProps) {
           )}
           {type === "image" && isInView && (
             <img
-              src={`${src}/-/preview/`}
+              src={previewSrc || `${src}/-/preview/`}
               alt={alt}
               className="!m-0 absolute inset-0 w-full h-full object-cover"
             />

@@ -10,7 +10,7 @@ company: Lantum
 
 import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
-import { Media } from "@/components/Media";
+import MediaWrapper from "@/components/MediaWrapper.astro";
 import { UIExample } from "@/components/demos/UIExample";
 
 Lantum is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
@@ -27,11 +27,10 @@ the platform to work _together_ to create a working environment that helps every
 There's essentially two parts to Lantum: **The manager view** and the **clinicians view**. The former is a web-based application where managers (sometimes senior clincians too)
 manage and plan their departments rota. The latter have a mobile app which consumes this rota as well as allows them to book leave, message their manager and swap shifts.
 
-<Media
+<MediaWrapper
   src="https://ucarecdn.com/6533aded-526c-4740-80e7-7b722db888c3/"
   type="image"
   alt="The main 'Schedule' view that shows the rota on a week-by-week basis that's updated in real-time. Managers can customise this view with powerful filter combinations and display variables."
-  client:load
 />
 
 This post is mostly about the manager's view.
@@ -39,11 +38,10 @@ This post is mostly about the manager's view.
 Our UI is built out in React, which I worked with Ash, the FE lead.
 We kept a minimal design system, organised in Figma and Storybook. You can see a stripped down version of that [here](https://www.figma.com/design/w03c73kH5FXFGLsJ7q2xN0/Lantum-Web-UI?m=auto&t=U9ceIQ8Dl0ktdX2n-6)
 
-<Media
+<MediaWrapper
   src="https://ucarecdn.com/ee530e58-e254-40c8-a6b9-0f355acb75f6/"
   type="image"
   alt="A snapshot of Figma boards in our Web UI file. The design and engineering teams used this as visual reference as well as design guidelines on how to use components correctly."
-  client:load
 />
 
 ## Rota UI
@@ -51,11 +49,10 @@ We kept a minimal design system, organised in Figma and Storybook. You can see a
 The Rota is essentially a large schedule. Rotas are planned in advance and loaded onto the system using various templating systems. We built an [AI rota builder](/portfolio/p/lantum-ai-rota.mdx) that dramatically improved how these rotas are built.
 Most of the managers role is to manage any incoming changes to their initial rota. Things like leave, shift swaps, sickness, or unexpected demand need to be managed and approved by this person on Lantum.
 
-<Media
+<MediaWrapper
   src="https://ucarecdn.com/e229a7d7-c249-4d06-8e8b-066c063e6f2a/"
   type="image"
   alt="Close-up shot of the UI showing the navigational tabs that organise the view below"
-  client:load
 />
 
 From talking to _a lot_ of deparment managers, there are few things Lantum's Rota needs to be successful:

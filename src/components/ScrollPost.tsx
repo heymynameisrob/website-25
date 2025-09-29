@@ -1,6 +1,4 @@
-import PostTypeIcon from "@/components/PostTypeIcon.tsx";
 import type { Post } from "@/content.config";
-import { demoRegistry } from "@/components/DemoRender";
 
 export function ScrollStripPost({
   post,

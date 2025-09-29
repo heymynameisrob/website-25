@@ -1,17 +1,17 @@
 ---
 title: Automatic check-ins on cushion.so
 description: Building automatic status updates in a collaboration app for distributed teams
-image_url: https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/
-og: https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/
+image: /src/assets/checkins-light.png
 date: 2025-05-13
 type: "case-study"
 company: cushion
 ---
 
-import { Media } from "@/components/Media";
-import Image from "@/components/Image.astro";
+import MediaWrapper from "@/components/MediaWrapper.astro";
 import { Checkin } from "@/components/demos/Checkin";
 import { UIExample } from "@/components/demos/UIExample";
+
+import checkinPage from "/src/assets/checkins-light.png";
 
 Ernest Hemingway kept a chart beside his office desk to log his daily word count.
 When asked why, he said it 'kept him honest.'
@@ -27,12 +27,11 @@ This question helps you review your accomplishments. While people tend to focus 
 
 In cushion.so, we built **Automatic Checkins** for this purpose.
 
-<Media
-  src="https://ucarecdn.com/482646e2-21cf-481d-a5f2-bb0338c56613/"
+<MediaWrapper
+  src={checkinPage}
   type="image"
   alt="A list view of 3 checkins from different people outlining what they did today"
   caption="UI design for checkins on cushion.so"
-  client:load
 />
 
 Cushion is a collaboration app that helps distributed teams organize projects, communicate, and accomplish their goals. Checkins help team members update each other about their progress, keeping everyone aligned - like a standup, but better.

@@ -9,7 +9,7 @@ company: artificial
 ---
 
 import { UIExample, FilterMenuExample } from "@/components/demos/UIExample";
-import { Media } from "@/components/Media";
+import MediaWrapper from "@/components/MediaWrapper.astro";
 import Image from "@/components/Image.astro";
 
 # Building UI primitives for artificial.io
@@ -18,12 +18,11 @@ import Image from "@/components/Image.astro";
 
 I worked with Artificial late 2024. Whilst there, I built a complete set of UI components we called "Primitives". These were basic React components that allowed us to prototype, in-code, with production level quality.
 
-<Media
+<MediaWrapper
   src="https://ucarecdn.com/0c0d9f0a-00e2-4a45-96a7-0411beb3224a/"
   type="image"
   alt="Collection of UI primitives like buttons and dropdowns"
   caption="UI Primitives"
-  client:load
 />
 
 ## Background
@@ -44,12 +43,11 @@ What we needed were **component primitives**, composable peices we could stitch 
 Back in the day, lots of products are built on top of UI frameworks like Material UI or Bootstrap.
 We needed something in this vain but with a higher degree of flexibility and quality.
 
-<Media
+<MediaWrapper
   src="https://ucarecdn.com/7387bb79-0b87-4620-b041-9bbbff0900a5/"
   type="video"
   alt="Video showing Storybook UI, with different components documented"
   caption="Documenting the primitives on Storybook"
-  client:load
 />
 
 I started a side-project whilst working on the larger artificial redesign project. They increased the speed of the project by 5x.
