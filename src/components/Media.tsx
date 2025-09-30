@@ -45,7 +45,11 @@ function MediaDialog({
           ) : (
             <img
               src={media.src}
-              srcSet={media.src.includes('/-/preview/') ? `${media.src} 1x, ${media.src.replace(/\/-\/preview\/\d+x\d+\//, '/-/preview/2x/')} 2x` : undefined}
+              srcSet={
+                media.src.includes("/-/preview/")
+                  ? `${media.src} 1x, ${media.src.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                  : undefined
+              }
               alt={media.alt}
               className="w-full h-full object-contain"
               loading="lazy"
@@ -85,9 +89,9 @@ export function Media({ src, previewSrc, type, alt, caption }: MediaItemProps) {
             <img
               src={previewSrc || `${src}/-/preview/`}
               srcSet={
-                src.includes('/-/preview/')
+                src.includes("/-/preview/")
                   ? previewSrc
-                    ? `${previewSrc} 1x, ${previewSrc.replace(/\/-\/preview\/\d+x\d+\//, '/-/preview/2x/')} 2x`
+                    ? `${previewSrc} 1x, ${previewSrc.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
                     : `${src}/-/preview/ 1x, ${src}/-/preview/2x/ 2x`
                   : undefined
               }

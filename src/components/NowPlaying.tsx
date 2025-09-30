@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { AnimatePresence, motion } from "motion/react";
 import { fetcher } from "@/lib/fetch";
@@ -14,6 +15,22 @@ export function NowPlaying() {
   const { data } = useSWR<Track>("/api/now-playing", fetcher, {
     refreshInterval: 30_000, // 30 seconds
   });
+  const textRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLAnchorElement>(null);
+  const [shouldMarquee, setShouldMarquee] = useState(false);
+  const [marqueeDistance, setMarqueeDistance] = useState(0);
+
+  useEffect(() => {
+    if (!textRef.current || !containerRef.current || !data) return;
+
+    const textWidth = textRef.current.scrollWidth;
+    const containerWidth = containerRef.current.getBoundingClientRect().width;
+    const overflows = textWidth > containerWidth;
+    setShouldMarquee(overflows);
+    if (overflows) {
+      setMarqueeDistance(textWidth - containerWidth); // Just enough to show the end
+    }
+  }, [data]);
 
   if (!data) return null;
 
@@ -22,45 +39,60 @@ export function NowPlaying() {
   if (!data.nowPlaying) return null;
 
   return (
-    <div className="flex items-baseline gap-1 -mx-2 animate-in fade-in fill-mode-both duration-300 overflow-y-clip">
-      <Icon />
+    <div className="flex items-center gap-1 animate-in fade-in fill-mode-both duration-300 overflow-x-clip h-8">
+      <div className="shrink-0 size-5 relative rounded-md overflow-hidden bg-gray-4">
+        <img
+          src={image}
+          loading="lazy"
+          className="absolute inset-0 object-cover"
+        />
+      </div>
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
+        <motion.div
           key={data.url}
           initial={{ y: 10, filter: "blur(2px)", opacity: 0 }}
           animate={{ y: 0, filter: "blur(0px)", opacity: 1 }}
           exit={{ y: 10, filter: "blur(2px)", opacity: 0 }}
           transition={{ type: "spring", bounce: 0, duration: 0.2 }}
+          className="w-full overflow-hidden"
         >
-          <HoverCard>
-            <HoverCardTrigger asChild aria-disabled={!image}>
-              <a
-                href={data.url}
-                target="_blank"
-                rel="noopener nofollow"
-                className="flex w-full items-center gap-2 hover:opacity-70"
-              >
-                <p className="text-sm font-medium text-primary truncate">
-                  {data.name}
-                </p>
-                <ChevronRightIcon className="w-3 h-3 opacity-60" />
-                <p className="text-sm text-secondary truncate">{data.artist}</p>
-              </a>
-            </HoverCardTrigger>
-            <HoverCardContent
-              align="start"
-              forceMount={true}
-              className="aspect-square p-0 rounded-lg overflow-clip data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 duration-200"
+          <a
+            ref={containerRef}
+            href={data.url}
+            target="_blank"
+            rel="noopener nofollow"
+            className="block hover:opacity-70"
+          >
+            <motion.div
+              ref={textRef}
+              className="flex items-center gap-px whitespace-nowrap w-fit"
+              animate={
+                shouldMarquee
+                  ? {
+                      x: [0, 0, -marqueeDistance, -marqueeDistance, 0, 0],
+                    }
+                  : { x: 0 }
+              }
+              transition={
+                shouldMarquee
+                  ? {
+                      x: {
+                        duration: 10,
+                        repeat: Infinity,
+                        ease: "linear",
+                        times: [0, 0.1, 0.4, 0.6, 0.9, 1],
+                      },
+                    }
+                  : undefined
+              }
             >
-              <img
-                src={image}
-                alt={data.album}
-                loading="lazy"
-                className="object-fit w-full h-full"
-              />
-            </HoverCardContent>
-          </HoverCard>
-        </motion.span>
+              <p className="shrink-0 text-xs font-medium text-primary">
+                {data.name} –
+              </p>
+              <p className="shrink-0 text-xs text-secondary">{data.artist}</p>
+            </motion.div>
+          </a>
+        </motion.div>
       </AnimatePresence>
     </div>
   );
@@ -68,10 +100,10 @@ export function NowPlaying() {
 
 function Icon() {
   return (
-    <div className="grid items-center px-3 overlflow-clip">
-      <span className="relative flex items-center justify-between size-4">
+    <div className="grid place-items-center w-8 h-6 rounded-lg bg-gray-3 overlflow-clip">
+      <span className="relative flex items-center justify-between size-3">
         <motion.span
-          className="w-[4px] h-full bg-cyan-400 origin-bottom rounded-t-[1px]"
+          className="w-[3px] h-full bg-cyan-400 origin-bottom rounded-t-[1px]"
           animate={{
             scaleY: [0.3, 1, 0.5, 0.75, 0.5],
           }}
@@ -83,7 +115,7 @@ function Icon() {
           }}
         />
         <motion.span
-          className="w-[4px] h-full bg-cyan-400 origin-bottom rounded-t-[1px]"
+          className="w-[3px] h-full bg-cyan-400 origin-bottom rounded-t-[1px]"
           animate={{
             scaleY: [0.3, 1, 0.5, 0.75, 0.5],
           }}

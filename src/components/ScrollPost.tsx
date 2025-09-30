@@ -27,13 +27,23 @@ export function ScrollStripPost({
           <>
             <img
               src={post.optimizedImageSrc ?? post.data.image_url}
-              srcSet={post.optimizedImageSrc && post.optimizedImageSrc.includes('/-/preview/') ? `${post.optimizedImageSrc} 1x, ${post.optimizedImageSrc.replace(/\/-\/preview\/\d+x\d+\//, '/-/preview/2x/')} 2x` : undefined}
+              srcSet={
+                post.optimizedImageSrc &&
+                post.optimizedImageSrc.includes("/-/preview/")
+                  ? `${post.optimizedImageSrc} 1x, ${post.optimizedImageSrc.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                  : undefined
+              }
               loading="lazy"
               className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out dark:hidden"
             />
             <img
               src={post.optimizedImageDarkSrc ?? post.data.imageDark?.src}
-              srcSet={post.optimizedImageDarkSrc && post.optimizedImageDarkSrc.includes('/-/preview/') ? `${post.optimizedImageDarkSrc} 1x, ${post.optimizedImageDarkSrc.replace(/\/-\/preview\/\d+x\d+\//, '/-/preview/2x/')} 2x` : undefined}
+              srcSet={
+                post.optimizedImageDarkSrc &&
+                post.optimizedImageDarkSrc.includes("/-/preview/")
+                  ? `${post.optimizedImageDarkSrc} 1x, ${post.optimizedImageDarkSrc.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                  : undefined
+              }
               loading="lazy"
               className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out hidden dark:block"
             />
@@ -41,7 +51,12 @@ export function ScrollStripPost({
         ) : (
           <img
             src={post.optimizedImageSrc ?? post.data.image_url}
-            srcSet={post.optimizedImageSrc && post.optimizedImageSrc.includes('/-/preview/') ? `${post.optimizedImageSrc} 1x, ${post.optimizedImageSrc.replace(/\/-\/preview\/\d+x\d+\//, '/-/preview/2x/')} 2x` : undefined}
+            srcSet={
+              post.optimizedImageSrc &&
+              post.optimizedImageSrc.includes("/-/preview/")
+                ? `${post.optimizedImageSrc} 1x, ${post.optimizedImageSrc.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                : undefined
+            }
             loading="lazy"
             className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out"
           />

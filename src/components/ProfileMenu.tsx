@@ -1,4 +1,5 @@
 import { BackArrow } from "@/components/BackArrow";
+import { NowPlaying } from "@/components/NowPlaying";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +32,11 @@ export function ProfileMenu() {
         </DropdownMenuTrigger>
         {isNotHomePage && <BackArrow />}
       </div>
-      <DropdownMenuContent align="start">
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuGroup>
+          <NowPlaying />
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
             <a
