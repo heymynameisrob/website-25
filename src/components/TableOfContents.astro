@@ -1,0 +1,60 @@
+---
+interface Props {
+  headings: {
+    depth: number;
+    slug: string;
+    text: string;
+  }[];
+}
+
+const { headings } = Astro.props;
+---
+
+<div
+  class="flex flex-col gap-4 mb-4 xl:fixed xl:top-[4.75rem] xl:left-16 xl:mx-0 z-10"
+>
+  <a
+    href="/"
+    aria-label="Go back home"
+    class="-mx-2 flex items-center justify-start gap-2 p-2 rounded-full text-sm text-secondary hover:text-primary"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={16}
+      height={16}
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width={2.5}
+      viewBox="0 0 24 24"
+      class="shrink-0"
+    >
+      <path d="m9 10-5 5 5 5"></path>
+      <path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+    </svg>
+    <span class="block font-medium">Index</span>
+  </a>
+
+  {
+    headings.length > 0 && (
+      <nav class="hidden xl:block">
+        <ul class="flex flex-col gap-2">
+          {headings.map((heading) => (
+            <li
+              class:list={[
+                "text-sm text-secondary hover:text-primary transition-colors max-w-[200px] truncate",
+                {
+                  "pl-4": heading.depth === 3,
+                  "pl-6": heading.depth === 4,
+                },
+              ]}
+            >
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</div>

@@ -13,10 +13,13 @@ import {
   FilterMenuList,
   FilterMenuTrigger,
 } from "@/components/demos/FilterMenu";
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { ChevronDownIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
 import { Checkin } from "@/components/demos/Checkin";
 import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
+import { Button } from "@/components/primitives/Button";
+import { Tooltip } from "@/components/primitives/Tooltip";
+import { motion, useAnimation } from "motion/react";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -37,6 +40,36 @@ export function UIExample({
   component: "filter-menu" | "checkin";
   children: React.ReactNode;
 }) {
+  const [key, setKey] = React.useState(0);
+  const controls = useAnimation();
+
+  const handleMouseDown = () => {
+    controls.start({
+      rotate: 50,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 15,
+      },
+    });
+  };
+
+  const handleMouseUp = () => {
+    controls.start({
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 15,
+      },
+    });
+    setKey((prev) => prev + 1);
+  };
+
+  const handleRemount = () => {
+    setKey((prev) => prev + 1);
+  };
+
   const COMPONENT_MAP = {
     "filter-menu": <FilterMenuExample />,
     checkin: <Checkin />,
@@ -47,7 +80,23 @@ export function UIExample({
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-[2em] demo">
       <div className="relative grid place-items-center w-full aspect-[3/2] border bg-gray-3 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
-        {COMPONENT_MAP[component]}
+        <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
+        <Tooltip content="Reset" side="left" sideOffset={2}>
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Reset demo"
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onClick={handleRemount}
+            className="absolute bottom-2 right-2 text-primary bg-background shadow-xl"
+          >
+            <motion.div animate={controls}>
+              <ArrowPathIcon className="w-4 h-4 opacity-70" />
+            </motion.div>
+          </Button>
+        </Tooltip>
       </div>
       <span className="text-xs text-secondary">{children}</span>
     </figure>

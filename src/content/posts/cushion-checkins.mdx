@@ -1,7 +1,8 @@
 ---
-title: Automatic check-ins on cushion.so
+title: Checkins
 description: Building automatic status updates in a collaboration app for distributed teams
 image: /src/assets/checkins-light.png
+imageDark: /src/assets/checkins-dark.png
 date: 2025-05-13
 type: "case-study"
 company: cushion
@@ -10,22 +11,15 @@ company: cushion
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import { Checkin } from "@/components/demos/Checkin";
 import { UIExample } from "@/components/demos/UIExample";
-
 import checkinPage from "/src/assets/checkins-light.png";
+import checkinFeedback from "/src/assets/checkins-feedback.png";
+import checkinPost from "/src/assets/checkins-post.png";
 
-Ernest Hemingway kept a chart beside his office desk to log his daily word count.
-When asked why, he said it 'kept him honest.'
+Ernest Hemingway kept a chart beside his office desk to log his daily word count. When asked why, he said it 'kept him honest.' For distributed teams, staying honest about progress is harder but just as vital.
 
-Most companies track progress in some form. While this is often used for management oversight, progress logging offers benefits beyond micro-management. These reports serve as journals, providing a window into not just what you accomplished, but how you felt about the work.
+Cushion is an async work communication app for distributed teams. We built it for teams tired of days dominated by busywork. Our workplaces are more distracting than ever—none more so than chat apps like Slack or Teams. We built Cushion to help teams focus of higher-fidelity, async communication. This helps them stay organised, ke in flow, and get more done.
 
-When reflecting on your workday, you typically ask yourself: 'What did I get done today?'
-This question helps you review your accomplishments. While people tend to focus on measurable outputs - emails sent, meetings attended, code written - it's equally important to consider your emotional response to the work:
-
-- Were you productive?
-- Did you struggle with something?
-- Did you have your best idea yet?
-
-In cushion.so, we built **Automatic Checkins** for this purpose.
+Most companies rely on frequent status updates during a project: daily standups, project update emails, or regular critiques. These formats sound useful, but they achieve little.
 
 <MediaWrapper
   src={checkinPage}
@@ -34,13 +28,22 @@ In cushion.so, we built **Automatic Checkins** for this purpose.
   caption="UI design for checkins on cushion.so"
 />
 
-Cushion is a collaboration app that helps distributed teams organize projects, communicate, and accomplish their goals. Checkins help team members update each other about their progress, keeping everyone aligned - like a standup, but better.
+First, they are scheduled. This requires time managing who is free and when, eating into your deadline. It's also difficult to track what was agreed or shown. Discussions veer wildly off course. Agreements are often shaky. You don't discover that X was expected but Y was delivered until it's too late.
 
-Daily checkins involve everyone, from the CEO to junior engineers, making work transparent across the company.
+Status meetings are also [incredibly expensive](https://tptranscription.co.uk/the-true-cost-of-meetings-in-the-workplace-insights-stats-and-solutions/#:~:text=The%20Financial%20Cost%20of%20Meetings&text=The%20global%20cost%20of%20unproductive,billion%20in%20the%20United%20States). Ten people sit for an hour isn't a one-hour meeting, it's a ten-hour meeting. Lost time, salary, and opportunity cost make a real dent in company revenue.
 
-Team owners can configure checkins in their 'Workspace settings' by setting a regular reminder time. We've found that teams vary in their preferences - some schedule checkins early in the day, while others prefer end-of-day updates.
+<MediaWrapper
+  src={checkinPost}
+  type="image"
+  alt="A post of what I did on Tue 30 Sep, listing my update and what work I shipped on Github"
+  caption="Posts can attach work done across Github and elsewhere"
+/>
 
-We maintain an open format for checkins. There are no mandatory questions or required responses. This flexibility allows people to express what they consider important in their own words.
+Our alternative is Checkins.
+
+Checkins are how teams on Cushion stay in sync with one another (and themselves!). These are self-reported regular updates driven entirely by the people who work on the project. They can be set on a daily or weekly cadence and involve as many or few people as you like (even just yourself).
+
+Teams find that writing updates in their own words, on their own schedule, produces higher-quality entries. Best of all, these are logged forever. Teams can easily go back, search, and comment on each checkin post. So if someone does drop the ball, it's easy to figure where it happened.
 
 <UIExample component="checkin" client:load>
   Example component of the checkin flow
@@ -48,181 +51,20 @@ We maintain an open format for checkins. There are no mandatory questions or req
 
 ### Connecting Your Work
 
-Work happens across multiple platforms - whether it's writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
+Work happens across multiple platforms—whether it's writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
 
-This automation eliminates the need to manually track daily activities, allowing users to focus on meaningful reflection about their work.
+When writing their 'post', users can toggle if they want activity added to it or not. This comes from GitHub, Google Workspace, or Cushion itself. This helps connect your update with real artefacts you've worked on that show progress during your workday. However, some days you don't have "something to show" in that way. Knowledge work means days of just thinking things through or even just slower days. Making this optional takes the pressure off 'having to show something'.
 
-We also offer key integrations. Since most Cushion users are technical teams, we prioritized GitHub integration. We automatically track PR activities including opens, merges, and review requests.
+## Staying in the loop
+After we shipped v1 of checkins, our early users loved them. They found surprising uses we hadn't imagined. For example, one customer used them to keep track of freelancers he had working for him. At the end of each week, each freelancer would fill in their checkin and attach their GitHub activity. He would use this as part of their 'timesheets'. This also made life for the freelancers so much easier as they had only one update to write a week, instead of multiple which is usually the case.
 
-## Building the Github x Activity integration
+<MediaWrapper
+  src={checkinFeedback}
+  type="image"
+  alt="Screenshot of customer feedback requesting checkin notification subscriptions"
+  caption="Feedback from a customer about checkin notifications"
+/>
 
-To build this integration, we allowed users to authenticate Github using OAuth.
+A founder gave us early feedback. His team had multiple checkins, typically one for each project, which he would check regularly to see if anyone needed unblocking or help. This was difficult because he wouldn't know when someone would post their checkin (and didn't want to be THAT guy chasing people up). "It'd be nice if I could 'subscribe' to a checkin so I can get updates."
 
-When a user clicks "Connect GitHub", we redirect them to GitHub's authorization page.
-This page asks the user to approve specific permissions (scopes) that our app is requesting.
-We include a randomly generated state parameter to prevent CSRF attacks, which is stored in our KV.
-
-If the user approves, GitHub redirects back to our callback URL with a temporary code.
-We exchange this code for an access token by making a server-side request to GitHub's token endpoint:
-
-```ts
-const { code, state } = req.query;
-
-// Verify state to prevent CSRF
-const oauthState = await kv.get(`github_oauth_state:${userId}`);
-if (state !== oauthState) {
-  return res.status(400).json({ message: "Invalid state parameter." });
-}
-
-const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
-  method: "POST",
-  headers,
-  body: JSON.stringify({
-    client_id,
-    client_secret,
-    code,
-  }),
-});
-
-const { access_token } = await tokenRes.json();
-
-await db
-  .insert(userIntegrations)
-  .value({ type: "GITHUB", access_token, userId, teamId });
-```
-
-Once users have connected their personal github account, we can start to look for their activity using the Github API and Octokit SDK.
-We also have a team settings area where the Github team ID is stored, so we can filter only the work they do within that teams org in their activity.
-
-To prevent spam, we make the call whenever the user is starting to write their checkin but requesting whenever the `onFocus` event occurs within the checkin submission box.
-We can then pull all the work they've done.
-
-On the client, we then manage the states like so:
-
-```tsx
-function CheckinActivity() {
-  const { githubActivity } = useGetCurrentUsersGithubActivity();
-  const { cushionActivity } = useGetCurrentUsersCushionActivity();
-
-  // Normalise and merge activities together
-  const activities = [...githubActivity, ...cushionActivity].reduce<
-    Record<string, ActivityItem[]>
-  >((acc, item) => {
-    const { id, type } = item;
-    const key = `${id}-${type}`;
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(item);
-    return acc;
-  }, {});
-
-  function getActionStyle(action: string) {
-    switch (action) {
-      case "github_merge":
-        return "bg-purple-200 dark:bg-purple-200 text-purple-500";
-      case "cushion_resolved":
-        return "bg-cyan-200 dark:bg-cyan-200 text-cyan-500";
-      case "cushion_feedback":
-        return "bg-red-200 dark:bg-red-200 text-red-500";
-      case "github_review":
-        return "bg-emerald-200 dark:bg-emerald-200 text-emerald-500";
-      default:
-        return "bg-gray-200 dark:bg-gray-200 text-gray-500";
-    }
-  }
-
-  function getActionStatus(action: string) {
-    switch (action) {
-      case "github_merge":
-        return "merged branches";
-      case "cushion_resolved":
-        return "resolved post";
-      case "cushion_feedback":
-        return "left feedback on";
-      case "github_review":
-        return "marked for review";
-      default:
-        return "updated";
-    }
-  }
-
-  return (
-    <AnimatePresence mode="popLayout">
-      <ul className="flex flex-col p-0 m-0 gap-3">
-        {activities.map((activity, index) => (
-          <motion.li
-            key={index}
-            initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -10, filter: "blur(2px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0,
-              duration: 0.2,
-              delay: index * 0.1,
-            }}
-            className="flex items-center gap-2 p-0 m-0"
-          >
-            <div
-              className={cn(
-                "relative flex items-center justify-center size-5 rounded-md ring-2 ring-gray-2 z-10",
-                getActionStyle(activity.action),
-                "bg-gray-2 dark:bg-gray-2",
-              )}
-            >
-              {activity.icon}
-            </div>
-            <div className="flex items-center gap-1.5 text-sm flex-wrap">
-              <span className="font-medium text-primary">Rob Hough</span>
-              <span className="text-secondary">
-                {getActionStatus(activity.action)}
-              </span>
-              {activity.type !== "github" &&
-                activity.item.map((item) => {
-                  return (
-                    <button
-                      key={item.id}
-                      className="px-1 py-0.5 h-6 leading-none rounded-md bg-gray-3 hover:bg-gray-4 text-primary font-medium text-sm flex items-center justify-center"
-                    >
-                      {item.emoji && <span className="mr-1">{item.emoji}</span>}
-                      <span className="truncate max-w-[190px]">
-                        {item.title}
-                      </span>
-                    </button>
-                  );
-                })}
-              {activity.type === "github" &&
-                activity.item.map((item) => {
-                  return (
-                    <Tooltip content={item.tip}>
-                      <a
-                        key={item.id}
-                        href={item.url}
-                        className="text-sm font-medium text-primary underline"
-                      >
-                        {item.title}
-                      </a>
-                    </Tooltip>
-                  );
-                })}
-            </div>
-          </motion.li>
-        ))}
-      </ul>
-    </AnimatePresence>
-  );
-}
-```
-
-On checkin submission we would save a copy of these JSON data to our checkin under `metadata` so we could keep a snapshot of it in time.
-
-Motion React is added so we can animate in the activity items nicely.
-
-## What users think
-
-Checkins remain in beta as we continue testing and improving the feature. Our beta users have found checkins to be a useful alternative to daily standups.
-One user said that the checkin feature alone would be a product he would use as keeping a work log really helps him know how he's progressing.
-Another user found that the checkins 'really help me and my co-founder stay on top of who has done what'.
-
-We've also recieved feedback that added further integrations with other apps like Google Drive or Hubspot would be useful as well as providing an option to automatically write the checkins for you.
+We shipped this update, giving users a way to subscribe or not to each checkin individually. What I love about this was we never thought of this idea. Myself and my co-founder Dave wouldn't need this feature as it's just us two. Yet when other people use your product, there are always things they find that you don't. We're so lucky that they took the time to give us the feedback.
