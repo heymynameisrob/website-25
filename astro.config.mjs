@@ -9,7 +9,7 @@ import netlify from "@astrojs/netlify";
 // https://astro.build/config
 export default defineConfig({
   site: getBaseUrl(),
-  output: "hybrid",
+  output: "static",
   adapter: netlify(),
   markdown: {
     shikiConfig: {
