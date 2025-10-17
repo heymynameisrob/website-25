@@ -14,11 +14,11 @@ export function ScrollStripPost({
       href={post.data.externalLink ?? `/posts/${post.id}`}
       target={post.data.externalLink ? "_blank" : undefined}
       key={post.id}
-      className="group flex flex-col p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-sm border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 2xl:p-8 2xl:gap-8"
+      className="group flex flex-col p-4 gap-4 bg-gray-2 aspect-square h-full shrink-0 rounded-sm border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 2xl:p-8 2xl:gap-8"
       onFocus={(e) => onFocus(e.currentTarget)}
       onKeyDown={onKeyDown}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col">
         <h3 className="text-gray-10">{post.data.company ?? "Blog"}</h3>
         <p>{post.data.title}</p>
       </div>

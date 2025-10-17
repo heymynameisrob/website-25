@@ -33,7 +33,6 @@ export function ProfileMenu() {
         {isNotHomePage && <BackArrow />}
       </div>
       <DropdownMenuContent align="start" className="w-48">
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
             <a
