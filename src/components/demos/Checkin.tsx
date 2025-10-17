@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  BoltIcon,
   ChatBubbleBottomCenterIcon,
   ChatBubbleLeftRightIcon,
   CheckCircleIcon,
@@ -84,9 +85,20 @@ export function Checkin() {
   );
 }
 
+const ACTIVITY_LABELS = [
+  "Gathering activity",
+  "Searching GitHub",
+  "Checking Google Workspace",
+  "Finding resolved discussions",
+  "Looking for feedback",
+  "Scanning recent commits",
+  "Reviewing merged branches",
+];
+
 function CheckinSubmit() {
   const { content, setContent, checkin, setCheckin } = useCheckin();
   const [showActivity, setShowActivity] = React.useState(false);
+  const [activityLabelIndex, setActivityLabelIndex] = React.useState(0);
   const editorRef = React.useRef<Editor | null>(null);
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -104,6 +116,18 @@ function CheckinSubmit() {
   };
 
   React.useEffect(() => {
+    if (showActivity) {
+      const interval = setInterval(() => {
+        setActivityLabelIndex((prev) => {
+          if (prev === ACTIVITY_LABELS.length - 1) return 0;
+          return prev + 1;
+        });
+      }, 2_000);
+      return () => clearInterval(interval);
+    }
+  }, [showActivity]);
+
+  React.useEffect(() => {
     return () => {
       editorRef.current = null;
     };
@@ -119,7 +143,7 @@ function CheckinSubmit() {
     <div className="flex flex-col gap-3 p-3 w-[480px] bg-gray-2 shadow-[0_1px_0_0_rgba(0,0,0,0.01),0_1px_3px_0_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.01),0_1px_3px_0_rgba(255,255,255,0.05),0_0_0_1px_rgba(255,255,255,0.1)] rounded-lg">
       <div className="flex items-center gap-2">
         <div className="size-4 rounded-full bg-green-500" />
-        <p className="text-sm font-medium !text-primary my-0">Rob Hough</p>
+        <p className="text-sm font-medium !text-primary !my-0">Rob Hough</p>
       </div>
       <TextEditor
         content={content}
@@ -130,16 +154,35 @@ function CheckinSubmit() {
         placeholder="What did you accomplish today?"
         className="max-h-[200px] min-h-[88px] overflow-y-scroll outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
       />
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 ">
         {showActivity ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 h-8">
             <Loader2 className="size-4 animate-spin text-primary" />
-            <span className="text-xs font-medium text-secondary">
-              Gathering todays activty...
-            </span>
+            <div className="relative h-5 w-56 overflow-hidden">
+              <AnimatePresence initial={false}>
+                <motion.span
+                  key={activityLabelIndex}
+                  className="text-sm font-medium text-secondary absolute inset-0"
+                  initial={{ y: 8, opacity: 0, filter: "blur(1px)" }}
+                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ y: -8, opacity: 0, filter: "blur(1px)" }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                >
+                  {ACTIVITY_LABELS[activityLabelIndex]}...
+                </motion.span>
+              </AnimatePresence>
+            </div>
           </div>
         ) : (
-          <div />
+          <Button
+            size="sm"
+            className="gap-1 px-1.5 -mx-1.5"
+            variant="ghost"
+            onClick={() => setShowActivity(true)}
+          >
+            <BoltIcon className="size-4 opacity-70" />
+            Add activity
+          </Button>
         )}
         <Tooltip content="Post checkin • ⌘Enter">
           <Button
@@ -175,8 +218,8 @@ function CheckinView() {
         <div className="flex items-center gap-2 mb-2">
           <div className="size-4 rounded-full bg-green-500" />
           <div className="flex items-baseline gap-1">
-            <p className="text-sm font-medium !text-primary my-0">Rob Hough</p>
-            <p className="text-xs text-primary my-0">
+            <p className="text-sm font-medium !text-primary !my-0">Rob Hough</p>
+            <p className="text-sm text-secondary !my-0">
               {fromNow(checkin.createdAt)}
             </p>
           </div>
@@ -272,8 +315,8 @@ function CheckinComment({ comment }: { comment: Comment }) {
       <div className="flex items-center gap-3">
         <div className="size-4 rounded-full bg-green-500" />
         <div className="flex items-baseline gap-1.5">
-          <p className="text-sm font-medium text-primary my-0">Rob Hough</p>
-          <p className="text-xs text-secondary my-0">
+          <p className="text-sm font-medium text-primary !my-0">Rob Hough</p>
+          <p className="text-xs text-secondary !my-0">
             {fromNow(new Date(comment.createdAt))}
           </p>
         </div>
@@ -350,22 +393,6 @@ type Activity = {
 };
 
 const ACTIVITY: Activity[] = [
-  // {
-  //   type: "github",
-  //   icon: <RefreshCcw className="size-4" />,
-  //   action: "github_review",
-  //   item: [
-  //     {
-  //       title: "#124",
-  //       tip: "New table layout",
-  //     },
-  //     {
-  //       title: "#125",
-  //       tip: "Refactor API queries",
-  //     },
-  //   ],
-  //   createdAt: subHours(new Date(), 1),
-  // },
   {
     type: "cushion",
     icon: <CheckCircleIcon className="size-4" />,
@@ -443,7 +470,7 @@ function CheckinActivity() {
     <div className="relative">
       <div className="absolute top-1 bottom-1 left-2.5 w-px bg-gray-4 z-0"></div>
       <AnimatePresence mode="popLayout">
-        <ul className="flex flex-col p-0 m-0 gap-3">
+        <ul className="flex flex-col !p-0 !m-0 gap-3">
           {ACTIVITY.map((activity, index) => (
             <motion.li
               key={index}
@@ -456,7 +483,7 @@ function CheckinActivity() {
                 duration: 0.2,
                 delay: index * 0.1,
               }}
-              className="flex items-center gap-2 p-0 m-0"
+              className="flex items-center gap-2 !p-0 !m-0"
             >
               <div
                 className={cn(

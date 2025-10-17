@@ -9,9 +9,15 @@ import { Tooltip } from "@/components/primitives/Tooltip";
 import { motion, useAnimation } from "motion/react";
 import { Gallery } from "@/components/demos/Gallery";
 import { Calendar } from "@/components/demos/Calendar";
+import { Image } from "astro:assets";
 
 interface DemoRendererProps {
-  post: Post;
+  post: Post & {
+    data: Post["data"] & {
+      optimizedImageSrc?: string;
+      optimizedImageDarkSrc?: string;
+    };
+  };
 }
 
 export const demoRegistry: Record<string, React.ReactNode> = {
@@ -59,8 +65,30 @@ export function DemoRenderer({ post }: DemoRendererProps) {
   if (!component) return null;
 
   return (
-    <figure className="relative grid place-items-center w-full aspect-video border bg-background rounded-lg before:pointer-events-none before:absolute before:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] lg:rounded-2xl">
-      <React.Fragment key={key}>{component}</React.Fragment>
+    <figure className="relative grid place-items-center w-full aspect-square overflow-hidden border bg-background rounded-lg lg:aspect-[3/2]">
+      {post.data.optimizedImageDarkSrc || post.data.imageDark ? (
+        <>
+          <img
+            src={post.data.optimizedImageSrc ?? post.data.image?.src}
+            loading="lazy"
+            className="absolute inset-0 object-cover pointer-events-none z-0 dark:hidden"
+          />
+          <img
+            src={post.data.optimizedImageDarkSrc ?? post.data.imageDark?.src}
+            loading="lazy"
+            className="absolute inset-0 object-cover pointer-events-none z-0 hidden dark:block"
+          />
+        </>
+      ) : (
+        <img
+          src={post.data.optimizedImageSrc ?? post.data.image?.src}
+          loading="lazy"
+          className="absolute inset-0 object-cover pointer-events-none z-0"
+        />
+      )}
+      <div className="relative rounded-md w-full aspect-square max-w-md bg-background overflow-hidden text-primary [box-shadow:var(--shadow-raised)] z-max">
+        <React.Fragment key={key}>{component}</React.Fragment>
+      </div>
       <Tooltip content="Reset" side="left" sideOffset={2}>
         <Button
           size="icon"
@@ -70,7 +98,7 @@ export function DemoRenderer({ post }: DemoRendererProps) {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onClick={handleRemount}
-          className="absolute bottom-1 right-1 text-primary"
+          className="absolute bottom-2 right-2 text-primary bg-background shadow-xl"
         >
           <motion.div animate={controls}>
             <ArrowPathIcon className="w-4 h-4 opacity-70" />

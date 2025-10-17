@@ -1,14 +1,16 @@
 ---
-title: Building UI primitives for artificial.io
+title: Design System
 description: A library of custom-built React components for the web, enabling rapid prototyping with AI and shipping high-quality experiences.
-image_url: https://ucarecdn.com/0c0d9f0a-00e2-4a45-96a7-0411beb3224a/
+image: "/src/assets/primitives-light.jpg"
+imageDark: "/src/assets/primitives-dark.jpg"
 date: 2025-03-01
 type: "case-study"
+company: artificial
 ---
 
-import {UIExample, FilterMenuExample} from "@/components/demos/UIExample"
-import {Media} from "@/components/Media"
-import Image from "@/components/Image.astro"
+import { UIExample, FilterMenuExample } from "@/components/demos/UIExample";
+import MediaWrapper from "@/components/MediaWrapper.astro";
+import Image from "@/components/Image.astro";
 
 # Building UI primitives for artificial.io
 
@@ -16,9 +18,15 @@ import Image from "@/components/Image.astro"
 
 I worked with Artificial late 2024. Whilst there, I built a complete set of UI components we called "Primitives". These were basic React components that allowed us to prototype, in-code, with production level quality.
 
-<Media src="https://ucarecdn.com/0c0d9f0a-00e2-4a45-96a7-0411beb3224a/" type="image" alt="Collection of UI primitives like buttons and dropdowns" caption="UI Primitives" client:load />
+<MediaWrapper
+  src="https://ucarecdn.com/0c0d9f0a-00e2-4a45-96a7-0411beb3224a/"
+  type="image"
+  alt="Collection of UI primitives like buttons and dropdowns"
+  caption="UI Primitives"
+/>
 
 ## Background
+
 When working on a complete re-design of the main web product, we realised that we weren't moving as fast as we'd like.
 Our engineers were busy working on heavy tasks on the backend, mainly with algorithmic or AI work.
 
@@ -30,18 +38,24 @@ To top it all off, it’s unclear how components and patterns should be used. Th
 
 ## Building the toolbox
 
-What we needed were __component primitives__, composable peices we could stitch together to build interfaces.
+What we needed were **component primitives**, composable peices we could stitch together to build interfaces.
 
 Back in the day, lots of products are built on top of UI frameworks like Material UI or Bootstrap.
 We needed something in this vain but with a higher degree of flexibility and quality.
 
-<Media src="https://ucarecdn.com/7387bb79-0b87-4620-b041-9bbbff0900a5/" type="video" alt="Video showing Storybook UI, with different components documented" caption="Documenting the primitives on Storybook" client:load />
+<MediaWrapper
+  src="https://ucarecdn.com/7387bb79-0b87-4620-b041-9bbbff0900a5/"
+  type="video"
+  alt="Video showing Storybook UI, with different components documented"
+  caption="Documenting the primitives on Storybook"
+/>
 
 I started a side-project whilst working on the larger artificial redesign project. They increased the speed of the project by 5x.
 We could scaffold a basic UI in a few lines of code. Previously, you'd have to sketch everything out on Figma or work with another engineer to build something out together.
 Now we could build a working prototype, in production (behind a flag), and get feedback directly.
 
 ## Protoyping with LLMs
+
 Most of the design team used Cursor, in particular the composer, to help spin up prototypes quickly.
 We added a set of `.cursorrules` that instructs the model to prefer `/primitives` when prototype new components.
 
@@ -49,6 +63,7 @@ As well as using the primitives we also included some general best-practices suc
 This means we can transfer from prototype to production code a lot quicker, without having to refactor generic AI output.
 
 ## Example
+
 Primitives are stored in a seperate NPM package in our monorepo accesible via `@primitives/*`.
 You can import each individual primitive as and when you need it.
 We documented each component using Storybook, which gave us a place to play with each component.
@@ -61,7 +76,7 @@ Compound components are natural and easy to write. They are closer to the native
 Look at this Menu example.
 
 <UIExample component="filter-menu" client:load>
-Primitive example of a filterable dropdown menu AKA combobox
+  Primitive example of a filterable dropdown menu AKA combobox
 </UIExample>
 
 Each piece (`<FilterMenuTrigger />`, `<FilterMenuContent />`, etc.) handles a specific concern while maintaining a connection to the parent `<FilterMenu />` component through React's context.
@@ -69,6 +84,7 @@ Each piece (`<FilterMenuTrigger />`, `<FilterMenuContent />`, etc.) handles a sp
 The component follows React's composability principle - instead of one large monolithic component with many props, it's broken down into logical pieces that work together. This matches how we think about UI elements naturally (a menu has a trigger, content, items etc.) and makes the code more maintainable.
 
 Looking at the implementation, you can see how each piece serves a clear purpose:
+
 - `<FilterMenuTrigger />` handles the button that opens the menu
 - `<FilterMenuInput />` provides search functionality
 - `<FilterMenuList />` and `<FilterMenuItem />` handle the options

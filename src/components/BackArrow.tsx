@@ -4,11 +4,11 @@ import * as RadixTooltip from "@radix-ui/react-tooltip";
 
 export function BackArrow() {
   return (
-    <Tooltip content="Back home" side="bottom">
+    <Tooltip content="Go back" side="bottom">
       <a
         href="/"
         aria-label="Go back home"
-        className=" mb-4 flex items-center justify-start gap-2 p-2 rounded-full text-sm text-secondary hover:text-secondary hover:bg-gray-2 md:text-gray-7 md:size-8 md:absolute md:-left-8 md:top-[76px]"
+        className="flex items-center justify-start gap-2 p-2 rounded-full text-sm text-secondary hover:text-secondary hover:bg-gray-3"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

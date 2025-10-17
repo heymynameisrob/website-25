@@ -1,14 +1,14 @@
 ---
-title: Designing a new policy inbox for artificial.io
+title: Policy Inbox
 description: I worked with artificial.io over 24/25. We worked on rebuild their "workbench", an all-in-one platform for insurance underwriters. In lead the rebuild of their 'Policy Inbox' feature.
-image_url: https://ucarecdn.com/9f32a371-b7ec-4ebf-a21a-308ec7b26356/-/scale_crop/1000x1000/
-video_url: "https://utfs.io/f/0X1QxrmMTXAjv3kvOmweAJ46FwCmiUfbxtHjVu53qpT1EKln/"
+image: /src/assets/inbox-light.jpg
+imageDark: /src/assets/inbox-dark.jpg
 date: 2025-04-01
 type: "case-study"
+company: artificial
 ---
 
-import {Media} from "@/components/Media"
-import Image from "@/components/Image.astro"
+import MediaWrapper from "@/components/MediaWrapper.astro";
 
 # Designing a new policy inbox for artificial.io
 
@@ -18,7 +18,11 @@ I joined Artificial late 2024. I lead a project to build a new 'Policies Inbox' 
 
 The workbench is where undewriters and brokers manage all their policies from inception to expiration. It helps brokers submit policies for underwriters to underwrite and bounce back.
 
-<Media src="https://ucarecdn.com/ed78a7a2-b3d5-4080-9bee-62021a5bc3a0/" type="image" alt="New Inbox design" client:load />
+<MediaWrapper
+  src="https://ucarecdn.com/ed78a7a2-b3d5-4080-9bee-62021a5bc3a0/"
+  type="image"
+  alt="New Inbox design"
+/>
 
 ## Background
 
@@ -38,26 +42,37 @@ Just like your email inbox - the Inbox should help you know what's going on and 
 The Inbox allows your to view all your policies in one convient place. You can also create custom views according to properties such as lifecycle, customer, date range and more.
 The Inbox is the central place that connects you to a policy, helping you plan your work and get the lay of the land.
 
-<Media src="https://utfs.io/f/0X1QxrmMTXAjv3kvOmweAJ46FwCmiUfbxtHjVu53qpT1EKln" type="video" title="New Policy Inbox for artificial.io workbench" client:load />
+<MediaWrapper
+  src="https://utfs.io/f/0X1QxrmMTXAjv3kvOmweAJ46FwCmiUfbxtHjVu53qpT1EKln"
+  type="video"
+  title="New Policy Inbox for artificial.io workbench"
+/>
 
 Here are a few examples of what you can do:
+
 - Create tasks for work that needs to be done such as chase up a client for sign-off on an upcoming renewal
 - Look at high-risk policies in one list and triage them to the right team members
 - Assign junior underwriters for data-entry on incoming policies
 - Chase the progress of a quote from an underwriter
 
 ### Views
+
 At the top of the page, users can create and manage their custom views. Organisations can setup views for their underwriters and users can create their own just for themselves.
 Each view is a collection of filters and display options that are re-configured everytime they select the view. Everytime you select a view and return to the page, you're back to the last one you were looking at.
 
-<Media src="https://ucarecdn.com/3b16cb71-5c08-4db5-bcad-2e719414d57b/" type="image" alt="UI for creating custom views" client:load />
+<MediaWrapper
+  src="https://ucarecdn.com/3b16cb71-5c08-4db5-bcad-2e719414d57b/"
+  type="image"
+  alt="UI for creating custom views"
+/>
 
 ### Tasks
+
 Each policy can have tasks associated with it. You can now view and create tasks directly from the Inbox, helping you manage your workload faster.
 Each policy has a small badge counting the non-completed tasks. Tapping on this opens up a sidebar that shows the relative tasks, allowing you manage and create them.
 
-
 ### Instant loading
+
 One of the coolest features saving whatever view the user was last on to our cache. That meant when users returned to the page, the results would load instantly.
 As users went cycled through their saved views, the results would display instantly and then call the API to get any updates.
 

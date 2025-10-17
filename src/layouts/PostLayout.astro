@@ -5,12 +5,13 @@ import Prose from "@/components/Prose.astro";
 import { ClockIcon } from "@heroicons/react/16/solid";
 
 import { fromNow } from "@/lib/utils";
-import type {PostFrontmatter} from "@/content.config";
+import type { PostFrontmatter } from "@/content.config";
+import HomeNav from "@/components/HomeNav.astro";
 
 interface Props {
   frontmatter: PostFrontmatter & {
     og?: string;
-  }
+  };
 }
 
 const { frontmatter } = Astro.props;
@@ -22,13 +23,20 @@ const { frontmatter } = Astro.props;
   og={frontmatter.og}
   canonical={frontmatter.canonical}
 >
-  <div class="flex flex-col gap-4 pb-12 lg:gap-8">
-    <header class="flex flex-col gap-2">
-      <h1 class="mb-0 text-primary font-medium text-base">{frontmatter.title}</h1>
-      <small class="font-mono font-medium text-sm text-gray-8 uppercase">Last updated {fromNow(frontmatter.date, true)}</small>
+  <HomeNav />
+  <div class="max-w-5xl mx-auto">
+    <header
+      class="py-16 2xl:py-32 px-5 flex flex-col justify-center items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:items-center md:text-center"
+    >
+      <h1
+        class="text-lg max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
+      >
+        {frontmatter.title}
+      </h1>
+      <small class="font-mono font-medium text-sm text-gray-8 uppercase"
+        >Last updated {fromNow(frontmatter.date, true)}</small
+      >
     </header>
-    <Prose>
-      <slot />
-    </Prose>
+    <Prose><slot /></Prose>
   </div>
 </Layout>

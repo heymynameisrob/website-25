@@ -9,6 +9,7 @@ import {
 
 interface MediaItemProps {
   src: string | undefined;
+  previewSrc?: string;
   type: "image" | "video";
   alt: string;
   caption?: string;
@@ -21,37 +22,46 @@ function MediaDialog({
   children: React.ReactNode;
   media: { src: string; type: "image" | "video"; alt?: string };
 }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <div className="cursor-nesw-resize">{children}</div>
       </DialogTrigger>
       <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden">
-        {media.type === "video" ? (
-          <video
-            className="w-full h-full object-contain"
-            controls
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src={media.src} type="video/mp4" />
-          </video>
-        ) : (
-          <img
-            src={media.src}
-            alt={media.alt}
-            className="w-full h-full object-contain"
-          />
-        )}
+        {isOpen &&
+          (media.type === "video" ? (
+            <video
+              className="w-full h-full object-contain"
+              controls
+              autoPlay
+              loop
+              muted
+              playsInline
+            >
+              <source src={media.src} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={media.src}
+              srcSet={
+                media.src.includes("/-/preview/")
+                  ? `${media.src} 1x, ${media.src.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                  : undefined
+              }
+              alt={media.alt}
+              className="w-full h-full object-contain"
+              loading="lazy"
+            />
+          ))}
       </DialogContent>
     </Dialog>
   );
 }
 
 // Modify the MediaItem component to remove pointer-events-none and wrap content in MediaDialog
-export function Media({ src, type, alt, caption }: MediaItemProps) {
+export function Media({ src, previewSrc, type, alt, caption }: MediaItemProps) {
   const { elementRef, isInView } = useIntersectionObserver();
 
   if (!src) return null;
@@ -60,7 +70,7 @@ export function Media({ src, type, alt, caption }: MediaItemProps) {
     <figure className="flex flex-col">
       <div
         ref={elementRef}
-        className="relative aspect-video border rounded-lg select-none group-hover:opacity-90 transition-opacity overflow-hidden lg:rounded-2xl min-w-[200px]"
+        className="relative aspect-video border rounded-md select-none group-hover:opacity-90 transition-opacity overflow-hidden min-w-[200px]"
       >
         <MediaDialog media={{ src, type, alt }}>
           {type === "video" && isInView && (
@@ -76,13 +86,17 @@ export function Media({ src, type, alt, caption }: MediaItemProps) {
             </video>
           )}
           {type === "image" && isInView && (
-            <motion.img
-              src={`${src}/-/preview/`}
+            <img
+              src={previewSrc || `${src}/-/preview/`}
+              srcSet={
+                src.includes("/-/preview/")
+                  ? previewSrc
+                    ? `${previewSrc} 1x, ${previewSrc.replace(/\/-\/preview\/\d+x\d+\//, "/-/preview/2x/")} 2x`
+                    : `${src}/-/preview/ 1x, ${src}/-/preview/2x/ 2x`
+                  : undefined
+              }
               alt={alt}
               className="!m-0 absolute inset-0 w-full h-full object-cover"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
             />
           )}
         </MediaDialog>

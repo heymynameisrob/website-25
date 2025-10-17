@@ -3,6 +3,7 @@ title: Research at Lantum
 description: Lantum is a workforce management platform for healthcare. These are some WIP notes on how we did design research at Lantum.
 date: 2024-05-01
 type: "post"
+hide: true
 ---
 
 Lantum is a workforce management platform for healthcare. It helps schedule and manage clinical staff, and helps clinicians find work. I joined Lantum just as they raised Series B, which was used to move into the Secondary Market. Previously we'd operated solely in Primary Care.
@@ -14,7 +15,7 @@ I lead most aspects of design at Lantum, but this post is specifically about our
 When I talk about research, I'm specifcally referring to design research or user research. Particularly qualatative studies with prospective or existing users.
 
 The nature of what we're trying to do with Lantum means we're constantly covering new ground. The jobs of both a doctor and rota manager respectively are highly specialised.
-They have an existing set of tasks in a particular way that, although at times inefficent, has very specific requirements that *have* to be met. Literal lives are at stake.
+They have an existing set of tasks in a particular way that, although at times inefficent, has very specific requirements that _have_ to be met. Literal lives are at stake.
 
 This meant our initial research was very tasked focused. In my experience, most research starts this way. It's important work and we did a lot of it at Lantum.
 From mapping out the entire rotation lifecycle of a hospital department to shadowing rota managers during their day-to-day duties.
@@ -39,4 +40,4 @@ Harder evidence and evaluation is appropriate and very important but only at the
 
 ---
 
-*To be continued...*
+_To be continued..._

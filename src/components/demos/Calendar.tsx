@@ -148,41 +148,39 @@ export function Calendar() {
       }}
     >
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
-        <section className="flex flex-col justify-center items-center p-2 w-full lg:p-4">
-          <div className="relative shrink-0 w-full max-w-md overflow-hidden rounded-2xl bg-gray-1 text-primary border shadow-xl">
-            <div className="py-6 lg:py-8">
-              <div className="flex flex-col justify-center rounded text-center">
-                <Resizeable>
-                  <motion.div
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0}
-                    style={{ x, opacity }}
-                    className="touch-pan-y"
-                    onDragEnd={handleDragEnd}
+        <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-background">
+          <div className="py-6">
+            <div className="flex flex-col justify-center rounded text-center">
+              <Resizeable>
+                <motion.div
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0}
+                  style={{ x, opacity }}
+                  className="touch-pan-y"
+                  onDragEnd={handleDragEnd}
+                >
+                  <AnimatePresence
+                    mode="popLayout"
+                    initial={false}
+                    custom={direction}
+                    onExitComplete={() => setIsAnimating(false)}
                   >
-                    <AnimatePresence
-                      mode="popLayout"
-                      initial={false}
-                      custom={direction}
-                      onExitComplete={() => setIsAnimating(false)}
+                    <motion.div
+                      key={monthLabel}
+                      initial="enter"
+                      animate="middle"
+                      exit="exit"
                     >
-                      <motion.div
-                        key={monthLabel}
-                        initial="enter"
-                        animate="middle"
-                        exit="exit"
-                      >
-                        <CalendarHeader />
-                        <CalendarMonth />
-                      </motion.div>
-                    </AnimatePresence>
-                  </motion.div>
-                </Resizeable>
-              </div>
+                      <CalendarHeader />
+                      <CalendarMonth />
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
+              </Resizeable>
             </div>
           </div>
-        </section>
+        </div>
       </MotionConfig>
     </CalendarContext.Provider>
   );
@@ -192,7 +190,7 @@ function CalendarHeader() {
   const { onPrev, onNext, direction, month } = useCalendar();
 
   return (
-    <header className="relative flex justify-between px-4 lg:px-8">
+    <header className="relative flex justify-between px-4">
       <motion.button
         variants={{
           exit: { visibility: "hidden" as const },
@@ -242,7 +240,7 @@ function CalendarMonth() {
         variants={{
           exit: { visibility: "hidden" as const },
         }}
-        className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm lg:px-8"
+        className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
         {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
           <span
@@ -264,16 +262,16 @@ function CalendarMonth() {
       <motion.div
         variants={variants}
         custom={direction}
-        className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm lg:px-8"
+        className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
         {days.map((day) => (
           <button
             className={cn(
-              "flex items-center justify-center w-10 h-10 rounded-full select-none focus font-medium active:scale-[0.96]",
+              "flex items-center justify-center w-10 h-10 rounded-full select-none focus font-medium hover:bg-gray-2 active:scale-[0.96] transition-all",
               format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd") &&
                 "text-accent",
               selectedDate === format(day, "yyyy-MM-dd") &&
-                "text-white bg-accent",
+                "text-white bg-accent hover:bg-accent",
               isSameMonth(day, month) ? "" : "text-gray-8 pointer-events-none",
             )}
             key={format(day, "yyyy-MM-dd")}

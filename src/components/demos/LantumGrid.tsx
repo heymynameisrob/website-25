@@ -34,7 +34,11 @@ export const LantumGrid = () => {
   };
 
   return (
-    <div className={cn("relative border rounded-md overflow-hidden shadow-sm")}>
+    <div
+      className={cn(
+        "relative rounded-md overflow-hidden w-full max-w-3xl [box-shadow:var(--shadow-raised)]",
+      )}
+    >
       <DndContext
         sensors={[mouseSensor]}
         modifiers={[snapCenterToCursor]}

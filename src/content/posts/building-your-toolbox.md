@@ -3,6 +3,8 @@ title: Building your own toolbox
 description: The goal of design is to find the winning solution to the problem your given. The only way to do that is try lots of ideas and get lots of feedback - fast.
 date: 2026-02-10
 type: "post"
+company: Blog
+hide: true
 ---
 
 I find the best way to start with designing is to make sure you have a high-quality set of parts.

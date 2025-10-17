@@ -3,6 +3,7 @@ title: Design Engineers/Design Researchers
 description: There's a divide between how modern design is done. Design in modern product organisations should change. Most design roles could be split into two - Design Researchers & Design Engineers.
 date: 2024-09-21
 type: "post"
+hide: true
 ---
 
 Design in modern product organisations should change. Most design roles could be split into two: Design Researchers & Design Engineers. These could be the same people in a team, but could easily be split up.

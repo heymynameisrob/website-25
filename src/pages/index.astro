@@ -1,21 +1,49 @@
 ---
-import HomeHeader from "@/components/HomeHeader.astro";
-import Layout from "@/layouts/Layout.astro";
-import Timeline from "@/components/Timeline.astro";
 import { getCollection } from "astro:content";
-import { HOME_POST_LIMIT } from "@/lib/constants";
+import { getImage } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import HomeNav from "@/components/HomeNav.astro";
+import HomeHeader from "@/components/HomeHeader.astro";
+
+import { ScrollStrip } from "@/components/ScrollStrip";
+
 import { filterPosts } from "@/lib/utils";
 
-const allPosts = await getCollection('posts');
+const allPosts = await getCollection("posts");
 const allValidPosts = filterPosts(allPosts);
 
-const sortedPosts = allValidPosts.slice(0, HOME_POST_LIMIT ? HOME_POST_LIMIT : allValidPosts.length)
+const postsWithOptimizedImages = await Promise.all(
+  allValidPosts.map(async (post) => {
+    let images: any = {};
+    if (post.data.image) {
+      const optimizedImage = await getImage({
+        src: post.data.image,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageSrc = optimizedImage.src;
+    }
 
+    if (post.data.imageDark) {
+      const optimizedImageDark = await getImage({
+        src: post.data.imageDark,
+        width: 1000,
+        height: 1000,
+        format: "avif",
+        quality: 100,
+      });
+      images.optimizedImageDarkSrc = optimizedImageDark.src;
+    }
+
+    return { ...post, ...images };
+  }),
+);
 ---
 
 <Layout>
+  <HomeNav />
   <HomeHeader />
-  <section class="flex flex-col gap-2 py-6 lg:py-12">
-    <Timeline posts={sortedPosts} />
-  </section>
+  <ScrollStrip posts={postsWithOptimizedImages} client:only="react" />
 </Layout>

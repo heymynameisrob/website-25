@@ -1,0 +1,48 @@
+---
+import { getImage } from "astro:assets";
+import { Media } from "./Media";
+
+interface Props {
+  src: string | ImageMetadata;
+  type: "image" | "video";
+  alt: string;
+  caption?: string;
+}
+
+const { src, type, alt, caption } = Astro.props;
+
+let previewImage = null;
+
+// For local images (either imported ImageMetadata or /src/ paths), try to optimize
+if (type === "image") {
+  const isLocal =
+    typeof src === "object" ||
+    (typeof src === "string" && !src.startsWith("http"));
+
+  if (isLocal) {
+    try {
+      // Smaller preview for the initial view
+      previewImage = await getImage({
+        src,
+        format: "avif",
+        quality: 100,
+        width: 1000,
+      });
+    } catch (error) {
+      console.warn("Image optimization failed, using original src:", error);
+    }
+  }
+}
+
+// Convert ImageMetadata to string for React component
+const srcString = typeof src === "object" ? src.src : src;
+---
+
+<Media
+  src={srcString}
+  previewSrc={previewImage?.src}
+  type={type}
+  alt={alt}
+  caption={caption}
+  client:load
+/>
