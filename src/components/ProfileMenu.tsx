@@ -86,7 +86,7 @@ export function ProfileMenu() {
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
             <a
-              href="/"
+              href="/CV_25.pdf"
               className="flex items-center justify-between gap-2 font-medium"
             >
               CV
