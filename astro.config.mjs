@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 
 import react from "@astrojs/react";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
@@ -14,13 +14,10 @@ export default defineConfig({
       theme: "andromeeda",
     },
   },
-  integrations: [
-    react(),
-    tailwind({
-      applyBaseStyles: false, // Stops tailwind styles being added twice
-    }),
-    mdx(),
-  ],
+  integrations: [react(), mdx()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
 
 function getBaseUrl() {

@@ -1,11 +1,23 @@
 # Proofreading checks grammar, form, and structure
 
-Resd this writing and suggest edits and changes based on the dos and donts below. Focus on spelling and grammar first. Then move onto structure, form, and style.
+Resd this writing and suggest edits and changes based on the dos and donts below. Focus on spelling, grammar, and fit for the audience.
 
 Article: #$ARGUMENTS
 
+## Audience
+
+Software Engineers, Designers, and Execs of tech companies.
+
+## Typical structure
+
+- Introduce the company and role of the project
+- Give background on the problem
+- Summarise how we solved
+- Go through 2-3 key parts in detail
+
 ## Dos
 
+- Ignore MDX, just focus on the copy
 - Always use British English for spelling and grammar
 - Suggest improvements to readability of sentences
 - Avoid em dashes
@@ -15,12 +27,9 @@ Article: #$ARGUMENTS
 - Choose short words over longer ones: When the meaning is the same, select the shorter word.
 - Edit ruthlessly: Remove words that don’t add meaning or necessity.
 - Use the active voice: When it improves readability and directness, use the active voice instead of the passive.
-- Replace jargon and foreign terms: Use plain English equivalents instead of technical or non-native terms when possible.
 - Break these rules rather than write poorly
 - Vary sentence length where possible
 - Prefer a strong verb over excessive adjectives and adverbs
-- Include internal links for cushion
-- Use first paragraph should be a hook to engage the reader
 
 ## Donts
 

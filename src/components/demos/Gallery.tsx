@@ -94,7 +94,7 @@ export function Gallery() {
           >
             <img
               src={img.url}
-              className="!m-0 w-full h-auto object-cover rounded-lg border"
+              className="m-0! w-full h-auto object-cover rounded-lg border"
               alt="Preview image"
             />
           </motion.button>
@@ -187,7 +187,7 @@ function GalleryDialog({
               setTransitionType("open");
               onImageChange(null);
             }}
-            className="fixed inset-0 z-10 bg-black/10 backdrop-blur"
+            className="fixed inset-0 z-10 bg-black/10 backdrop-blur-sm"
           />
         ) : null}
       </AnimatePresence>
@@ -200,8 +200,8 @@ function GalleryDialog({
               layoutId={transitionType === "open" ? image : undefined}
               className={cn(
                 "relative aspect-square w-[80vw] max-w-[800px] shadow-2xl",
-                aspectRatio === "tall" && "aspect-[3/4]",
-                aspectRatio === "wide" && "aspect-[4/3]",
+                aspectRatio === "tall" && "aspect-3/4",
+                aspectRatio === "wide" && "aspect-4/3",
               )}
             >
               <img

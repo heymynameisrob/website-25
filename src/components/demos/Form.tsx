@@ -70,7 +70,7 @@ export function Form() {
               filter: "blur(4px)",
             }}
             key={state}
-            className="drop-shadow-sm"
+            className="drop-shadow-xs"
           >
             {content}
           </motion.span>
@@ -78,7 +78,7 @@ export function Form() {
       </Button>
       <div
         className={cn(
-          "!text-xs !text-secondary text-center opacity-0",
+          "text-xs! text-secondary! text-center opacity-0",
           state === "success" && "opacity-100",
         )}
       >

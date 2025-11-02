@@ -93,7 +93,7 @@ function Link({
             rel="noopener nofollow noreferrer"
             className={cn(
               "inline-flex justify-center items-center w-auto px-3 gap-1.5 h-8 text-secondary bg-gray-1 rounded-full font-medium transition-all duration-200 ease-out hover:scale-110 hover:text-primary hover:bg-gray-3 md:px-px md:w-8",
-              "outline-none focus-visible:ring-2 focus-visible:ring-ring ",
+              "outline-hidden focus-visible:ring-2 focus-visible:ring-ring ",
               className,
             )}
           >

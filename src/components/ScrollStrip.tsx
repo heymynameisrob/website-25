@@ -148,7 +148,7 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
           ))}
           <a
             href="/posts"
-            className="group flex flex-col p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-sm border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 lg:p-8 lg:gap-8"
+            className="group flex flex-col p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-xs border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 lg:p-8 lg:gap-8"
           >
             <div className="text-center space-y-1">
               <div className="flex items-center justify-center gap-2">
@@ -181,7 +181,7 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
         ))}
         <a
           href="/posts"
-          className="group grid place-items-center p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-sm border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 lg:p-8 lg:gap-8"
+          className="group grid place-items-center p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-xs border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 lg:p-8 lg:gap-8"
           onFocus={(e) => scrollElementIntoView(e.currentTarget)}
           onKeyDown={handleKeyDown}
         >

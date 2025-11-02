@@ -1,6 +1,6 @@
 ---
 title: Policy Inbox
-description: I worked with artificial.io over 24/25. We worked on rebuild their "workbench", an all-in-one platform for insurance underwriters. In lead the rebuild of their 'Policy Inbox' feature.
+description: I worked with artificial.io over 24/25. We rebuilt their "workbench", an all-in-one platform for insurance underwriters. I led the rebuild of their 'Policy Inbox' feature.
 image: /src/assets/inbox-light.jpg
 imageDark: /src/assets/inbox-dark.jpg
 date: 2025-04-01
@@ -9,71 +9,80 @@ company: artificial
 ---
 
 import MediaWrapper from "@/components/MediaWrapper.astro";
+import { UIExample } from "@/components/demos/UIExample";
 
-# Designing a new policy inbox for artificial.io
+import featureImageLight from "@/assets/inbox-feature-light.jpg";
+import featureImageDark from "@/assets/inbox-feature-dark.jpg";
+import inboxFigma from "@/assets/inbox-figma.jpg";
+import inboxFullLight from "@/assets/inbox-full-light.jpg";
+import inboxFullDark from "@/assets/inbox-full-dark.jpg";
 
-Artificial makes complex insurance frictionless with powerful, automated products.
+<MediaWrapper src={featureImageLight} darkSrc={featureImageDark} type="image" />
 
-I joined Artificial late 2024. I lead a project to build a new 'Policies Inbox' on their 'workbench' product.
+Artificial is a Series A Enterprise SaaS company that helps top-performing brokers and carriers transform their speciality placement and underwriting strategies.
 
-The workbench is where undewriters and brokers manage all their policies from inception to expiration. It helps brokers submit policies for underwriters to underwrite and bounce back.
-
-<MediaWrapper
-  src="https://ucarecdn.com/ed78a7a2-b3d5-4080-9bee-62021a5bc3a0/"
-  type="image"
-  alt="New Inbox design"
-/>
+I worked with them to build a new 'Policy Inbox' to help carriers organise and find important policy information. The project lasted eight weeks, from initial discovery to shipping a v1 to beta users. I led the design and implementation, working with the VP of Product and lead engineer, who focused on the core vision and backend.
 
 ## Background
 
-The main landing page was the Inbox. It was essentially a table list of all the policies, organised by when they last updated. However as the product grew, this caused a few problems:
+The Inbox is listing page for all policies, organised by when they last updated. As the product grew, this caused problems:
 
-- Several customers have described their pain when navigating inbox and accessing the information they need, especially when they have many policies loaded into their platform.
-- High-value prospects raised issues about managing renewal policies in the inbox, blocking adoption
-- Lots of customers managed their workflow with Tasks, which were located away from the Inbox and not linked - making it difficult to create flow
-- Originally designed for smaller amounts of policies and throughput
-- There were lots of broken features and bugs that were waiting to be addressed
+- Customers described difficulty navigating and finding the information they need
+- High-value prospects raised issues about managing renewal policies, which blocked sales.
+- Workflows such as Tasks weren't integrated into the Inbox, making it hard to track work done
+- Customers requested custom dashboard due to lack of filtering options
+- Lots of bugs and UX issues reported
 
-The idea was to completely redesign the Inbox to help customers manage lots of different policies, with varying statues. It should help them understand priorities and what work they need to be done.
-Just like your email inbox - the Inbox should help you know what's going on and what to do next.
+This lead to forming a project team of myself, VP of Product, and Lead Engineer to re-imagine the Inbox from ground up. Our goal was to address the above issues, whilst fixing any remaining bugs that stuck around.
+
+<MediaWrapper
+  src={inboxFigma}
+  type="image"
+  alt="Figma board of unused designs, labelling old screenshots"
+  caption="Iterations started by disecting what we wanted to keep and what we wanted to redo"
+/>
 
 ## What we built
 
-The Inbox allows your to view all your policies in one convient place. You can also create custom views according to properties such as lifecycle, customer, date range and more.
-The Inbox is the central place that connects you to a policy, helping you plan your work and get the lay of the land.
+The new Inbox centered around helping customers find information at the point of reterival. Each policy had an average of >100 datapoints, but customers rarely needed all these at once. Different workflows called for prioritising different information. For example, brokers often wanted to see when policies were up for renewal and who the key contact was.
 
-<MediaWrapper
-  src="https://utfs.io/f/0X1QxrmMTXAjv3kvOmweAJ46FwCmiUfbxtHjVu53qpT1EKln"
-  type="video"
-  title="New Policy Inbox for artificial.io workbench"
-/>
+The new experience focused on:
 
-Here are a few examples of what you can do:
+- Scalable filters which enabled customers to surface the information they want
+- Saved views persisted those filters in a menu or via a sharable link
+- Tasks were linked to each policy, with a window to manage and triage them
+- Performance improvements in client-side caching meant the inbox loaded rapidly
 
-- Create tasks for work that needs to be done such as chase up a client for sign-off on an upcoming renewal
-- Look at high-risk policies in one list and triage them to the right team members
-- Assign junior underwriters for data-entry on incoming policies
-- Chase the progress of a quote from an underwriter
+<MediaWrapper src={inboxFullLight} darkSrc={inboxFullDark} type="image" />
 
-### Views
+## Filtering
 
-At the top of the page, users can create and manage their custom views. Organisations can setup views for their underwriters and users can create their own just for themselves.
-Each view is a collection of filters and display options that are re-configured everytime they select the view. Everytime you select a view and return to the page, you're back to the last one you were looking at.
+Filters are powerful when they are combined together. It allows users to create hundreds of different combinations depending on what question they need to answer. For example, if your work focuses on a particular set of clients - you can group them together and filter out the rest.
 
-<MediaWrapper
-  src="https://ucarecdn.com/3b16cb71-5c08-4db5-bcad-2e719414d57b/"
-  type="image"
-  alt="UI for creating custom views"
-/>
+As there are often 100+ columns, each representing a datapoint, we also enabled users to customise the order and visibility - omitting or shifting around columns based on their particular workflow.
 
-### Tasks
+This allows users to create their own views which they can save for ease of use later.
 
-Each policy can have tasks associated with it. You can now view and create tasks directly from the Inbox, helping you manage your workload faster.
-Each policy has a small badge counting the non-completed tasks. Tapping on this opens up a sidebar that shows the relative tasks, allowing you manage and create them.
+<UIExample component="artificial-inbox-filters" client:only="react">
+  Side menu has different levels to store lots of options
+</UIExample>
 
-### Instant loading
+## Views
 
-One of the coolest features saving whatever view the user was last on to our cache. That meant when users returned to the page, the results would load instantly.
-As users went cycled through their saved views, the results would display instantly and then call the API to get any updates.
+At the top of the page, users can create and manage custom views. Organisations can set up views for their underwriters, and users can create their own.
 
-This is important because users are often living in the workbench, completing thousands of small tasks every day. Each second they have to spend looking at a unnecessary loading spinner is wasted time that causes them to break their flow.
+Each view is a collection of filters and display options reconfigured every time they select it. When you select a view and return to the page, you see the last one you were viewing.
+
+<UIExample component="artificial-inbox-tabs" client:only="react">
+  Tip: Drag and drop the tabs to re-order them
+</UIExample>
+
+## Tasks
+
+Each policy can have tasks associated with it. You can view and create tasks directly from the Inbox, helping you manage your workload faster.
+
+A small badge on each policy row, showing the count of tasks, opens up a list of tasks. If there is only one tasks, it opens the tasks directly in edit state. Edits to the task, such as changing the assignee or status, are made automatically after a short debounce.
+
+<UIExample component="artificial-inbox-tasks" client:only="react">
+  Tip: Tasks auto-save making it fast to make edits
+</UIExample>

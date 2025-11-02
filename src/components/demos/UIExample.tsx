@@ -1,11 +1,5 @@
 import * as React from "react";
 import {
-  Tabs,
-  TabsTrigger,
-  TabsList,
-  TabsContent,
-} from "@/components/primitives/Tabs";
-import {
   FilterMenu,
   FilterMenuContent,
   FilterMenuInput,
@@ -20,6 +14,10 @@ import { LantumBulk } from "@/components/demos/LantumBulk";
 import { Button } from "@/components/primitives/Button";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { motion, useAnimation } from "motion/react";
+import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
+import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
+import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
+import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -42,6 +40,9 @@ export function UIExample({
 }) {
   const [key, setKey] = React.useState(0);
   const controls = useAnimation();
+  const resetArtificialInboxStore = useArtificialInboxStore(
+    (state) => state.reset,
+  );
 
   const handleMouseDown = () => {
     controls.start({
@@ -67,30 +68,26 @@ export function UIExample({
   };
 
   const handleRemount = () => {
+    // Reset the ArtificialInbox store if component starts with "artificial-"
+    if (component.startsWith("artificial-")) {
+      resetArtificialInboxStore();
+    }
     setKey((prev) => prev + 1);
   };
 
-  const COMPONENT_MAP = {
-    "filter-menu": <FilterMenuExample />,
-    checkin: <Checkin />,
-    "lantum-grid": <LantumGrid />,
-    "lantum-bulk": <LantumBulk />,
-  };
-
   return (
-    <figure className="flex flex-col justify-center items-center gap-2 my-[2em] demo">
-      <div className="relative grid place-items-center w-full aspect-[3/2] border bg-gray-3 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[image:radial-gradient(var(--pattern-fg)_1px,_transparent_0)] bg-[size:10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
+    <figure className="flex flex-col justify-center items-center gap-2 my-8 demo not-prose overflow-hidden">
+      <div className="relative grid place-items-center w-full aspect-3/2 border bg-gray-2 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[radial-gradient(var(--pattern-fg)_1px,transparent_0)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
         <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
             size="icon"
-            variant="ghost"
             aria-label="Reset demo"
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onClick={handleRemount}
-            className="absolute bottom-2 right-2 text-primary bg-background shadow-xl"
+            className="absolute bottom-2 right-2"
           >
             <motion.div animate={controls}>
               <ArrowPathIcon className="w-4 h-4 opacity-70" />
@@ -115,7 +112,7 @@ export const FilterMenuExample = () => {
 
   return (
     <FilterMenu value={selected} onValueChange={setSelected}>
-      <FilterMenuTrigger className="px-2 w-[160px] inline-flex items-center justify-between h-9 gap-2 bg-gray-1 border transition-all whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0 [&_svg]:opacity-80 text-primary hover:bg-gray-2 active:bg-gray-2 data[state=open]:bg-gray-2 data-[state=open]:bg-gray-2">
+      <FilterMenuTrigger className="px-2 w-[160px] inline-flex items-center justify-between h-9 gap-2 bg-gray-1 border transition-all whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0 [&_svg]:opacity-80 text-primary hover:bg-gray-2 active:bg-gray-2 data[state=open]:bg-gray-2 data-[state=open]:bg-gray-2">
         <div className="flex items-center gap-2">
           {selected.length > 0 ? (
             <div className="w-4 h-4 rounded-full bg-cyan-500" />
@@ -140,4 +137,14 @@ export const FilterMenuExample = () => {
       </FilterMenuContent>
     </FilterMenu>
   );
+};
+
+const COMPONENT_MAP = {
+  "filter-menu": <FilterMenuExample />,
+  checkin: <Checkin />,
+  "lantum-grid": <LantumGrid />,
+  "lantum-bulk": <LantumBulk />,
+  "artificial-inbox-tabs": <ArtificialInboxTabs />,
+  "artificial-inbox-filters": <ArtificialInboxFilters />,
+  "artificial-inbox-tasks": <ArtificialTasks />,
 };

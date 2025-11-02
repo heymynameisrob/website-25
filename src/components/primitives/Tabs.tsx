@@ -12,19 +12,19 @@ export const TabsList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn("flex items-center gap-2 border-b text-primary", className)}
+    className={cn("flex items-center gap-2 text-primary", className)}
     {...props}
   />
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
 
 export const tabsTriggerVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-secondary rounded-md cursor-pointer transition-all focus disabled:opacity-50 disabled:cursor-not-allowed",
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-secondary rounded-md cursor-default transition-all focus disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
         default:
-          "border border-transparent rounded-md hover:bg-gray-50 data-[state=active]:bg-gray-50 data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:border-inherit",
+          "border border-transparent rounded-md hover:bg-gray-3 data-[state=active]:bg-gray-3 data-[state=active]:text-primary data-[state=active]:shadow-xs data-[state=active]:border-inherit",
         underlined:
           "bg-transparent hover:border-gray-300 border-b-2 border-transparent data-[state=active]:text-primary data-[state=active]:border-primary rounded-none data-[state=active]:bg-transparent",
       },
@@ -63,7 +63,7 @@ export const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+      "rounded-lg transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring",
       className,
     )}
     {...props}

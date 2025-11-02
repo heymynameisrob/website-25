@@ -12,6 +12,7 @@ import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import { UIExample } from "@/components/demos/UIExample";
+import { Key } from "src/components/primitives/Key";
 
 Lantum is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
 It helps schedule and manage clinical staff, enables clinicians to find extra (locum) work, and allows them to manage their shifts and time-off.
@@ -92,8 +93,7 @@ Often times lots of similar actions need to be taken at once. A row of shifts mi
 Additionally, powerful bulk actions like 'Delete' or 'Re-assign' can shave lots of repetative work.
 
 <UIExample component="lantum-bulk" client:load>
-  On <kbd className="mr-1">⇧</kbd>
-  <kbd>Click</kbd> over the sessions, we turn on `selecting` mode.
+  Hold <Key>⇧</Key> when clicking a session to activate selecting mode
 </UIExample>
 
 Users are presented with a toolbar containing bulk action options.

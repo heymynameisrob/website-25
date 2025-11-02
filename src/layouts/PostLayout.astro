@@ -1,12 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import Prose from "@/components/Prose.astro";
-
-import { ClockIcon } from "@heroicons/react/16/solid";
-
 import { fromNow } from "@/lib/utils";
-import type { PostFrontmatter } from "@/content.config";
 import HomeNav from "@/components/HomeNav.astro";
+
+import type { PostFrontmatter } from "@/content.config";
 
 interface Props {
   frontmatter: PostFrontmatter & {
@@ -29,11 +27,11 @@ const { frontmatter } = Astro.props;
       class="py-16 2xl:py-32 px-5 flex flex-col justify-center items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:items-center md:text-center"
     >
       <h1
-        class="text-lg max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
+        class="text-lg font-medium max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
       >
         {frontmatter.title}
       </h1>
-      <small class="font-mono font-medium text-sm text-gray-8 uppercase"
+      <small class="font-mono font-[500] text-sm text-gray-8 uppercase"
         >Last updated {fromNow(frontmatter.date, true)}</small
       >
     </header>

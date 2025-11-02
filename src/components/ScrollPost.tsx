@@ -14,7 +14,7 @@ export function ScrollStripPost({
       href={post.data.externalLink ?? `/posts/${post.id}`}
       target={post.data.externalLink ? "_blank" : undefined}
       key={post.id}
-      className="group flex flex-col p-4 gap-4 bg-gray-2 aspect-square h-full shrink-0 rounded-sm border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 2xl:p-8 2xl:gap-8"
+      className="group flex flex-col p-4 gap-4 bg-gray-2 aspect-square h-full shrink-0 rounded-xs border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 2xl:p-8 2xl:gap-8"
       onFocus={(e) => onFocus(e.currentTarget)}
       onKeyDown={onKeyDown}
     >
@@ -34,7 +34,7 @@ export function ScrollStripPost({
                   : undefined
               }
               loading="lazy"
-              className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out dark:hidden"
+              className="absolute inset-0 object-cover object-top-left h-full w-full transition-all duration-400 ease-out dark:hidden"
             />
             <img
               src={post.optimizedImageDarkSrc ?? post.data.imageDark?.src}
@@ -45,7 +45,7 @@ export function ScrollStripPost({
                   : undefined
               }
               loading="lazy"
-              className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out hidden dark:block"
+              className="absolute inset-0 object-cover object-top-left h-full w-full transition-all duration-400 ease-out hidden dark:block"
             />
           </>
         ) : (
@@ -58,7 +58,7 @@ export function ScrollStripPost({
                 : undefined
             }
             loading="lazy"
-            className="absolute inset-0 object-cover object-left-top h-full w-full transition-all duration-400 ease-out"
+            className="absolute inset-0 object-cover object-top-left h-full w-full transition-all duration-400 ease-out"
           />
         )}
       </div>

@@ -36,7 +36,7 @@ export const EmojiPicker = ({
           variant="ghost"
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "h-7 w-7 rounded-md bg-gray-1 hover:bg-gray-2 p-px !text-base focus",
+            "size-7 rounded-md bg-gray-1 hover:bg-gray-3 p-px text-base! focus",
             disabled && "pointer-events-none",
             className,
           )}

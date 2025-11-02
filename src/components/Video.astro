@@ -32,7 +32,7 @@ const { src, title, ratio, ...props } = Astro.props;
         preload="metadata"
         aria-label={title}
         {...props}
-        class="absolute inset-0 w-full h-full object-fit object-cover !m-0"
+        class="absolute inset-0 w-full h-full object-fit object-cover m-0!"
       >
         <source src={src} type="video/mp4" />
       </video>

@@ -82,7 +82,7 @@ export const FilterMenuContent = React.forwardRef<
     align={align}
     sideOffset={sideOffset}
     className={cn(
-      "z-50 w-72 rounded-lg border overflow-hidden bg-background p-0 text-secondary shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      "z-50 w-72 rounded-lg border overflow-hidden bg-background p-0 text-secondary shadow-md outline-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
       className,
     )}
     {...props}
@@ -273,7 +273,7 @@ export const FilterMenuInput = React.forwardRef<
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full h-9 text-sm px-0 border-none outline-none bg-transparent focus:outline-none focus:border-none focus:ring-0"
+        className="w-full h-9 text-sm px-0 border-none outline-hidden bg-transparent focus:outline-hidden focus:border-none focus:ring-0"
         {...props}
       />
     </div>
@@ -302,7 +302,7 @@ export const FilterMenuItem = React.forwardRef<
         setOpen(false);
       }}
       className={cn(
-        "relative flex w-full cursor-default select-none items-center transition-all rounded-md py-1.5 pr-7 pl-2 text-sm  font-medium text-secondary outline-none aria-selected:bg-gray-2 aria-selected:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center transition-all rounded-md py-1.5 pr-7 pl-2 text-sm  font-medium text-secondary outline-hidden aria-selected:bg-gray-2 aria-selected:text-primary data-disabled:pointer-events-none data-disabled:opacity-50",
         "focus-visible:ring-2 focus-visible:ring-ring",
         "dark:hover:bg-gray-3",
         currentValue === value

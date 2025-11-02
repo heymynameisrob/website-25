@@ -11,7 +11,7 @@ export function Key({
   return (
     <kbd
       className={cn(
-        "inline-flex justify-center items-center w-5 h-5 px-0.5 py-px rounded border shadow-sm bg-gray-2 text-primary text-xs font-semibold font-sans dark:bg-gray-6",
+        "inline-flex justify-center items-center w-5 h-5 px-0.5 py-px rounded-sm bg-gray-3 text-primary text-xs font-semibold font-sans dark:bg-gray-6 select-none",
         className,
       )}
     >

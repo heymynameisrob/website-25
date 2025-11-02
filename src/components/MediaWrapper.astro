@@ -4,45 +4,84 @@ import { Media } from "./Media";
 
 interface Props {
   src: string | ImageMetadata;
+  darkSrc?: string | ImageMetadata;
   type: "image" | "video";
   alt: string;
   caption?: string;
 }
 
-const { src, type, alt, caption } = Astro.props;
+const { src, darkSrc, type, alt, caption } = Astro.props;
 
-let previewImage = null;
+let previewImage1x = null;
+let previewImage2x = null;
+let previewDarkImage1x = null;
+let previewDarkImage2x = null;
+let previewSrcSet = null;
+let previewDarkSrcSet = null;
 
-// For local images (either imported ImageMetadata or /src/ paths), try to optimize
+// Process images with Astro to generate srcSet
 if (type === "image") {
-  const isLocal =
-    typeof src === "object" ||
-    (typeof src === "string" && !src.startsWith("http"));
+  try {
+    // Generate 1x and 2x density images
+    previewImage1x = await getImage({
+      src,
+      format: "avif",
+      quality: 100,
+      width: 1000,
+    });
 
-  if (isLocal) {
+    previewImage2x = await getImage({
+      src,
+      format: "avif",
+      quality: 100,
+      width: 2000,
+    });
+
+    previewSrcSet = `${previewImage1x.src} 1x, ${previewImage2x.src} 2x`;
+  } catch (error) {
+    console.warn("Image optimization failed, using original src:", error);
+  }
+
+  // Optimize dark variant if provided
+  if (darkSrc) {
     try {
-      // Smaller preview for the initial view
-      previewImage = await getImage({
-        src,
+      previewDarkImage1x = await getImage({
+        src: darkSrc,
         format: "avif",
         quality: 100,
         width: 1000,
       });
+
+      previewDarkImage2x = await getImage({
+        src: darkSrc,
+        format: "avif",
+        quality: 100,
+        width: 2000,
+      });
+
+      previewDarkSrcSet = `${previewDarkImage1x.src} 1x, ${previewDarkImage2x.src} 2x`;
     } catch (error) {
-      console.warn("Image optimization failed, using original src:", error);
+      console.warn(
+        "Dark image optimization failed, using original src:",
+        error,
+      );
     }
   }
 }
 
 // Convert ImageMetadata to string for React component
 const srcString = typeof src === "object" ? src.src : src;
+const darkSrcString =
+  darkSrc && typeof darkSrc === "object" ? darkSrc.src : darkSrc;
 ---
 
 <Media
   src={srcString}
-  previewSrc={previewImage?.src}
+  previewSrcSet={previewSrcSet ?? undefined}
+  darkSrc={darkSrcString}
+  previewDarkSrcSet={previewDarkSrcSet ?? undefined}
   type={type}
-  alt={alt}
+  alt={alt ?? "presentation"}
   caption={caption}
   client:load
 />

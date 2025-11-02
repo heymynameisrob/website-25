@@ -143,7 +143,7 @@ function CheckinSubmit() {
     <div className="flex flex-col gap-3 p-3 w-[480px] bg-gray-2 shadow-[0_1px_0_0_rgba(0,0,0,0.01),0_1px_3px_0_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.01),0_1px_3px_0_rgba(255,255,255,0.05),0_0_0_1px_rgba(255,255,255,0.1)] rounded-lg">
       <div className="flex items-center gap-2">
         <div className="size-4 rounded-full bg-green-500" />
-        <p className="text-sm font-medium !text-primary !my-0">Rob Hough</p>
+        <p className="text-sm font-medium text-primary! my-0!">Rob Hough</p>
       </div>
       <TextEditor
         content={content}
@@ -152,7 +152,7 @@ function CheckinSubmit() {
         onFocus={() => setShowActivity(true)}
         onMount={(editor) => (editorRef.current = editor)}
         placeholder="What did you accomplish today?"
-        className="max-h-[200px] min-h-[88px] overflow-y-scroll outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="max-h-[200px] min-h-[88px] overflow-y-scroll outline-hidden focus-visible:ring-0 focus-visible:ring-offset-0"
       />
       <div className="flex items-center justify-between gap-2 ">
         {showActivity ? (
@@ -218,8 +218,8 @@ function CheckinView() {
         <div className="flex items-center gap-2 mb-2">
           <div className="size-4 rounded-full bg-green-500" />
           <div className="flex items-baseline gap-1">
-            <p className="text-sm font-medium !text-primary !my-0">Rob Hough</p>
-            <p className="text-sm text-secondary !my-0">
+            <p className="text-sm font-medium text-primary! my-0!">Rob Hough</p>
+            <p className="text-sm text-secondary my-0!">
               {fromNow(checkin.createdAt)}
             </p>
           </div>
@@ -283,7 +283,7 @@ function CheckinComments() {
           onUpdate={(content) => setContent(content)}
           onKeyDown={handleKeyDown}
           placeholder="Write a comment..."
-          className="min-w-[300px] px-2 outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="min-w-[300px] px-2 outline-hidden focus-visible:ring-0 focus-visible:ring-offset-0"
         />
 
         <Tooltip content="Post">
@@ -315,8 +315,8 @@ function CheckinComment({ comment }: { comment: Comment }) {
       <div className="flex items-center gap-3">
         <div className="size-4 rounded-full bg-green-500" />
         <div className="flex items-baseline gap-1.5">
-          <p className="text-sm font-medium text-primary !my-0">Rob Hough</p>
-          <p className="text-xs text-secondary !my-0">
+          <p className="text-sm font-medium text-primary my-0!">Rob Hough</p>
+          <p className="text-xs text-secondary my-0!">
             {fromNow(new Date(comment.createdAt))}
           </p>
         </div>
@@ -470,7 +470,7 @@ function CheckinActivity() {
     <div className="relative">
       <div className="absolute top-1 bottom-1 left-2.5 w-px bg-gray-4 z-0"></div>
       <AnimatePresence mode="popLayout">
-        <ul className="flex flex-col !p-0 !m-0 gap-3">
+        <ul className="flex flex-col p-0! m-0! gap-3">
           {ACTIVITY.map((activity, index) => (
             <motion.li
               key={index}
@@ -483,7 +483,7 @@ function CheckinActivity() {
                 duration: 0.2,
                 delay: index * 0.1,
               }}
-              className="flex items-center gap-2 !p-0 !m-0"
+              className="flex items-center gap-2 p-0! m-0!"
             >
               <div
                 className={cn(
