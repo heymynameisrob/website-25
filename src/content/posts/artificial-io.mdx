@@ -21,47 +21,47 @@ import inboxFullDark from "@/assets/inbox-full-dark.jpg";
 
 Artificial is a Series A Enterprise SaaS company that helps top-performing brokers and carriers transform their speciality placement and underwriting strategies.
 
-I worked with them to build a new 'Policy Inbox' to help carriers organise and find important policy information. The project lasted eight weeks, from initial discovery to shipping a v1 to beta users. I led the design and implementation, working with the VP of Product and lead engineer, who focused on the core vision and backend.
+I worked with them to build a new 'Policy Inbox' to help carriers organise and find important policy information. The project lasted eight weeks, from initial discovery to shipping a v1 to beta users. I led the design and implementation, working with the VP of Product on the core vision and the lead engineer on the data layer.
 
 ## Background
 
-The Inbox is listing page for all policies, organised by when they last updated. As the product grew, this caused problems:
+The Inbox is a listing page for all policies, organised by when they were last updated. As the product grew, this caused problems:
 
-- Customers described difficulty navigating and finding the information they need
-- High-value prospects raised issues about managing renewal policies, which blocked sales.
+- Customers struggled to navigate and find the information they needed
+- High-value prospects raised issues about managing renewal policies. This blocked sales.
 - Workflows such as Tasks weren't integrated into the Inbox, making it hard to track work done
 - Customers requested custom dashboard due to lack of filtering options
 - Lots of bugs and UX issues reported
 
-This lead to forming a project team of myself, VP of Product, and Lead Engineer to re-imagine the Inbox from ground up. Our goal was to address the above issues, whilst fixing any remaining bugs that stuck around.
+This led to forming a project team of myself, VP of Product, and Lead Engineer to re-imagine the Inbox from the ground up. Our goal was to address the above issues, whilst fixing any remaining bugs that stuck around.
 
 <MediaWrapper
   src={inboxFigma}
   type="image"
   alt="Figma board of unused designs, labelling old screenshots"
-  caption="Iterations started by disecting what we wanted to keep and what we wanted to redo"
+  caption="Iterations started by dissecting what we wanted to keep and what we wanted to redo"
 />
 
 ## What we built
 
-The new Inbox centered around helping customers find information at the point of reterival. Each policy had an average of >100 datapoints, but customers rarely needed all these at once. Different workflows called for prioritising different information. For example, brokers often wanted to see when policies were up for renewal and who the key contact was.
+The new Inbox centred around helping customers find information when they needed it. Each policy had over 100 data points, but customers rarely needed all of them at once. Different workflows called for prioritising different information. For example, brokers often wanted to see when policies were up for renewal and who the key contact was.
 
 The new experience focused on:
 
-- Scalable filters which enabled customers to surface the information they want
-- Saved views persisted those filters in a menu or via a sharable link
-- Tasks were linked to each policy, with a window to manage and triage them
-- Performance improvements in client-side caching meant the inbox loaded rapidly
+- Scalable filters that enabled customers to surface the information they wanted
+- Saved views that stored those filters in a menu or via a shareable link
+- Tasks linked to each policy, with a window to manage and triage them
+- Performance improvements through client-side caching so the inbox loaded rapidly
 
 <MediaWrapper src={inboxFullLight} darkSrc={inboxFullDark} type="image" />
 
 ## Filtering
 
-Filters are powerful when they are combined together. It allows users to create hundreds of different combinations depending on what question they need to answer. For example, if your work focuses on a particular set of clients - you can group them together and filter out the rest.
+Filters are powerful when combined together. This allowed users to create hundreds of different combinations depending on what question they needed to answer. For example, if your work focuses on a particular set of clients, you can group them together and filter out the rest.
 
-As there are often 100+ columns, each representing a datapoint, we also enabled users to customise the order and visibility - omitting or shifting around columns based on their particular workflow.
+As there are often 100+ columns, each representing a data point, we enabled users to customise the order and visibility, omitting or shifting columns based on their workflow.
 
-This allows users to create their own views which they can save for ease of use later.
+This allows users to create their own views which they can save for later.
 
 <UIExample component="artificial-inbox-filters" client:only="react">
   Side menu has different levels to store lots of options
@@ -71,7 +71,7 @@ This allows users to create their own views which they can save for ease of use 
 
 At the top of the page, users can create and manage custom views. Organisations can set up views for their underwriters, and users can create their own.
 
-Each view is a collection of filters and display options reconfigured every time they select it. When you select a view and return to the page, you see the last one you were viewing.
+Each view is a collection of filters and display options applied every time they select it. When you select a view and return to the page, you see the last one you were viewing.
 
 <UIExample component="artificial-inbox-tabs" client:only="react">
   Tip: Drag and drop the tabs to re-order them
@@ -81,7 +81,7 @@ Each view is a collection of filters and display options reconfigured every time
 
 Each policy can have tasks associated with it. You can view and create tasks directly from the Inbox, helping you manage your workload faster.
 
-A small badge on each policy row, showing the count of tasks, opens up a list of tasks. If there is only one tasks, it opens the tasks directly in edit state. Edits to the task, such as changing the assignee or status, are made automatically after a short debounce.
+Each policy row shows a badge with the task count. Clicking it opens the task list. If there is only one task, it opens that task directly in edit state. Edits to the task, such as changing the assignee or status, are saved automatically after a short debounce.
 
 <UIExample component="artificial-inbox-tasks" client:only="react">
   Tip: Tasks auto-save making it fast to make edits

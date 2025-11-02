@@ -28,4 +28,4 @@ export interface ToolbarMenuProps {
   onClose: () => void;
 }
 
-export type ToolbarStatus = 'idle' | 'selecting' | 'toast';
+export type ToolbarStatus = "idle" | "selecting" | "toast";

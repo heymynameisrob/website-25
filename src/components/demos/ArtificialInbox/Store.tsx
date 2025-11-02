@@ -100,7 +100,8 @@ export const useArtificialInboxStore = create<ArtificialInboxState>()(
       setSortBy: (sortBy) => set({ sortBy }),
       setLayout: (layout) => set({ layout }),
       setTask: (task) => set({ task }),
-      setTaskTitle: (title) => set((state) => ({ task: { ...state.task, title } })),
+      setTaskTitle: (title) =>
+        set((state) => ({ task: { ...state.task, title } })),
       setTaskDate: (dueDate) =>
         set((state) => ({ task: { ...state.task, dueDate } })),
       setTaskStatus: (status) =>
@@ -112,8 +113,8 @@ export const useArtificialInboxStore = create<ArtificialInboxState>()(
     {
       name: "artificial-inbox-task",
       partialize: (state) => ({ task: state.task }),
-    }
-  )
+    },
+  ),
 );
 
 export const selectHasChanges = (state: ArtificialInboxState) =>
