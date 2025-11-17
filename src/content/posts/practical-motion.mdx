@@ -1,0 +1,154 @@
+---
+title: Practical Motion
+description: Notes on how to what I've learnt on using motion in web application interfaces
+image: /src/assets/inbox-light.jpg
+imageDark: /src/assets/inbox-dark.jpg
+date: 2025-11-20
+type: "post"
+---
+
+Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
+
+I've mostly designed for the web, so our animation capabilities have grown a lot over the years.
+
+The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now acustom to seeing. Even with new API's and browser capability, this poses challenges on the web.
+
+That said, I personally believe that animations bring life to web interfaces, when used in subtle ways.
+
+This post is a series of tips and tricks, as well as best practices, I've learnt over the years to include subtle animations into interfaces.
+
+---
+
+## Simulate physical reality
+
+Animations (and interactions generally) work best when they mirror our natural world. For example, heavier objects have more mass, and therefore require more force to move them. This should apply to interface elements. You should balance the objects size, position, and inertia when thinking about how to orchestrate animations.
+
+For example, don't animate for `scale(0)`. In nature, even if elements change size (e.g a balloon) it doesn't appear out of nowhere. Animating from a higher value like `scale(0.8)` makes the animation feel more real.
+
+## No animation
+
+When adding animation, it's very easy to 'over egg the omelete'. Especially with interactions, no animation is preferable. Most interactions on web application are tiny and fequent. Adding transition and animations only makes the interface feel sluggish. It's best to be sparing, adding animation after establishing the core interface behaviour.
+
+Something as trivial moving focus on hover feels sluggish if animated. Default to no animation, especially for frequent, trivial interactions.
+
+## Use CSS for most things
+
+## Easings and Duration
+
+With easings, it can be fun to play around with the different variations. However, when not using spring animations, you only need a few:
+
+- `ease-out` when elements appear/disappear
+- `ease-in-out` when elements change size or position
+- `linear` when using repeating animations
+
+I also have found that the stock easing isn't very good and prefer to use these ones:
+
+```css
+:root {
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+```
+
+## Crossfade
+
+When animating between two elements, adding a small amount of `blur` helps cross fade them into one another.
+
+Adding the blur to this button example, along with a little bit of scale, helps the two icons blend into one another.
+
+---
+
+## Calendar
+
+Animating transitions between states, such as changing the month on a calendar, can bring the interface to life.
+
+You _can_ use pure CSS animations for this, but I personally it a bit fiddly when working with Reacts lifecycle. It can be easier to use React Motion if you have the package already.
+
+[EXAMPLE DEMO]
+
+Here we're using React Motion to animate between two states, determined by changing the state of `key` on the motion component. The container determines the start, middle, and end state of the animation - triggered when `month` changes.
+
+```tsx
+<AnimatePresence initial={false}>
+  <motion.div
+    key={month}
+    inital={{ x: 40, opacity: 0, filter: "blur(2px)" }}
+    animate={{ x: 0, opacity: 1, filter: "blur(0px)" }}
+    exist={{ x: -40, opacity: 0, filter: "blur(2px)" }}
+    transition={{ type: "spring", bounce: 0, duration: 0.4 }} // Consider using ease-out
+  >
+    {month}
+  </motion.div>
+</AnimatePresence>
+```
+
+Using `AnimatePresence` helps tell React that when unmounting this component, what to do with it's animation.
+
+Animate between states (e.g calendar or dialog)
+
+## Animating gradients
+
+Gradients are useful primitives to animate. You can create interesting visual expressions by animating an element with a gradient or the gradient itself.
+
+[EXAMPLE]
+
+In this example, we're animating a `conic` gradient, layering on top another element to exclude it. This creates a path effect that looks like the light is moving around the element. Cool!
+
+```html
+<div class="relative p-0.5 rounded-[22px] overflow-hidden">
+  <div
+    class="absolute -inset-10 bg-[conic-gradient(from_0deg,transparent_0%,var(--color-accent)_25%,transparent_35%)] animate-spin"
+  ></div>
+  <div className="grid place-items-center p-1 rounded-2xl">...</div>
+</div>
+```
+
+## Responsive container
+
+Adapting the height of the container to the content helps reduce wasted space and focuses the attention on the content. However it can be jarring if suddenly the whole layout shifts instantly.
+
+Measuring the inner content and animating the `height` value can adapt the container nicely to the content whenever it changes.
+
+```tsx
+const [ref, bounds] = useMeasure();
+
+<AnimatePresence mode="wait" initial={false}>
+  <motion.div
+    animate={{ height: bounds.height }}
+    transition={{ type: "spring", bounce: 0, duration: 0.2 }}
+  >
+    <div ref={ref} className="inner-content">
+      ...
+    </div>
+  </motion.div>
+</AnimatePresence>;
+```
+
+## Magic Text
+
+Carefully using orchestration allows you to create more interesting animations. One of the best and simplest techniques for orchestration is **staggering**. By staggering each character, we can animate the text in like magic!
+
+Seperating each word or character allows us more control. Always remember to add the full text for screen readers so they don't announce each word seperately.
+
+```tsx
+<div>
+  <span className="sr-only">{word}</span>
+  {[...word].map((letter, letterIndex) => (
+    <motion.span
+      key={letterIndex}
+      initial={{ y: 8, originY: 0.2, opacity: 0, filter: "blur(2px)" }}
+      animate={{
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+      }}
+    >
+      {letter}
+    </motion.span>
+  ))}
+</div>
+```
+
+## Blinking cursor
+
+Animating linear transiton like gradient loading or blinking cursor

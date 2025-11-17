@@ -1,0 +1,11 @@
+---
+import { CodeBlock } from "@/components/CodeBlock";
+
+const props = Astro.props;
+---
+
+<div class="my-12 not-prose text-sm">
+  <CodeBlock client:load {...props}>
+    <slot />
+  </CodeBlock>
+</div>
