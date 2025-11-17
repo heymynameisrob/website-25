@@ -7,6 +7,8 @@ date: 2025-11-20
 type: "post"
 ---
 
+import { UIExample } from "@/components/demos/UIExample";
+
 Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
 I've mostly designed for the web, so our animation capabilities have grown a lot over the years.
@@ -107,48 +109,52 @@ In this example, we're animating a `conic` gradient, layering on top another ele
 
 Adapting the height of the container to the content helps reduce wasted space and focuses the attention on the content. However it can be jarring if suddenly the whole layout shifts instantly.
 
+<UIExample component="motion-responsive" client:load />
+
 Measuring the inner content and animating the `height` value can adapt the container nicely to the content whenever it changes.
 
 ```tsx
 const [ref, bounds] = useMeasure();
 
-<AnimatePresence mode="wait" initial={false}>
-  <motion.div
-    animate={{ height: bounds.height }}
-    transition={{ type: "spring", bounce: 0, duration: 0.2 }}
-  >
-    <div ref={ref} className="inner-content">
-      ...
-    </div>
-  </motion.div>
-</AnimatePresence>;
+<motion.div
+  animate={{ height: bounds.height }}
+  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+>
+  <div ref={ref} className="inner-content">
+    ...
+  </div>
+</motion.div>;
 ```
 
 ## Magic Text
 
 Carefully using orchestration allows you to create more interesting animations. One of the best and simplest techniques for orchestration is **staggering**. By staggering each character, we can animate the text in like magic!
 
-Seperating each word or character allows us more control. Always remember to add the full text for screen readers so they don't announce each word seperately.
+<UIExample component="motion-magic-text" client:load>
+  Using a slight blur and spring animation brings this to life
+</UIExample>
+
+Seperating each word allows us more control. Always remember to add the full text for screen readers so they don't announce each word seperately.
 
 ```tsx
 <div>
   <span className="sr-only">{word}</span>
-  {[...word].map((letter, letterIndex) => (
+  {words.map((w, i) => (
     <motion.span
-      key={letterIndex}
-      initial={{ y: 8, originY: 0.2, opacity: 0, filter: "blur(2px)" }}
-      animate={{
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
+      key={i}
+      initial={{ y: 16, originY: 0.2, filter: "blur(4px)", opacity: 0 }}
+      animate={{ y: 0, originY: 0.2, filter: "blur(0px)", opacity: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 250,
+        damping: 30,
+        delay: i * 0.05,
       }}
     >
-      {letter}
+      {w}
     </motion.span>
   ))}
 </div>
 ```
 
 ## Blinking cursor
-
-Animating linear transiton like gradient loading or blinking cursor

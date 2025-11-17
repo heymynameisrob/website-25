@@ -16,7 +16,7 @@ export type ArtificialTableOptionsProps = {
   activeTab?: ArtificialInboxTypes;
 };
 
-function getDeterministicWidth(index: number) {
+export function getDeterministicWidth(index: number) {
   const ranges = [
     { min: 200, max: 350 },
     { min: 150, max: 280 },

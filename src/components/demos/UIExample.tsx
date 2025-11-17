@@ -18,6 +18,8 @@ import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
+import { MagicText } from "@/components/demos/motion/MagicText";
+import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -147,4 +149,8 @@ const COMPONENT_MAP = {
   "artificial-inbox-tabs": <ArtificialInboxTabs />,
   "artificial-inbox-filters": <ArtificialInboxFilters />,
   "artificial-inbox-tasks": <ArtificialTasks />,
+  "motion-magic-text": (
+    <MagicText title="There's one word for that: Magic Text!" />
+  ),
+  "motion-responsive": <ResponsiveContainer />,
 };
