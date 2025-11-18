@@ -20,6 +20,8 @@ import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Stor
 import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
 import { MagicText } from "@/components/demos/motion/MagicText";
 import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
+import { Calendar } from "@/components/demos/Calendar";
+import { Loader } from "@/components/demos/motion/Loader";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -153,4 +155,6 @@ const COMPONENT_MAP = {
     <MagicText title="There's one word for that: Magic Text!" />
   ),
   "motion-responsive": <ResponsiveContainer />,
+  "motion-calendar": <Calendar />,
+  "motion-loader": <Loader />,
 };

@@ -9,66 +9,70 @@ type: "post"
 
 import { UIExample } from "@/components/demos/UIExample";
 
-Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
+A series of learnings about adding motion into user interfaces on the web. I've learnt a lot of these over the years, particularly when working with React.
 
-I've mostly designed for the web, so our animation capabilities have grown a lot over the years.
+[FEATURE ANIMATED GIF/VIDEO]
+
+## Why animations are useful
+
+Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
 The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now acustom to seeing. Even with new API's and browser capability, this poses challenges on the web.
 
-That said, I personally believe that animations bring life to web interfaces, when used in subtle ways.
-
-This post is a series of tips and tricks, as well as best practices, I've learnt over the years to include subtle animations into interfaces.
-
 ---
 
-## Simulate physical reality
+## Easings & Duration
 
-Animations (and interactions generally) work best when they mirror our natural world. For example, heavier objects have more mass, and therefore require more force to move them. This should apply to interface elements. You should balance the objects size, position, and inertia when thinking about how to orchestrate animations.
+Easing and duration determine how an animation _feels_.
 
-For example, don't animate for `scale(0)`. In nature, even if elements change size (e.g a balloon) it doesn't appear out of nowhere. Animating from a higher value like `scale(0.8)` makes the animation feel more real.
+This plays an important role what the animation communicates.
+Easing and duration can also influence the perception of speed. The popover on the left below uses `ease-in` easing, which starts slow. The one on the right uses `ease-out`, which makes the animation feel faster.
 
-## No animation
+[DEMO]
 
-When adding animation, it's very easy to 'over egg the omelete'. Especially with interactions, no animation is preferable. Most interactions on web application are tiny and fequent. Adding transition and animations only makes the interface feel sluggish. It's best to be sparing, adding animation after establishing the core interface behaviour.
-
-Something as trivial moving focus on hover feels sluggish if animated. Default to no animation, especially for frequent, trivial interactions.
-
-## Use CSS for most things
-
-## Easings and Duration
-
-With easings, it can be fun to play around with the different variations. However, when not using spring animations, you only need a few:
-
-- `ease-out` when elements appear/disappear
-- `ease-in-out` when elements change size or position
-- `linear` when using repeating animations
-
-I also have found that the stock easing isn't very good and prefer to use these ones:
+To know what easing & duration to choose, it comes down to experimentation. However I've found I usually stick to `150ms - 300ms` and these easings:
 
 ```css
 :root {
+  /* Elements enter/leave the viewport */
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* Elements change position on the viewport */
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* Use linear for constant, keyframe animations */
 }
 ```
 
-## Crossfade
+---
 
-When animating between two elements, adding a small amount of `blur` helps cross fade them into one another.
+## Gestures
 
-Adding the blur to this button example, along with a little bit of scale, helps the two icons blend into one another.
+Gestures are inherent parts of user interfaces. We use them constantly to trigger events (e.g clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
+
+[DEMO]
+
+Adding `active:scale-[0.98]` to the button is a low-effort way to make the click feel much more tactile
 
 ---
 
-## Calendar
+## Using clip-path animations
 
-Animating transitions between states, such as changing the month on a calendar, can bring the interface to life.
+`clip-path` is an often overlooked CSS function, typically used to drawing shapes around nodes. But it works great for creating interesting animations.
 
-You _can_ use pure CSS animations for this, but I personally it a bit fiddly when working with Reacts lifecycle. It can be easier to use React Motion if you have the package already.
+[DEMO]
 
-[EXAMPLE DEMO]
+Stacking these images and adding `clip-path: (0 var(--pos) 0 0)` whilst we animating the value (e.g 50%) creates this before/after slider.
 
-Here we're using React Motion to animate between two states, determined by changing the state of `key` on the motion component. The container determines the start, middle, and end state of the animation - triggered when `month` changes.
+---
+
+## Between states
+
+Animating transitions between states, such as changing the month on a calendar, can bring the interface to life. When orchestrating motion like this, I use React Motion as working with pure CSS can be fiddly.
+
+<UIExample component="motion-calendar" client:load />
+
+Motion is determined by the state of `key` on the motion component. The container determines the start, middle, and end state of the animation - triggered when `month` changes.
 
 ```tsx
 <AnimatePresence initial={false}>
@@ -84,30 +88,38 @@ Here we're using React Motion to animate between two states, determined by chang
 </AnimatePresence>
 ```
 
-Using `AnimatePresence` helps tell React that when unmounting this component, what to do with it's animation.
-
-Animate between states (e.g calendar or dialog)
+---
 
 ## Animating gradients
 
-Gradients are useful primitives to animate. You can create interesting visual expressions by animating an element with a gradient or the gradient itself.
+Gradients are useful primitives to animate. You can create interesting visual expressions by animating an element with a gradient or the gradient itself. By layering elements on top of animating gradients, you can creating novel light-based animations that work well for interesting loaders.
 
-[EXAMPLE]
+<UIExample component="motion-loader" client:load />
 
-In this example, we're animating a `conic` gradient, layering on top another element to exclude it. This creates a path effect that looks like the light is moving around the element. Cool!
+In this example, we're animating a `conic` gradient, layering on top another element to exclude it. When the state changes from `loading` to `success` when changing the gradient and stop the linear animation so the spinner fades out.
 
 ```html
-<div class="relative p-0.5 rounded-[22px] overflow-hidden">
+<div
+  className="relative flex items-center justify-center overflow-hidden rounded-full p-[2px]"
+>
   <div
     class="absolute -inset-10 bg-[conic-gradient(from_0deg,transparent_0%,var(--color-accent)_25%,transparent_35%)] animate-spin"
   ></div>
-  <div className="grid place-items-center p-1 rounded-2xl">...</div>
+  <div
+    className="z-1 flex items-center justify-center rounded-full bg-gray-2 p-0.5"
+  >
+    <div className="size-[64px] grid place-items-center p-1 rounded-2xl">
+      ...
+    </div>
+  </div>
 </div>
 ```
 
-## Responsive container
+---
 
-Adapting the height of the container to the content helps reduce wasted space and focuses the attention on the content. However it can be jarring if suddenly the whole layout shifts instantly.
+## Animating layout
+
+Animating layout can cause layout shifts and expensive repainting if you're not careful. But changing the dimensions of a container helps reduce wasted space and focuses the attention.
 
 <UIExample component="motion-responsive" client:load />
 
@@ -125,6 +137,8 @@ const [ref, bounds] = useMeasure();
   </div>
 </motion.div>;
 ```
+
+---
 
 ## Magic Text
 
@@ -156,5 +170,3 @@ Seperating each word allows us more control. Always remember to add the full tex
   ))}
 </div>
 ```
-
-## Blinking cursor

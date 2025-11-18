@@ -148,36 +148,34 @@ export function Calendar() {
       }}
     >
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
-        <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-background">
+        <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-background rounded-xl border">
           <div className="py-6">
             <div className="flex flex-col justify-center rounded-sm text-center">
-              <Resizeable>
-                <motion.div
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0}
-                  style={{ x, opacity }}
-                  className="touch-pan-y"
-                  onDragEnd={handleDragEnd}
+              <motion.div
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0}
+                style={{ x, opacity }}
+                className="touch-pan-y"
+                onDragEnd={handleDragEnd}
+              >
+                <AnimatePresence
+                  mode="popLayout"
+                  initial={false}
+                  custom={direction}
+                  onExitComplete={() => setIsAnimating(false)}
                 >
-                  <AnimatePresence
-                    mode="popLayout"
-                    initial={false}
-                    custom={direction}
-                    onExitComplete={() => setIsAnimating(false)}
+                  <motion.div
+                    key={monthLabel}
+                    initial="enter"
+                    animate="middle"
+                    exit="exit"
                   >
-                    <motion.div
-                      key={monthLabel}
-                      initial="enter"
-                      animate="middle"
-                      exit="exit"
-                    >
-                      <CalendarHeader />
-                      <CalendarMonth />
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
-              </Resizeable>
+                    <CalendarHeader />
+                    <CalendarMonth />
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
             </div>
           </div>
         </div>
