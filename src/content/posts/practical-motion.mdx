@@ -90,34 +90,36 @@ Motion is determined by the state of `key` on the motion component. The containe
 
 ---
 
-## Animating gradients
+## Feedback and status
 
-Gradients are useful primitives to animate. You can create interesting visual expressions by animating an element with a gradient or the gradient itself. By layering elements on top of animating gradients, you can creating novel light-based animations that work well for interesting loaders.
+Animations provide feedback during pending states, transforming empty waiting time into perceived progress. It's common to see a loading spinner, but you can do so much more with it.
 
-<UIExample component="motion-loader" client:load />
+<UIExample component="motion-thinking" client:load />
 
-In this example, we're animating a `conic` gradient, layering on top another element to exclude it. When the state changes from `loading` to `success` when changing the gradient and stop the linear animation so the spinner fades out.
+Here we see different tool calls from an LLM. Beyond the `pending` and `resolved` state, there are sub-states for each tool call. With some React Motion, we can animate both.
 
-```html
-<div
-  className="relative flex items-center justify-center overflow-hidden rounded-full p-[2px]"
->
-  <div
-    class="absolute -inset-10 bg-[conic-gradient(from_0deg,transparent_0%,var(--color-accent)_25%,transparent_35%)] animate-spin"
-  ></div>
-  <div
-    className="z-1 flex items-center justify-center rounded-full bg-gray-2 p-0.5"
-  >
-    <div className="size-[64px] grid place-items-center p-1 rounded-2xl">
-      ...
-    </div>
-  </div>
+```tsx
+<div className="relative h-5 w-56 overflow-hidden">
+  <AnimatePresence initial={false}>
+    <motion.span
+      key={index}
+      className={cn(
+        "absolute inset-0 text-sm font-medium text-gray-12 select-none",
+      )}
+      initial={{ y: 8, opacity: 0, filter: "blur(1px)" }}
+      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+      exit={{ y: -8, opacity: 0, filter: "blur(1px)" }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      {STATUSES[index]}...
+    </motion.span>
+  </AnimatePresence>
 </div>
 ```
 
 ---
 
-## Animating layout
+## Responsive size
 
 Animating layout can cause layout shifts and expensive repainting if you're not careful. But changing the dimensions of a container helps reduce wasted space and focuses the attention.
 

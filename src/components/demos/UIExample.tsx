@@ -22,6 +22,7 @@ import { MagicText } from "@/components/demos/motion/MagicText";
 import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
 import { Calendar } from "@/components/demos/Calendar";
 import { Loader } from "@/components/demos/motion/Loader";
+import { Thinking } from "@/components/demos/motion/Thinking";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -157,4 +158,5 @@ const COMPONENT_MAP = {
   "motion-responsive": <ResponsiveContainer />,
   "motion-calendar": <Calendar />,
   "motion-loader": <Loader />,
+  "motion-thinking": <Thinking />,
 };
