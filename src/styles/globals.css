@@ -473,6 +473,15 @@
     }
   }
 
+  @keyframes checkboxFill {
+    0% {
+      stroke: var(--accent);
+    }
+    100% {
+      stroke: #fff;
+    }
+  }
+
   :root {
     --gray-1: hsl(150, 33%, 99%);
     --gray-2: hsl(150, 14%, 97%);

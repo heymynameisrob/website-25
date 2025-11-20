@@ -1,7 +1,8 @@
-import { motion } from "motion/react";
+import { motion, useSpring } from "motion/react";
 import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { CircleIcon } from "lucide-react";
 import * as React from "react";
+import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { id: 1, title: "Research user needs", completed: true },
@@ -39,22 +40,39 @@ export function List() {
               });
             }}
           >
-            <motion.div
-              key={String(item.completed)}
-              initial={{ scale: 0.98, opacity: 0, filter: "blur(2px)" }}
-              animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-              transition={{ ease: "easeOut", duration: 0.1 }}
-            >
-              {item.completed ? (
-                <CheckCircleIcon className="size-5 shrink-0 transition-colors text-accent" />
-              ) : (
-                <CircleIcon className="size-5 shrink-0" />
+            <div
+              className={cn(
+                "relative pointer-events-none w-5 h-5 rounded-lg transition-all duration-300 shrink-0",
+                item.completed
+                  ? "bg-accent shadow-[inset_0_0_0_2px_var(--accent)] delay-[400ms]"
+                  : "shadow-[inset_0_0_0_2px_var(--border)]",
               )}
-            </motion.div>
+            >
+              <svg
+                viewBox="0 0 21 21"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={cn(
+                  "absolute inset-0 w-full h-full fill-none",
+                  item.completed &&
+                    "animate-[checkboxFill_600ms_ease_forwards_300ms]",
+                )}
+                style={{
+                  strokeDasharray: item.completed ? "16 86.12" : "86.12",
+                  strokeDashoffset: item.completed ? "102.22" : "86.12",
+                  transition: "stroke-dasharray 600ms, stroke-dashoffset 600ms",
+                  stroke: "var(--accent)",
+                }}
+              >
+                <path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L7,1 C4,1 1,4 1,7 L1,14 C1,17 4,20 7,20 L14,20 C17,20 20,17 20,14 L20,7.99769186" />
+              </svg>
+            </div>
             <span
-              className={`text-sm font-medium ${
-                item.completed ? "text-gray-11 line-through" : "text-primary"
-              }`}
+              className={cn(
+                "text-sm font-medium",
+                item.completed ? "text-gray-11 line-through" : "text-primary",
+              )}
             >
               {item.title}
             </span>
