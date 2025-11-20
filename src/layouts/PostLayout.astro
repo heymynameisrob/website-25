@@ -1,9 +1,8 @@
 ---
+import Navbar from "@/components/Navbar.astro";
 import Prose from "@/components/Prose.astro";
 import Layout from "@/layouts/Layout.astro";
 
-import Avatar from "@/components/Avatar.astro";
-import HR from "@/components/primitives/Divider.astro";
 import type { PostFrontmatter } from "@/content.config";
 
 interface Props {
@@ -21,10 +20,10 @@ const { frontmatter } = Astro.props;
   og={frontmatter.og}
   canonical={frontmatter.canonical}
 >
+  <Navbar />
   <div
-    class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center gap-16 pt-16 lg:pt-24 lg:gap-24"
+    class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center gap-16 pb-16 pt-16 lg:pt-24 lg:gap-24"
   >
-    <a href="/" aria-label="Go back"><Avatar /></a>
     <header class="flex flex-col justify-center items-center text-center">
       <h1
         class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance"

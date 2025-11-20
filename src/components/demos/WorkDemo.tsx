@@ -8,20 +8,23 @@ import { Calculator } from "@/components/demos/Calculator";
 import { Form } from "@/components/demos/Form";
 import { cn } from "@/lib/utils";
 import { Thinking } from "@/components/demos/motion/Thinking";
-import { MagicText } from "@/components/demos/motion/MagicText";
+import { MagicText } from "@/components/demos/MagicText";
 import { Button, buttonVariants } from "@/components/primitives/Button";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { Code2Icon, FullscreenIcon, RefreshCcw } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/16/solid";
+import { CushionCommand } from "@/components/demos/CushionCommand";
+import { TextStream } from "@/components/demos/TextStream";
+import { Toolbar } from "@/components/demos/Toolbar";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
   setActiveComponentId: (id: string | null) => void;
 } | null;
 
-type TechTypes = "react" | "tailwind" | "motion" | "next";
+type TechTypes = "react" | "tailwind" | "motion" | "next" | "tiptap";
 
 interface ComponentItem {
   id: string;
@@ -64,7 +67,12 @@ const STAGGER_TRANSITIONS = {
   heading: { ease: "easeOut" as const, duration: 0.2, delay: 0.25 },
   description: { ease: "easeOut" as const, duration: 0.2, delay: 0.45 },
   tech: { ease: "easeOut" as const, duration: 0.2, delay: 0.55 },
-  links: { ease: "easeOut" as const, duration: 0.2, delay: 0.65, staggerChildren: 0.1 },
+  links: {
+    ease: "easeOut" as const,
+    duration: 0.2,
+    delay: 0.65,
+    staggerChildren: 0.1,
+  },
 } as const;
 
 const ACTION_TRANSITION = {
@@ -174,64 +182,116 @@ const TECH_ICONS = {
       </defs>
     </svg>
   ),
+  tiptap: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 22 22"
+      fill="none"
+    >
+      <path
+        d="M10.9999 0C8.97378 0 7.07561 0.547792 5.44543 1.50334C5.11704 1.69583 4.97302 2.12364 5.25193 2.38269C5.49733 2.61062 5.82611 2.75 6.18743 2.75H15.8123C16.1737 2.75 16.5024 2.61062 16.7478 2.38269C17.0267 2.12364 16.8827 1.69583 16.5543 1.50334C14.9242 0.547792 13.026 0 10.9999 0Z"
+        fill="#000"
+      ></path>
+      <path
+        d="M21.9998 11C21.9998 10.2406 21.3842 9.625 20.6248 9.625H1.37499C0.615588 9.625 0 10.2406 0 11C0 11.7594 0.615588 12.375 1.37499 12.375H20.6248C21.3842 12.375 21.9998 11.7594 21.9998 11Z"
+        fill="#000"
+      ></path>
+      <path
+        d="M16.7478 19.6173C17.0267 19.8764 16.8827 20.3042 16.5543 20.4967C14.9242 21.4522 13.026 22 10.9999 22C8.97378 22 7.0756 21.4522 5.44542 20.4967C5.11704 20.3042 4.97302 19.8764 5.25192 19.6173C5.49732 19.3894 5.8261 19.25 6.18743 19.25H15.8123C16.1737 19.25 16.5024 19.3894 16.7478 19.6173Z"
+        fill="#000"
+      ></path>
+      <path
+        d="M1.37499 6.1875C1.37499 5.42809 1.99057 4.8125 2.74997 4.8125H19.2498C20.0092 4.8125 20.6248 5.42809 20.6248 6.1875C20.6248 6.94691 20.0092 7.5625 19.2498 7.5625H2.74997C1.99057 7.5625 1.37499 6.94691 1.37499 6.1875Z"
+        fill="#000"
+      ></path>
+      <path
+        d="M1.37499 15.8125C1.37499 15.0531 1.99057 14.4375 2.74997 14.4375H19.2498C20.0092 14.4375 20.6248 15.0531 20.6248 15.8125C20.6248 16.5719 20.0092 17.1875 19.2498 17.1875H2.74997C1.99057 17.1875 1.37499 16.5719 1.37499 15.8125Z"
+        fill="#000"
+      ></path>
+    </svg>
+  ),
 } as const;
 
 const COMPONENTS: ComponentItem[] = [
   {
     id: "magic",
     name: "Magic Text",
-    description: "Animated text transformation",
+    description:
+      "Animated text transformation, staggering in each chunk. Perfect for landing page headers.",
     tech: ["react", "tailwind", "motion"],
     fileName: "MagicText.tsx",
     isFullWidth: false,
-    component: <MagicText title="Hey my name is Rob" />,
+    component: <MagicText />,
+  },
+  {
+    id: "cmdk",
+    name: "Command K",
+    description:
+      "⌘K menu used in cushion.so. Full workspace search with pagniation and shortcuts",
+    tech: ["react", "tailwind"],
+    fileName: "CushionCommand.tsx",
+    isFullWidth: false,
+    component: <CushionCommand />,
   },
   {
     id: "thinking",
-    name: "Thinking",
-    description: "Animated thinking indicator",
+    name: "Agent Feedback",
+    description:
+      "Cushion agent giving status feedback, showing how the model is processing the request and what tools it's using, then replying with the model response to the query.",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Thinking.tsx",
     isFullWidth: false,
     component: <Thinking />,
   },
   {
-    id: "filter-menu",
-    name: "Filter Menu",
-    description: "Searchable dropdown filter menu component",
+    id: "ai-stream",
+    name: "Streaming",
+    description:
+      "Streaming text component used in AI chatbots. Parses markdown and animates in each chunk.",
+    tech: ["react", "tailwind"],
+    fileName: "Streaming.tsx",
     isFullWidth: false,
-    component: <FilterMenuExample />,
+    component: <TextStream />,
   },
   {
     id: "checkin",
-    name: "Check-in",
-    description: "Interactive check-in component",
+    name: "Checkin",
+    description:
+      "Checkin submission for cushion. Rich-text editor with animated activity feed and transitions.",
+    tech: ["react", "tailwind", "tiptap", "motion"],
+    fileName: "Checkin.tsx",
     isFullWidth: false,
     component: <Checkin />,
   },
   {
     id: "calendar",
     name: "Calendar",
-    description: "Interactive calendar with animations",
+    description:
+      "Calendar with adaptive height, key controls, and transitions. Works in a popover as a custom DatePicker.",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Calendar.tsx",
     isFullWidth: false,
     component: <Calendar />,
   },
   {
-    id: "gallery",
-    name: "Gallery",
-    description: "Masonry photo gallery with lightbox",
+    id: "toolbar",
+    name: "Toolbar",
+    description:
+      "Adaptable floating toolbar, used for contextual actions on an item",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Toolbar.tsx",
     isFullWidth: false,
-    component: <Gallery />,
-  },
-  {
-    id: "calculator",
-    name: "Calculator",
-    description: "Expandable calculator menu",
-    isFullWidth: false,
-    component: <Calculator />,
+    component: <Toolbar />,
   },
   {
     id: "form",
-    name: "Form",
-    description: "Animated form with state transitions",
+    name: "Email login",
+    description:
+      "Animated form with state transitions we use on cushion.so login",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Form.tsx",
     isFullWidth: false,
     component: <Form />,
   },
@@ -243,7 +303,7 @@ function useWorkDemoContext() {
   const context = React.useContext(WorkDemoContext);
   if (!context) {
     throw new Error(
-      "useWorkDemoContext must be used within WorkDemoContext.Provider"
+      "useWorkDemoContext must be used within WorkDemoContext.Provider",
     );
   }
   return context;
@@ -285,24 +345,19 @@ export function WorkDemos() {
       activeComponentId,
       setActiveComponentId: handleSetActiveComponentId,
     }),
-    [activeComponentId, handleSetActiveComponentId]
+    [activeComponentId, handleSetActiveComponentId],
   );
 
   return (
     <WorkDemoContext.Provider value={contextValue}>
-      <div className="p-4 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="px-4 pb-4 lg:px-8 lg:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {COMPONENTS.map((item) => (
-            <div
+            <WorkDemoCard
               key={item.id}
-              className={cn(item.isFullWidth ? "md:col-span-2" : "")}
-            >
-              <WorkDemoCard
-                component={item.component}
-                componentId={item.id}
-                className={cn(item.isFullWidth ? "aspect-video" : "")}
-              />
-            </div>
+              component={item.component}
+              componentId={item.id}
+            />
           ))}
         </div>
       </div>
@@ -334,7 +389,7 @@ function WorkDemoCard({
       onMouseOver={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       className={cn(
-        "relative grid place-items-center aspect-video bg-gray-2 rounded-3xl focus transition-all",
+        "relative grid place-items-center aspect-square bg-gray-2 rounded-3xl focus transition-all overflow-hidden 2xl:aspect-video",
         className,
       )}
     >
@@ -351,10 +406,7 @@ function WorkDemoCard({
 // Reusable animated action wrapper
 function AnimatedAction({ delay, children }: AnimatedActionProps) {
   return (
-    <motion.div
-      {...FADE_IN_BLUR}
-      transition={{ ...ACTION_TRANSITION, delay }}
-    >
+    <motion.div {...FADE_IN_BLUR} transition={{ ...ACTION_TRANSITION, delay }}>
       {children}
     </motion.div>
   );
@@ -365,7 +417,7 @@ function WorkDemoFullscreen() {
 
   const activeComponent = React.useMemo(
     () => COMPONENTS.find((c) => c.id === activeComponentId),
-    [activeComponentId]
+    [activeComponentId],
   );
 
   const handleOpenChange = () => setActiveComponentId(null);
@@ -385,8 +437,8 @@ function WorkDemoFullscreen() {
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md",
           )}
         >
-          <div className="flex flex-col lg:grid lg:grid-cols-[260px_1fr] h-full">
-            <aside className="flex flex-col p-4 gap-2">
+          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full">
+            <aside className="w-full flex flex-col p-4 gap-4">
               <motion.h3
                 {...FADE_IN_BLUR}
                 transition={STAGGER_TRANSITIONS.heading}
@@ -397,7 +449,7 @@ function WorkDemoFullscreen() {
               <motion.p
                 {...FADE_IN_BLUR}
                 transition={STAGGER_TRANSITIONS.description}
-                className="text-base font-medium text-gray-10"
+                className="text-base font-medium text-gray-10 tracking-[-0.01em] text-balance"
               >
                 {activeComponent?.description}
               </motion.p>
@@ -445,15 +497,12 @@ function WorkDemoFullscreen() {
   );
 }
 
-function WorkDemoActions({
-  componentId,
-  onReset,
-}: WorkDemoActionsProps) {
+function WorkDemoActions({ componentId, onReset }: WorkDemoActionsProps) {
   const { setActiveComponentId } = useWorkDemoContext();
 
   const thisComponent = React.useMemo(
     () => COMPONENTS.find((c) => c.id === componentId),
-    [componentId]
+    [componentId],
   );
 
   return (
@@ -499,6 +548,7 @@ function WorkDemoTech({ tech }: WorkDemoTechProps) {
     motion: "Motion",
     tailwind: "TailwindCSS",
     next: "Next.js",
+    tiptap: "TipTap",
   };
 
   return (
@@ -509,7 +559,7 @@ function WorkDemoTech({ tech }: WorkDemoTechProps) {
             className={cn(
               "size-6 grid place-items-center p-px rounded-md",
               t === "react" && "hover:bg-gray-3",
-              t === "motion" && "bg-[#FFF312]"
+              t === "motion" && "bg-[#FFF312]",
             )}
           >
             {TECH_ICONS[t]}

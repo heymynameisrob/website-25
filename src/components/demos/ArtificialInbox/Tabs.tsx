@@ -79,7 +79,7 @@ export function ArtificialInboxTabs() {
   };
 
   return (
-    <div className="relative left-16 flex rounded-md overflow-hidden bg-background w-full shadow-floating aspect-video">
+    <div className="relative left-10 flex rounded-md overflow-hidden bg-background w-full shadow-floating aspect-video">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col">
           <ArtificialSkeletonTopBar />

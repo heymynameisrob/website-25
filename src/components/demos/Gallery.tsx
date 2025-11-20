@@ -1,7 +1,5 @@
 import * as React from "react";
-import * as Portal from "@radix-ui/react-portal";
 import { AnimatePresence, motion } from "motion/react";
-import Masonry from "react-masonry-css";
 import { cn } from "@/lib/utils";
 
 type Image = {
@@ -11,13 +9,6 @@ type Image = {
 };
 
 type TransitionType = "open" | "navigate";
-
-const BREAKPOINT_COLS = {
-  default: 3,
-  1024: 3,
-  768: 2,
-  640: 1,
-};
 
 /** Image List */
 const IMAGES: Image[] = [
@@ -63,7 +54,7 @@ export function Gallery() {
   }, [currentImage]);
 
   return (
-    <div className="not-prose w-full max-w-xl mx-auto">
+    <div className="not-prose w-full max-w-md mx-auto">
       <div className="w-full grid grid-cols-2 gap-4">
         {IMAGES.map((img) => (
           <motion.button
@@ -173,12 +164,12 @@ function GalleryDialog({
 
       <AnimatePresence>
         {image ? (
-          <div className="absolute inset-4 grid place-items-center z-10 pointer-events-none">
+          <div className="absolute inset-10 grid place-items-center z-10 pointer-events-none">
             <motion.div
               key={image}
               layoutId={image}
               className={cn(
-                "relative aspect-square w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden",
+                "relative aspect-square w-full max-w-md rounded-3xl shadow-2xl overflow-hidden",
               )}
             >
               <img

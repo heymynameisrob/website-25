@@ -426,6 +426,14 @@
   .prose :last-child:where(:not(.not-prose, .not-prose *)) {
     margin-bottom: 0;
   }
+
+  .grid-stack {
+    display: grid;
+    place-items: center;
+    > * {
+      grid-area: 1 / 1;
+    }
+  }
 }
 
 @layer base {

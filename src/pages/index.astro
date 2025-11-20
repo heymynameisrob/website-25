@@ -1,6 +1,6 @@
 ---
-import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
 import { AnimateInUp } from "@/components/Motion.tsx";
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
 
 import Layout from "@/layouts/Layout.astro";
 ---
@@ -11,7 +11,7 @@ import Layout from "@/layouts/Layout.astro";
   >
     <AnimateInUp as="header" className="flex flex-col" client:load>
       <h1 class="text-[20px] leading-tight tracking-tighter font-serif">
-        Hey my name is Rob
+        Rob Hough
       </h1>
       <h2
         class="text-[20px] leading-tight tracking-tight font-serif text-gray-9"
@@ -51,7 +51,7 @@ import Layout from "@/layouts/Layout.astro";
         <a
           href="/posts/practical-motion"
           class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
-          >Practical Motion</a
+          >Motion in UI</a
         >
         <p class="text-lg text-secondary leading-normal text-balance">
           Using motion in web interfaces
@@ -71,22 +71,26 @@ import Layout from "@/layouts/Layout.astro";
     <ul class="flex flex-col gap-1">
       <AnimateInUp delay={0.6} as="li" client:load>
         <a
-          href="/"
-          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          href="mailto:robhough180@gmail.com"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >Email</a
         >
       </AnimateInUp>
       <AnimateInUp delay={0.7} as="li" client:load>
         <a
-          href="/"
-          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          href="https://github.com/heymynameisrob"
+          target="_blank"
+          rel="nofollow noopener"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >Github</a
         >
       </AnimateInUp>
       <AnimateInUp delay={0.8} as="li" client:load>
         <a
-          href="/"
-          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          href="https://linkedin.com/in/heymynameisrob"
+          target="_blank"
+          rel="nofollow noopener"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >LinkedIn</a
         >
       </AnimateInUp>

@@ -5,22 +5,22 @@ import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 
 export function ClipPathSlider() {
   const constraintsRef = React.useRef<HTMLDivElement>(null);
-  const [containerHeight, setContainerHeight] = React.useState(300);
-  const y = useMotionValue(0);
+  const [containerWidth, setContainerWidth] = React.useState(300);
+  const x = useMotionValue(0);
 
   const clipPath = useTransform(
-    y,
-    [0, containerHeight],
-    ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
+    x,
+    [0, containerWidth],
+    ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
   );
 
   React.useEffect(() => {
     if (constraintsRef.current) {
-      const height = constraintsRef.current.offsetHeight;
-      setContainerHeight(height);
-      y.set(height / 2);
+      const width = constraintsRef.current.offsetWidth;
+      setContainerWidth(width);
+      x.set(width / 2);
     }
-  }, [y]);
+  }, [x]);
 
   return (
     <div
@@ -33,18 +33,19 @@ export function ClipPathSlider() {
         style={{ clipPath }}
       />
       <motion.div
-        drag="y"
+        drag="x"
         dragConstraints={constraintsRef}
         dragElastic={0}
         dragMomentum={false}
-        style={{ y }}
+        style={{ x }}
         onDoubleClick={() => {
-          y.set(containerHeight / 2);
+          x.set(containerWidth / 2);
         }}
-        className="group absolute inset-x-0 -top-1 h-2 bg-gray-4 cursor-grab active:cursor-grabbing flex items-center justify-center z-10"
+        className="group absolute inset-y-0 w-8 -left-4 cursor-grab active:cursor-grabbing grid-stack z-10"
       >
-        <div className="w-8 h-4 rounded-md bg-gray-4 shadow-raised grid place-items-center text-secondary group-active:scale-[0.96] transition-all ease-out">
-          <EllipsisHorizontalIcon className="size-4 opacity-70" />
+        <div className="w-2 h-full bg-gray-4 -left-1" />
+        <div className="w-8 h-8 rounded-md bg-background shadow-raised grid place-items-center text-secondary group-active:scale-[0.9] transition-all ease-out">
+          <EllipsisHorizontalIcon className="size-4 opacity-70 rotate-90" />
         </div>
       </motion.div>
     </div>

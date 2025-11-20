@@ -1,5 +1,5 @@
 ---
-title: Practical Motion
+title: Motion in  UI
 description: Using motion in web interfaces
 image: /src/assets/bacon-motion.jpg
 imageDark: /src/assets/bacon-motion.jpg
@@ -57,7 +57,9 @@ Gestures are parts of user interfaces. We use them constantly to trigger events 
 
 <UIExample component="motion-gestures" client:load />
 
-Adding `active:scale-[0.96]` to the button is a low-effort way to make the click feel much more tactile.
+Adding `active:scale-[0.96]` to the button is a low-effort way to make the click feel much more tactile. Beyond just scale, you can layer multiple properties for richer feedback. Combining scale with slight opacity changes (`hover:opacity-90`), or adding a subtle shadow shift, creates depth and reinforces the interaction.
+
+The key is restraint. Micro-interactions should feel natural, not distracting. A 4% scale reduction on click is noticeable but not jarring. Similarly, hover states should respond immediately (0ms delay) but transition smoothly (around 150ms) to avoid feeling sluggish or hyperactive.
 
 ---
 
@@ -71,13 +73,17 @@ Stacking these images and adding `clip-path: (0 0 var(--pos) 0)` whilst animatin
 
 ---
 
-## Between states
+## Layout animations
 
-Animating transitions between states, such as changing the month on a calendar, can bring the interface to life. When orchestrating motion like this, I use React Motion as working with pure CSS can be fiddly.
+Animating layout changes brings interfaces to life, whether that's swapping content, changing size, or moving position. When done right, these animations maintain visual continuity and help users track what's happening.
+
+### State transitions
+
+Animating transitions between states, such as changing the month on a calendar, requires orchestrating both entrance and exit animations. Framer Motion's `AnimatePresence` handles this by tracking when components mount and unmount.
 
 <UIExample component="motion-calendar" client:load />
 
-Motion is determined by the state of `key` on the motion component. The container determines the start, middle, and end state of the animation - triggered when `month` changes.
+Motion is determined by the `key` prop. When `month` changes, the component with the old key exits while the new one enters:
 
 ```tsx
 <AnimatePresence initial={false}>
@@ -86,51 +92,18 @@ Motion is determined by the state of `key` on the motion component. The containe
     initial={{ x: 40, opacity: 0, filter: "blur(2px)" }}
     animate={{ x: 0, opacity: 1, filter: "blur(0px)" }}
     exit={{ x: -40, opacity: 0, filter: "blur(2px)" }}
-    transition={{ type: "spring", bounce: 0, duration: 0.4 }} // Consider using ease-out
+    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
   >
     {month}
   </motion.div>
 </AnimatePresence>
 ```
 
----
+### Size and position
 
-## Feedback and status
-
-Animations provide feedback during pending states, transforming empty waiting time into perceived progress. It's common to see a loading spinner, but you can do so much more with it.
-
-<UIExample component="motion-thinking" client:load />
-
-Here we see different tool calls from an LLM. Beyond the `pending` and `resolved` state, there are sub-states for each tool call. With some React Motion, we can animate both.
-
-```tsx
-<div className="relative h-5 w-56 overflow-hidden">
-  <AnimatePresence initial={false}>
-    <motion.span
-      key={index}
-      className={cn(
-        "absolute inset-0 text-sm font-medium text-gray-12 select-none",
-      )}
-      initial={{ y: 8, opacity: 0, filter: "blur(1px)" }}
-      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-      exit={{ y: -8, opacity: 0, filter: "blur(1px)" }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-    >
-      {STATUSES[index]}...
-    </motion.span>
-  </AnimatePresence>
-</div>
-```
-
----
-
-## Responsive size
-
-Animating layout can cause layout shifts and expensive repainting if you're not careful. But changing the dimensions of a container helps reduce wasted space and focuses the attention.
+Beyond state changes, animating dimensions and position maintains continuity when layouts shift. Measuring inner content and animating the `height` value adapts the container nicely to content changes.
 
 <UIExample component="motion-responsive" client:load />
-
-Measuring the inner content and animating the `height` value can adapt the container nicely to the content whenever it changes.
 
 ```tsx
 const [ref, bounds] = useMeasure();
@@ -145,35 +118,195 @@ const [ref, bounds] = useMeasure();
 </motion.div>;
 ```
 
----
-
-## Magic Text
-
-Carefully using orchestration allows you to create more interesting animations. One of the best and simplest techniques for orchestration is **staggering**. By staggering each character, we can animate the text in like magic!
-
-<UIExample component="motion-magic-text" client:load>
-  Using a slight blur and spring animation brings this to life
-</UIExample>
-
-Separating each word allows us more control. Always remember to add the full text for screen readers so they don't announce each word separately.
+For position changes—like reordering lists or moving elements between containers—the `layout` prop automatically animates from old to new positions:
 
 ```tsx
-<div>
-  <span className="sr-only">{word}</span>
-  {words.map((w, i) => (
-    <motion.span
-      key={i}
-      initial={{ y: 16, originY: 0.2, filter: "blur(4px)", opacity: 0 }}
-      animate={{ y: 0, originY: 0.2, filter: "blur(0px)", opacity: 1 }}
+<motion.div layout transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}>
+  {content}
+</motion.div>
+```
+
+Shared element transitions work similarly. Use `layoutId` to morph elements between different views, like a card expanding from a grid into a detail view:
+
+```tsx
+// Grid view
+<motion.div layoutId={`card-${id}`}>...</motion.div>
+
+// Detail view
+<motion.div layoutId={`card-${id}`}>...</motion.div>
+```
+
+---
+
+## Orchestration
+
+Orchestration is about choreographing when elements animate in a sequence. Rather than having everything transition linearly at once, orchestration creates layered, intentional timing that guides the user's attention and makes interfaces feel more alive.
+
+Elements shouldn't all move at the same speed or time, especially if they're conceptually distinct or have different sizes. The goal is to create hierarchy and flow through timing—delaying one element's appearance until another completes, or staggering groups of similar items.
+
+### Staggering
+
+A common orchestration technique is staggering. This means slightly delaying each element's animation based on its order in a group. When done well, staggering creates a ripple effect that feels natural and draws attention sequentially.
+
+<UIExample component="motion-list" client:load />
+
+This list animates in with a stagger delay between items. Each item waits `100ms` longer than the previous one:
+
+```tsx
+{
+  ITEMS.map((item, index) => (
+    <motion.li
+      initial={{ opacity: 0, x: -20, filter: "blur(2px)" }}
+      animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
       transition={{
-        type: "spring",
-        stiffness: 250,
-        damping: 30,
-        delay: i * 0.05,
+        duration: 0.3,
+        ease: "easeOut",
+        delay: index * 0.1,
       }}
     >
-      {w}
-    </motion.span>
-  ))}
-</div>
+      {item.title}
+    </motion.li>
+  ));
+}
 ```
+
+The same principle works for action buttons. These buttons stagger in with decreasing delays to create a wave effect:
+
+<UIExample component="motion-stagger" client:load />
+
+```tsx
+const STAGGER_DELAYS = [0, 0.05, 0.1];
+
+{
+  buttons.map((button, index) => (
+    <motion.div
+      initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: 0.2, delay: STAGGER_DELAYS[index] }}
+    >
+      <Button>{button.label}</Button>
+    </motion.div>
+  ));
+}
+```
+
+Keep stagger delays short—usually between `50ms` and `150ms`. Too long and the interface feels sluggish; too short and the stagger becomes imperceptible. The timing should feel intentional but not labored.
+
+---
+
+## Performance
+
+Not all animations are created equal. The browser can animate `transform` and `opacity` cheaply because they don't trigger layout recalculations—they run on the GPU. Animating properties like `width`, `height`, `top`, or `left` forces the browser to recalculate layout and repaint, which can cause jank on slower devices.
+
+When possible, use transforms instead:
+
+- **Moving elements**: Use `translateX/Y` instead of `left/top`
+- **Showing/hiding**: Use `opacity` and `scale` instead of `display` or `height`
+- **Complex animations**: Add `will-change: transform` to hint to the browser, but remove it after completion—leaving it on permanently hurts performance
+
+### CSS vs JavaScript
+
+Prioritize CSS animations over JavaScript when possible. CSS animations are more performant because they run on the compositor thread and reduce bundle size. For simple transitions, use CSS `transition` or `@keyframes`:
+
+```css
+.button {
+  transition: transform 200ms ease-out;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+```
+
+For complex orchestrations or layout animations, animation libraries like Framer Motion or React Spring are worth the trade-off, but keep performance in mind.
+
+### Off-screen optimizations
+
+Pause or disable looping animations when elements are off-screen. This conserves CPU and GPU resources, especially for users with many tabs open:
+
+```tsx
+const [isInView, setIsInView] = React.useState(false);
+
+<motion.div
+  onViewportEnter={() => setIsInView(true)}
+  onViewportLeave={() => setIsInView(false)}
+  animate={isInView ? { rotate: 360 } : { rotate: 0 }}
+/>
+```
+
+### Theme switching
+
+Avoid triggering transitions during theme changes. When users toggle between light and dark modes, you don't want every element on the page to animate. Use a class to temporarily disable transitions:
+
+```tsx
+document.documentElement.classList.add('no-transitions');
+// Apply theme change
+setTimeout(() => {
+  document.documentElement.classList.remove('no-transitions');
+}, 0);
+```
+
+```css
+.no-transitions * {
+  transition: none !important;
+}
+```
+
+### Frame rate
+
+Target 60fps for smooth motion. If animations drop below this, they'll feel janky. Use browser DevTools to profile performance and identify bottlenecks. Complex animations with many elements may need simplification or optimization to maintain smooth frame rates on lower-powered devices.
+
+---
+
+## Accessibility
+
+Motion isn't universal. Some users experience nausea, dizziness, or distraction from animations, which is why `prefers-reduced-motion` exists. Respecting this media query isn't optional—it's about making interfaces usable for everyone.
+
+In practice, this doesn't mean removing all motion. Instead, reduce duration significantly (instant or near-instant), remove bounces and springs, or swap animations for simple fades. The functional outcome (showing/hiding content, transitioning states) remains the same, but the experience becomes comfortable for users who need it.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### Video autoplay
+
+Disable video autoplay for users with `prefers-reduced-motion` enabled. Autoplaying videos can be particularly disorienting:
+
+```tsx
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+<video autoPlay={!prefersReducedMotion} />
+```
+
+### Screen readers
+
+Provide alternatives for animated content that conveys meaning. Use `aria-hidden` for purely decorative animations like loaders or background effects:
+
+```tsx
+<motion.div aria-hidden="true">
+  {/* Decorative animation */}
+</motion.div>
+
+<span className="sr-only">Loading...</span>
+```
+
+For animations that communicate state changes, ensure screen reader users receive equivalent information through `aria-live` regions or status updates.
+
+### Keyboard focus
+
+Pause looping animations when elements receive keyboard focus. This prevents distraction and makes it easier for keyboard users to understand what they've focused on:
+
+```tsx
+<motion.div
+  onFocus={() => setIsPaused(true)}
+  onBlur={() => setIsPaused(false)}
+  animate={isPaused ? {} : { rotate: 360 }}
+/>
+```
+
+Test your interfaces with `prefers-reduced-motion: reduce` enabled to ensure they still feel coherent without the flourishes.
