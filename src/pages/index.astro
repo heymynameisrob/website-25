@@ -1,67 +1,42 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import { getImage } from "astro:assets";
-import { getCollection } from "astro:content";
-
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
+import { AnimateInUp } from "@/components/Motion.tsx";
 
-import { filterPosts } from "@/lib/utils";
-
-const allPosts = await getCollection("posts");
-const allValidPosts = filterPosts(allPosts);
-
-const postsWithOptimizedImages = await Promise.all(
-  allValidPosts.map(async (post) => {
-    let images: any = {};
-    if (post.data.image) {
-      const optimizedImage = await getImage({
-        src: post.data.image,
-        width: 1000,
-        height: 1000,
-        format: "avif",
-        quality: 100,
-      });
-      images.optimizedImageSrc = optimizedImage.src;
-    }
-
-    if (post.data.imageDark) {
-      const optimizedImageDark = await getImage({
-        src: post.data.imageDark,
-        width: 1000,
-        height: 1000,
-        format: "avif",
-        quality: 100,
-      });
-      images.optimizedImageDarkSrc = optimizedImageDark.src;
-    }
-
-    return { ...post, ...images };
-  }),
-);
+import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout>
-  <!-- <HomeNav /> -->
-  <div class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-24 px-5">
-    <header class="flex flex-col">
-      <h1 class="text-xl leading-tight tracking-tighter font-serif">
+  <div
+    class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-16 lg:mt-24 px-5"
+  >
+    <AnimateInUp as="header" className="flex flex-col" client:load>
+      <h1 class="text-[20px] leading-tight tracking-tighter font-serif">
         Hey my name is Rob
       </h1>
-      <h2 class="text-xl leading-tight tracking-tight font-serif text-gray-9">
+      <h2
+        class="text-[20px] leading-tight tracking-tight font-serif text-gray-9"
+      >
         Design Engineer
       </h2>
-    </header>
-    <p class="text-lg text-primary leading-normal text-balance">
-      Building performant and engaging software for the web. Based in the
-      English countryside. Available for projects.
-    </p>
-    <a
-      href="/work"
-      class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12"
-      >View recent work</a
+    </AnimateInUp>
+    <AnimateInUp
+      as="section"
+      className="flex flex-col gap-8"
+      delay={0.15}
+      client:load
     >
+      <p class="text-lg text-primary leading-normal text-balance">
+        Building performant and engaging software for the web. Based in the
+        English countryside. Available for projects.
+      </p>
+      <a
+        href="/work"
+        class="w-fit text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12"
+        >View recent work</a
+      >
+    </AnimateInUp>
     <ul class="flex flex-col gap-4">
-      <li>
+      <AnimateInUp delay={0.25} as="li" client:load>
         <a
           href="https://cushion.so"
           target="_blank"
@@ -71,8 +46,8 @@ const postsWithOptimizedImages = await Promise.all(
         <p class="text-lg text-secondary leading-normal text-balance">
           Modern async messaging for remote teams
         </p>
-      </li>
-      <li>
+      </AnimateInUp>
+      <AnimateInUp delay={0.35} as="li" client:load>
         <a
           href="/posts/practical-motion"
           class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
@@ -81,8 +56,8 @@ const postsWithOptimizedImages = await Promise.all(
         <p class="text-lg text-secondary leading-normal text-balance">
           Using motion in web interfaces
         </p>
-      </li>
-      <li>
+      </AnimateInUp>
+      <AnimateInUp delay={0.45} as="li" client:load>
         <a
           href="/posts/artificial-io"
           class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
@@ -91,30 +66,30 @@ const postsWithOptimizedImages = await Promise.all(
         <p class="text-lg text-secondary leading-normal text-balance">
           Policy management for underwriters
         </p>
-      </li>
+      </AnimateInUp>
     </ul>
     <ul class="flex flex-col gap-1">
-      <li>
+      <AnimateInUp delay={0.6} as="li" client:load>
         <a
           href="/"
           class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >Email</a
         >
-      </li>
-      <li>
+      </AnimateInUp>
+      <AnimateInUp delay={0.7} as="li" client:load>
         <a
           href="/"
           class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >Github</a
         >
-      </li>
-      <li>
+      </AnimateInUp>
+      <AnimateInUp delay={0.8} as="li" client:load>
         <a
           href="/"
           class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
           >LinkedIn</a
         >
-      </li>
+      </AnimateInUp>
     </ul>
   </div>
 </Layout>

@@ -38,7 +38,7 @@
     0 0 0 1px var(--border);
 
   /* Fonts */
-  --font-sans: "Inter Tight", sans-serif;
+  --font-sans: "Inter", sans-serif;
   --font-mono: "Berkley Mono", monospace;
   --font-serif: "Galaxie", serif;
   --font-weight-normal: 450;
@@ -105,12 +105,13 @@
     color: var(--prose-color);
     font-size: 1rem;
     line-height: 1.66em;
+    letter-spacing: -0.01em;
     font-weight: var(--font-weight-normal);
   }
 
   @media (min-width: 48rem) {
     .prose {
-      font-size: 1.125rem;
+      font-size: 1.065rem;
     }
   }
 
