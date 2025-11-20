@@ -14,7 +14,7 @@ Animation can bring joy to an interface.
 
 Whether they are animations via interactions (e.g. clicking on a button) or orchestrated (e.g. animating a moving carousel), motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
-<UIExample component="gallery" client:load>
+<UIExample component="gallery" client:visible>
   Tip: You can navigate between images with arrow keys
 </UIExample>
 
@@ -33,7 +33,7 @@ Easing and duration can also influence the perception of speed. The popover on t
 
 The one on the right uses `ease-out`, which has velocity from the start and comes to a gentle stop. This feels correct and the animation feels faster.
 
-<UIExample component="motion-easing" client:load />
+<UIExample component="motion-easing" client:visible />
 
 To know what easing & duration to choose, it comes down to experimentation. However I've found I usually stick to `150ms - 300ms` and these easings:
 
@@ -55,7 +55,7 @@ To know what easing & duration to choose, it comes down to experimentation. Howe
 
 Gestures are parts of user interfaces. We use them constantly to trigger events (e.g. clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
 
-<UIExample component="motion-gestures" client:load />
+<UIExample component="motion-gestures" client:visible />
 
 Adding `active:scale-[0.96]` to the button is a low-effort way to make the click feel much more tactile. Beyond just scale, you can layer multiple properties for richer feedback. Combining scale with slight opacity changes (`hover:opacity-90`), or adding a subtle shadow shift, creates depth and reinforces the interaction.
 
@@ -67,7 +67,7 @@ The key is restraint. Micro-interactions should feel natural, not distracting. A
 
 `clip-path` is an often overlooked CSS function, typically used for drawing shapes around nodes. But it works great for creating interesting animations and interactions. You can stack elements, hiding and revealing them by just changing a value.
 
-<UIExample component="motion-clip" client:load />
+<UIExample component="motion-clip" client:visible />
 
 Stacking these images and adding `clip-path: (0 0 var(--pos) 0)` whilst animating the value (e.g. 50%) creates this before/after slider.
 
@@ -81,7 +81,7 @@ Animating layout changes brings interfaces to life, whether that's swapping cont
 
 Animating transitions between states, such as changing the month on a calendar, requires orchestrating both entrance and exit animations. Framer Motion's `AnimatePresence` handles this by tracking when components mount and unmount.
 
-<UIExample component="motion-calendar" client:load />
+<UIExample component="motion-calendar" client:visible />
 
 Motion is determined by the `key` prop. When `month` changes, the component with the old key exits while the new one enters:
 
@@ -103,7 +103,7 @@ Motion is determined by the `key` prop. When `month` changes, the component with
 
 Beyond state changes, animating dimensions and position maintains continuity when layouts shift. Measuring inner content and animating the `height` value adapts the container nicely to content changes.
 
-<UIExample component="motion-responsive" client:load />
+<UIExample component="motion-responsive" client:visible />
 
 ```tsx
 const [ref, bounds] = useMeasure();
@@ -148,7 +148,7 @@ Elements shouldn't all move at the same speed or time, especially if they're con
 
 A common orchestration technique is staggering. This means slightly delaying each element's animation based on its order in a group. When done well, staggering creates a ripple effect that feels natural and draws attention sequentially.
 
-<UIExample component="motion-list" client:load />
+<UIExample component="motion-list" client:visible />
 
 This list animates in with a stagger delay between items. Each item waits `100ms` longer than the previous one:
 
@@ -172,7 +172,7 @@ This list animates in with a stagger delay between items. Each item waits `100ms
 
 The same principle works for action buttons. These buttons stagger in with decreasing delays to create a wave effect:
 
-<UIExample component="motion-stagger" client:load />
+<UIExample component="motion-stagger" client:visible />
 
 ```tsx
 const STAGGER_DELAYS = [0, 0.05, 0.1];

@@ -555,14 +555,12 @@
     @apply outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .astro-code,
-    .astro-code span {
-      color: var(--shiki-dark);
-      font-style: var(--shiki-dark-font-style);
-      font-weight: var(--shiki-dark-font-weight);
-      text-decoration: var(--shiki-dark-text-decoration);
-    }
+  .dark .astro-code,
+  .dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
   }
 
   @media (prefers-reduced-motion: reduce) {

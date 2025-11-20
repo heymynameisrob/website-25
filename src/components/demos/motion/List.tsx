@@ -21,12 +21,13 @@ export function List() {
           <motion.li
             key={item.id}
             initial={{ opacity: 0, y: -8, filter: "blur(2px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{
               duration: 0.2,
               ease: "easeOut",
               delay: index * 0.1,
             }}
+            viewport={{ once: true, amount: "all" }}
             className="flex items-center gap-3 p-3 bg-gray-2 rounded-lg hover:bg-gray-3 cursor-default"
             onClick={() => {
               setItems((prev) => {

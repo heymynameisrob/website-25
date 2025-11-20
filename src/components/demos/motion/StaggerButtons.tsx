@@ -5,7 +5,7 @@ import { HeartIcon, ShareIcon, BookmarkIcon } from "@heroicons/react/16/solid";
 
 const FADE_IN_BLUR = {
   initial: { opacity: 0, y: 10, filter: "blur(2px)" },
-  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
   exit: { opacity: 0, y: 10, filter: "blur(2px)" },
 } as const;
 
@@ -22,7 +22,11 @@ interface AnimatedActionProps {
 
 function AnimatedAction({ delay, children }: AnimatedActionProps) {
   return (
-    <motion.div {...FADE_IN_BLUR} transition={{ ...ACTION_TRANSITION, delay }}>
+    <motion.div
+      {...FADE_IN_BLUR}
+      transition={{ ...ACTION_TRANSITION, delay }}
+      viewport={{ once: true, amount: "all" }}
+    >
       {children}
     </motion.div>
   );

@@ -43,8 +43,8 @@ export function ClipPathSlider() {
         }}
         className="group absolute inset-y-0 w-6 -left-3 cursor-grab active:cursor-grabbing grid-stack z-10"
       >
-        <div className="w-2 h-full bg-background -left-1" />
-        <div className="w-6 h-6 rounded-md bg-background shadow-raised grid place-items-center text-secondary group-active:scale-[0.9] transition-all ease-out">
+        <div className="w-2 h-full bg-white -left-1" />
+        <div className="w-6 h-6 rounded-md bg-white shadow-raised grid place-items-center text-black group-active:scale-[0.9] transition-all ease-out">
           <EllipsisHorizontalIcon className="size-4 opacity-70 rotate-90" />
         </div>
       </motion.div>
