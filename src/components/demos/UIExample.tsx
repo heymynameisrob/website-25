@@ -77,7 +77,6 @@ export function UIExample({
         damping: 15,
       },
     });
-    setKey((prev) => prev + 1);
   };
 
   const handleRemount = () => {
@@ -90,7 +89,7 @@ export function UIExample({
 
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-16">
-      <div className="relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus transition-all overflow-hidden">
+      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus transition-all overflow-hidden">
         <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
@@ -100,7 +99,7 @@ export function UIExample({
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onClick={handleRemount}
-            className="absolute bottom-2 right-2"
+            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all"
           >
             <motion.div animate={controls}>
               <ArrowPathIcon className="w-4 h-4 opacity-70" />

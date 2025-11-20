@@ -41,10 +41,10 @@ export function ClipPathSlider() {
         onDoubleClick={() => {
           x.set(containerWidth / 2);
         }}
-        className="group absolute inset-y-0 w-8 -left-4 cursor-grab active:cursor-grabbing grid-stack z-10"
+        className="group absolute inset-y-0 w-6 -left-3 cursor-grab active:cursor-grabbing grid-stack z-10"
       >
-        <div className="w-2 h-full bg-gray-4 -left-1" />
-        <div className="w-8 h-8 rounded-md bg-background shadow-raised grid place-items-center text-secondary group-active:scale-[0.9] transition-all ease-out">
+        <div className="w-2 h-full bg-background -left-1" />
+        <div className="w-6 h-6 rounded-md bg-background shadow-raised grid place-items-center text-secondary group-active:scale-[0.9] transition-all ease-out">
           <EllipsisHorizontalIcon className="size-4 opacity-70 rotate-90" />
         </div>
       </motion.div>

@@ -51,7 +51,7 @@ export function CodeBlock({ children, className }: CodeBlockProps) {
   };
 
   return (
-    <div className="not-prose group/codeblock block relative border rounded-lg overflow-hidden">
+    <div className="not-prose group/codeblock block relative rounded-lg overflow-hidden">
       {language && (
         <div className="absolute top-0 right-0 px-2 py-0 h-7 text-sm text-secondary pointer-events-none">
           {language}

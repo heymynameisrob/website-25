@@ -51,7 +51,7 @@ function Comment({ author, content, isAgent }: CommentProps) {
           <Badge className="h-5 px-1 text-[11px] text-gray-11">Agent</Badge>
         )}
       </div>
-      <div className="prose [--prose-color:var(--color-gray-12)] text-base">
+      <div className="prose [--prose-color:var(--color-gray-12)] text-[15px]">
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
       </div>
     </motion.article>
@@ -159,7 +159,7 @@ export function Thinking() {
   }, [showThinking, showReply]);
 
   return (
-    <div className="relative z-10 flex flex-col bg-gray-1 my-2 border rounded-lg overflow-hidden max-w-2xl mx-auto">
+    <div className="relative z-10 flex flex-col bg-gray-1 my-2 border rounded-lg overflow-hidden max-w-xl mx-auto">
       <Comment author={author} content={commentContent} />
       <AnimatePresence mode="wait" initial={false}>
         {showThinking && <ThinkingIndicator key="thinking" />}

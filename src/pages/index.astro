@@ -3,8 +3,11 @@ import { AnimateInUp } from "@/components/Motion.tsx";
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
 
 import Layout from "@/layouts/Layout.astro";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 ---
-
+<div class="absolute top-5 right-5">
+  <ThemeToggle />
+</div>
 <Layout>
   <div
     class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-16 lg:mt-24 px-5"
@@ -51,7 +54,7 @@ import Layout from "@/layouts/Layout.astro";
         <a
           href="/posts/practical-motion"
           class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
-          >Motion in UI</a
+          >Motion UI</a
         >
         <p class="text-lg text-secondary leading-normal text-balance">
           Using motion in web interfaces
