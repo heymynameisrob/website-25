@@ -18,6 +18,10 @@ import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
+import { Calendar } from "@/components/demos/Calendar";
+import { Gallery } from "@/components/demos/Gallery";
+import { Calculator } from "@/components/demos/Calculator";
+import { Form } from "@/components/demos/Form";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -147,4 +151,8 @@ const COMPONENT_MAP = {
   "artificial-inbox-tabs": <ArtificialInboxTabs />,
   "artificial-inbox-filters": <ArtificialInboxFilters />,
   "artificial-inbox-tasks": <ArtificialTasks />,
+  calendar: <Calendar />,
+  gallery: <Gallery />,
+  calculator: <Calculator />,
+  form: <Form />,
 };
