@@ -22,6 +22,10 @@ import { Calendar } from "@/components/demos/Calendar";
 import { Gallery } from "@/components/demos/Gallery";
 import { Calculator } from "@/components/demos/Calculator";
 import { Form } from "@/components/demos/Form";
+import { MagicText } from "@/components/demos/motion/MagicText";
+import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
+import { Loader } from "@/components/demos/motion/Loader";
+import { Thinking } from "@/components/demos/motion/Thinking";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -155,4 +159,11 @@ const COMPONENT_MAP = {
   gallery: <Gallery />,
   calculator: <Calculator />,
   form: <Form />,
+  "motion-magic-text": (
+    <MagicText title="There's one word for that: Magic Text!" />
+  ),
+  "motion-responsive": <ResponsiveContainer />,
+  "motion-calendar": <Calendar />,
+  "motion-loader": <Loader />,
+  "motion-thinking": <Thinking />,
 };
