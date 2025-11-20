@@ -1,12 +1,9 @@
 ---
-import { getCollection } from "astro:content";
-import { getImage } from "astro:assets";
 import Layout from "@/layouts/Layout.astro";
-import HomeNav from "@/components/HomeNav.astro";
-import HomeHeader from "@/components/HomeHeader.astro";
+import { getImage } from "astro:assets";
+import { getCollection } from "astro:content";
 
-import { ScrollStrip } from "@/components/ScrollStrip";
-import {ArrowUpRightIcon} from "@heroicons/react/16/solid";
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
 
 import { filterPosts } from "@/lib/utils";
 
@@ -47,32 +44,77 @@ const postsWithOptimizedImages = await Promise.all(
   <!-- <HomeNav /> -->
   <div class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-24 px-5">
     <header class="flex flex-col">
-      <h1 class="text-2xl leading-tight tracking-tighter font-serif font-light">Hey my name is Rob</h1>
-      <h2 class="text-2xl leading-tight tracking-tight font-serif font-light text-gray-9">Design Engineer</h2>
+      <h1 class="text-xl leading-tight tracking-tighter font-serif">
+        Hey my name is Rob
+      </h1>
+      <h2 class="text-xl leading-tight tracking-tight font-serif text-gray-9">
+        Design Engineer
+      </h2>
     </header>
     <p class="text-lg text-primary leading-normal text-balance">
-      Building performant and engaging software for the web.
-      Based in the English countryside. Available for projects.
+      Building performant and engaging software for the web. Based in the
+      English countryside. Available for projects.
     </p>
-    <a href="/work" class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12">View recent work</a>
+    <a
+      href="/work"
+      class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12"
+      >View recent work</a
+    >
     <ul class="flex flex-col gap-4">
       <li>
-        <a href="https://cushion.so" target="_blank" class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all">Cushion <ArrowUpRightIcon className="size-4 inline" /></a>
-        <p class="text-lg text-secondary leading-normal text-balance">Modern async messaging for remote teams</p>
+        <a
+          href="https://cushion.so"
+          target="_blank"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Cushion <ArrowUpRightIcon className="size-4 inline" /></a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Modern async messaging for remote teams
+        </p>
       </li>
       <li>
-        <a href="/posts/practical-motion" class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all">Practical Motion</a>
-        <p class="text-lg text-secondary leading-normal text-balance">Using motion in web interfaces</p>
+        <a
+          href="/posts/practical-motion"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Practical Motion</a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Using motion in web interfaces
+        </p>
       </li>
       <li>
-        <a href="/posts/artificial-io" class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all">Artifical</a>
-        <p class="text-lg text-secondary leading-normal text-balance">Policy management for underwriters</p>
+        <a
+          href="/posts/artificial-io"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Artifical</a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Policy management for underwriters
+        </p>
       </li>
     </ul>
     <ul class="flex flex-col gap-1">
-      <li><a href="/" class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all">Email</a></li>
-      <li><a href="/" class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all">Github</a></li>
-      <li><a href="/" class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all">LinkedIn</a></li>
+      <li>
+        <a
+          href="/"
+          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >Email</a
+        >
+      </li>
+      <li>
+        <a
+          href="/"
+          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >Github</a
+        >
+      </li>
+      <li>
+        <a
+          href="/"
+          class="text-lg text-gray-8 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >LinkedIn</a
+        >
+      </li>
     </ul>
   </div>
 </Layout>

@@ -1,7 +1,5 @@
 ---
-import { BackArrow } from "@/components/BackArrow";
-import ThemeToggle from "@/components/ThemeToggle.astro";
-import { SEO_TITLE, SEO_DESCRIPTION } from "@/lib/constants";
+import { SEO_DESCRIPTION, SEO_TITLE } from "@/lib/constants";
 
 import "@/styles/globals.css";
 
@@ -46,9 +44,12 @@ const {
     <meta name="twitter:card" content="summary_large_image" />
     {canonical && <link rel="canonical" href={canonical} />}
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Geist:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
     <title>{title}</title>
   </head>
   <body>

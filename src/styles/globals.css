@@ -38,9 +38,9 @@
     0 0 0 1px var(--border);
 
   /* Fonts */
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "Geist", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-serif: "Crimson Pro", serif;
+  --font-serif: "Galaxie", serif;
   --font-normal: 450;
   --font-mediu: 550;
 
@@ -444,6 +444,18 @@
     src: url("/fonts/BerkeleyMono-Bold.woff2") format("woff2");
     font-weight: 700;
     font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Galaxie";
+    src: url("/src/assets/GalaxieCopernicus-Medium.woff2") format("woff2");
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Galaxie";
+    src: url("/src/assets/GalaxieCopernicus-MediumItalic.woff2") format("woff2");
+    font-style: italic;
   }
 
   @keyframes blink {
