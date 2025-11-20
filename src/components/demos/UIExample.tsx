@@ -88,7 +88,7 @@ export function UIExample({
 
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-8 demo not-prose overflow-hidden">
-      <div className="relative grid place-items-center w-full aspect-3/2 border bg-gray-2 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[radial-gradient(var(--pattern-fg)_1px,transparent_0)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
+      <div className="relative grid place-items-center w-full aspect-3/2 p-4 border bg-gray-2 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[radial-gradient(var(--pattern-fg)_1px,transparent_0)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
         <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button

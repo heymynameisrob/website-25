@@ -1,8 +1,9 @@
 ---
-import HomeNav from "@/components/HomeNav.astro";
 import Prose from "@/components/Prose.astro";
 import Layout from "@/layouts/Layout.astro";
 
+import Avatar from "@/components/Avatar.astro";
+import HR from "@/components/primitives/Divider.astro";
 import type { PostFrontmatter } from "@/content.config";
 
 interface Props {
@@ -20,20 +21,34 @@ const { frontmatter } = Astro.props;
   og={frontmatter.og}
   canonical={frontmatter.canonical}
 >
-  <HomeNav />
-  <div class="max-w-5xl mx-auto">
-    <header
-      class="py-16 2xl:py-32 px-5 flex flex-col justify-center items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:items-center md:text-center"
-    >
+  <div
+    class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center gap-16 pt-16 lg:pt-24 lg:gap-24"
+  >
+    <a href="/" aria-label="Go back"><Avatar /></a>
+    <header class="flex flex-col justify-center items-center text-center">
       <h1
-        class="text-lg font-medium max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-tight xl:text-balance"
+        class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance"
       >
         {frontmatter.title}
       </h1>
-      <small class="font-mono font-[500] text-sm text-gray-8 uppercase"
-        >{frontmatter.company || frontmatter.type}</small
+      <h2
+        class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance text-gray-10"
       >
+        {frontmatter.description}
+      </h2>
     </header>
+    <div class="not-prose flex w-full items-center justify-center gap-1">
+      <div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+        class="h-0.5 w-8 rounded-full bg-gray-4"
+      >
+      </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+        class="h-0.5 w-8 rounded-full bg-gray-4"
+      >
+      </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+        class="h-0.5 w-8 rounded-full bg-gray-4"
+      >
+      </div>
+    </div>
     <Prose><slot /></Prose>
   </div>
 </Layout>

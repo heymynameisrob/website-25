@@ -6,7 +6,7 @@ import { Button } from "@/components/primitives/Button";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { cn } from "@/lib/utils";
 
-const MAX_COLLAPSED_HEIGHT = 200;
+const MAX_COLLAPSED_HEIGHT = 300;
 
 interface CodeBlockProps {
   children: ReactNode;

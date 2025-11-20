@@ -5,7 +5,7 @@ export function MagicText({ title }: { title: string }) {
   return (
     <div className="text-xl font-semibold xl:text-3xl">
       <span className="sr-only">{title}</span>
-      <div className="inline-flex flex-wrap gap-1">
+      <div className="inline-flex flex-wrap gap-1 text-primary">
         {words.map((w, i) => (
           <motion.span
             key={i}
