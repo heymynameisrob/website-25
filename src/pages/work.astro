@@ -3,7 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import Button from "@/components/Button.astro";
 
 import { ArrowUturnLeftIcon } from "@heroicons/react/16/solid";
-import { Demos } from "@/components/demos/DemoWrapper";
+import { WorkDemos } from "@/components/demos/DemoWrapper";
 ---
 
 <Layout title="Work" description="Interactive component demos and UI examples">
@@ -13,5 +13,5 @@ import { Demos } from "@/components/demos/DemoWrapper";
     >
     <p class="text-sm text-gray-10">Design and build should be insperable.</p>
   </nav>
-  <Demos client:load />
+  <WorkDemos client:load />
 </Layout>

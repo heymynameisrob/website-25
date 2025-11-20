@@ -7,16 +7,14 @@ import * as React from "react";
  */
 export function useSearchParams(): [
   URLSearchParams,
-  (params: URLSearchParams | Record<string, string>) => void
+  (params: URLSearchParams | Record<string, string>) => void,
 ] {
-  const [params, setParamsState] = React.useState<URLSearchParams>(
-    () => {
-      if (typeof window === "undefined") {
-        return new URLSearchParams();
-      }
-      return new URLSearchParams(window.location.search);
+  const [params, setParamsState] = React.useState<URLSearchParams>(() => {
+    if (typeof window === "undefined") {
+      return new URLSearchParams();
     }
-  );
+    return new URLSearchParams(window.location.search);
+  });
 
   React.useEffect(() => {
     // Initialize with current search params on mount
@@ -44,7 +42,7 @@ export function useSearchParams(): [
       window.history.pushState({}, "", url.toString());
       setParamsState(searchParams);
     },
-    []
+    [],
   );
 
   return [params, setParams];
