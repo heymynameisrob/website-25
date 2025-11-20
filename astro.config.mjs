@@ -11,7 +11,10 @@ export default defineConfig({
   output: "static",
   markdown: {
     shikiConfig: {
-      theme: "andromeeda",
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
     },
   },
   integrations: [react(), mdx()],

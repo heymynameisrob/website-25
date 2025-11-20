@@ -1,9 +1,9 @@
 ---
 title: Checkins
-description: Building automatic status updates in a collaboration app for distributed teams
-image: /src/assets/checkins-light.png
-imageDark: /src/assets/checkins-dark.png
-date: 2025-05-13
+description: Building async status updates in a collaboration app for distributed teams
+image: /src/assets/checkin-light.jpg
+imageDark: /src/assets/checkin-dark.jpg
+date: 2025-11-06
 type: "case-study"
 company: cushion
 ---
@@ -11,61 +11,77 @@ company: cushion
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import { Checkin } from "@/components/demos/Checkin";
 import { UIExample } from "@/components/demos/UIExample";
-import checkinPage from "/src/assets/checkins-light.png";
-import checkinFeedback from "/src/assets/checkins-feedback.png";
-import checkinPost from "/src/assets/checkins-post.png";
 
-Ernest Hemingway kept a chart beside his office desk to log his daily word count. When asked why, he said it 'kept him honest.' For distributed teams, staying honest about progress is harder but just as vital.
+import featureImageLight from "@/assets/checkin-light.jpg";
+import featureImageDark from "@/assets/checkin-dark.jpg";
+import checkinFullLight from "@/assets/checkin-full-light.jpg";
+import checkinFullDark from "@/assets/checkin-full-dark.jpg";
+import checkinNotifLight from "@/assets/checkin-notif-light.jpg";
+import checkinNotifDark from "@/assets/checkin-notif-dark.jpg";
 
-Cushion is an async work communication app for distributed teams. We built it for teams tired of days dominated by busywork.
+<MediaWrapper src={featureImageLight} darkSrc={featureImageDark} type="image" />
 
-Most companies rely on frequent status updates during a project: daily standups, project update emails, or regular critiques. These formats sound useful, but they achieve little.
+[Cushion](https://cushion.so) is the modern async communication platform for distributed teams. Cushion helps teams get organised, stay in flow, and focus on deep work.
 
-<MediaWrapper
-  src={checkinPage}
-  type="image"
-  alt="A list view of 3 checkins from different people outlining what they did today"
-  caption="UI design for checkins on cushion.so"
-/>
+Chat apps like Slack force you to work at the same time, which can be difficult for distributed teams.
+Cushion is async by default, which means communication happens on your time.
 
-First, they are scheduled. This requires time managing who is free and when, eating into your deadline. It's also difficult to track what was agreed or shown. Discussions veer wildly off course. Agreements are often shaky. You don't discover that X was expected but Y was delivered until it's too late.
+## Background
 
-Status meetings are also [incredibly expensive](https://tptranscription.co.uk/the-true-cost-of-meetings-in-the-workplace-insights-stats-and-solutions/#:~:text=The%20Financial%20Cost%20of%20Meetings&text=The%20global%20cost%20of%20unproductive,billion%20in%20the%20United%20States). Ten people sit for an hour isn't a one-hour meeting, it's a ten-hour meeting. Lost time, salary, and opportunity cost make a real dent in company revenue.
+One of the biggest time drains in any company is **status meetings**. Project collaboration requires keeping everyone in sync, but back-to-back status meetings waste time.
 
-<MediaWrapper
-  src={checkinPost}
-  type="image"
-  alt="A post of what I did on Tue 30 Sep, listing my update and what work I shipped on Github"
-  caption="Posts can attach work done across Github and elsewhere"
-/>
+Status meetings are also [incredibly expensive](https://tptranscription.co.uk/the-true-cost-of-meetings-in-the-workplace-insights-stats-and-solutions/#:~:text=The%20Financial%20Cost%20of%20Meetings&text=The%20global%20cost%20of%20unproductive,billion%20in%20the%20United%20States). Ten people sitting for an hour isn't a one-hour meeting. It's a ten-hour meeting. Lost time, salary, and opportunity cost make a real dent in company revenue.
 
-Our alternative is Checkins.
+At Cushion, we wanted to do something different. My co-founder Dave and I reflected on the most successful and enjoyable projects we'd worked on.
 
-Checkins are how teams on Cushion stay in sync with one another (and themselves!). These are self-reported regular updates driven entirely by the people who work on the project. They can be set on a daily or weekly cadence and involve as many or few people as you like (even just yourself).
+- Who worked on them and how did we communicate with each other?
+- How did we keep everyone up-to-date?
+- What happened when something went wrong and we had to make a call?
 
-Teams find that writing updates in their own words, on their own schedule, produces higher-quality entries. Best of all, these are logged forever. Teams can easily go back, search, and comment on each checkin post. So if someone does drop the ball, it's easy to figure where it happened.
+We both had the same experience. The best projects made communication part of the work, not bureaucratic overhead. Sharing progress and asking for input became pivotal moments.
+
+With Checkins, we wanted to capture that feeling. The question became: how can we help everyone do this without someone there to organise it?
+
+<MediaWrapper src={checkinFullLight} darkSrc={checkinFullDark} type="image" />
+
+## Post on your own time
+
+For each interval, users get an in-app reminder. The reminders are deliberately soft as some teams are more strict with their updates than others. If you tend to forget (like myself) you can setup email and push notifications too.
+
+When writing, you can use Markdown syntax to structure your post however you like. Some people write a simple paragraph, others use bulleted sections. The freedom to write in your own words is crucial to how Checkins works.
+
+These are logged permanently. Teams can search and comment on each checkin post. If something goes wrong, it's easy to trace.
 
 <UIExample component="checkin" client:load>
   Example component of the checkin flow
 </UIExample>
 
-### Connecting Your Work
+## Connecting Your Work
 
-Work happens across multiple platforms—whether it's writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
+Work happens across multiple platforms: writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
 
-When writing their 'post', users can toggle if they want activity added to it or not. By clicking the ⚡ button, we run a batch job in our backend to fetch data from any connected sources. This helps link your update with real artefacts you've worked on that show progress during your workday. However, some days you don't have "something to show" in that way. Knowledge work means days of 'thinking things through' or even slow days. Making this optional takes the pressure off having to show something.
+When writing their post, users can toggle if they want activity added. Clicking the ⚡ button fetches data from any connected sources. This links your update with artefacts that show your progress. However, some days you don't have something to show. Knowledge work includes thinking days and slow days. Making this optional takes the pressure off having to show something.
 
-## Staying in the loop
+DEMO: Feed w/ activity
+
+## Searchable
+
+Everything on Cushion is searchable. It's one of our core principles. Nothing annoyed me more than losing messages in Slack due to poor search or message history limits.
+
+All checkins are publicly available through Search. This helps when looking for information by person or project. This helps when someone leaves the team or goes on PTO and someone else takes over their projects. They can search their name and find all the work they've done.
+
+DEMO: Search
+
+## Follow along
+
+After we shipped Checkins, one founder gave us early feedback. His team had multiple checkins, one per project, which he checked regularly to see if anyone needed help. This was difficult because he wouldn't know when someone would post and didn't want to chase people. 'It'd be nice if I could subscribe to a checkin so I can get updates.'
+
+We shipped this update, giving users a way to subscribe or not to each checkin individually. We never thought of this idea. My co-founder Dave and I wouldn't need this feature. Yet when other people use our product, they always find things we don't. We're so lucky that they took the time to give us the feedback.
+
+<MediaWrapper src={checkinNotifLight} darkSrc={checkinNotifDark} type="image" />
+
+## Feedback
+
+Checkins has become one of our most loved features. Every team can setup as many checkins as they like, choosing either weekly or daily intervals. They can be used for status updates, team standups or personal journals. Teams on cushion have found they free them from endless meetings without sacrificing staying on track or keeping each other accountable.
 
 After we shipped v1 of checkins, our early users loved them. They found surprising uses we hadn't imagined. For example, one customer used them to keep track of freelancers he had working for him. At the end of each week, each freelancer would fill in their checkin and attach their GitHub activity. He would use this as part of their 'timesheets'. This also made life for the freelancers so much easier as they had only one update to write a week, instead of multiple which is usually the case.
-
-<MediaWrapper
-  src={checkinFeedback}
-  type="image"
-  alt="Screenshot of customer feedback requesting checkin notification subscriptions"
-  caption="Feedback from a customer about checkin notifications"
-/>
-
-A founder gave us early feedback. His team had multiple checkins, typically one for each project, which he would check regularly to see if anyone needed unblocking or help. This was difficult because he wouldn't know when someone would post their checkin (and didn't want to be THAT guy chasing people up). "It'd be nice if I could 'subscribe' to a checkin so I can get updates."
-
-We shipped this update, giving users a way to subscribe or not to each checkin individually. What I love about this was we never thought of this idea. Myself and my co-founder Dave wouldn't need this feature as it's just us two. Yet when other people use your product, there are always things they find that you don't. We're so lucky that they took the time to give us the feedback.

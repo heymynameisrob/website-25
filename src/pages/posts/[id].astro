@@ -4,6 +4,8 @@ import PostLayout from "@/layouts/PostLayout.astro";
 import { DemoRenderer } from "@/components/DemoRender";
 import { filterPosts } from "@/lib/utils";
 import { getImage } from "astro:assets";
+import Divider from "@/components/primitives/Divider.astro";
+import CodeBlockWrapper from "@/components/CodeBlockWrapper.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -56,5 +58,5 @@ const { Content } = await render(post);
 
 <PostLayout frontmatter={{...post.data, og: post.ogImageSrc}}>
   {post.data.type === "demo" && <DemoRenderer client:load post={post} />}
-  <Content />
+  <Content components={{ hr: Divider, pre: CodeBlockWrapper }} />
 </PostLayout>

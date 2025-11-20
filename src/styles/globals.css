@@ -110,33 +110,20 @@
   .prose
     :where(:not(.not-prose, .not-prose *))
     + :where(:not(.not-prose, .not-prose *)) {
-    margin-top: calc(var(--spacing) * 8);
+    margin-top: calc(var(--spacing) * 6);
   }
 
   .prose h2:where(:not(.not-prose, .not-prose *)) {
     font-size: var(--text-xl);
     letter-spacing: -0.025em;
     color: var(--prose-code-color);
-    line-height: 1.55556;
     font-weight: var(--font-weight-medium);
-    margin-top: calc(var(--spacing) * 16);
-  }
-
-  .prose h2:has(+ h3):where(:not(.not-prose, .not-prose *)) {
-    font-size: var(--text-base);
-    line-height: 2;
-    font-weight: var(--font-weight-medium);
-    font-family: var(--font-mono);
-    font-variant-ligatures: none;
-    letter-spacing: 0.1em;
-    color: var(--prose-color);
-    text-transform: uppercase;
+    margin-top: calc(var(--spacing) * 12);
   }
 
   .prose h3:where(:not(.not-prose, .not-prose *)) {
     font-size: var(--text-base);
     color: var(--prose-heading-color);
-    line-height: 1.66;
     font-weight: var(--font-weight-medium);
     margin-top: calc(var(--spacing) * 8);
   }
@@ -150,21 +137,21 @@
     color: var(--prose-heading-color);
     line-height: 2;
     font-weight: var(--font-weight-medium);
-    margin-top: calc(var(--spacing) * 8);
+    margin-top: calc(var(--spacing) * 6);
   }
 
   .prose :is(h2, h3, h4):where(:not(.not-prose, .not-prose *)) {
-    scroll-margin-top: calc(var(--spacing) * 24);
+    scroll-margin-top: calc(var(--spacing) * 20);
   }
 
   @media (min-width: 64rem) {
     .prose :is(h2, h3, h4):where(:not(.not-prose, .not-prose *)) {
-      scroll-margin-top: calc(var(--spacing) * 16);
+      scroll-margin-top: calc(var(--spacing) * 12);
     }
   }
 
   .prose ol:where(:not(.not-prose, .not-prose *)) {
-    padding-left: calc(var(--spacing) * 8);
+    padding-left: calc(var(--spacing) * 6);
     list-style-type: decimal;
   }
 
@@ -448,10 +435,10 @@
   @keyframes blink {
     0%,
     100% {
-      opacity: 1;
+      visibility: visible;
     }
     50% {
-      opacity: 0;
+      visibility: hidden;
     }
   }
 
@@ -537,8 +524,14 @@
     @apply outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
-  .astro-code code {
-    background-color: transparent !important;
+  @media (prefers-color-scheme: dark) {
+    .astro-code,
+    .astro-code span {
+      color: var(--shiki-dark);
+      font-style: var(--shiki-dark-font-style);
+      font-weight: var(--shiki-dark-font-weight);
+      text-decoration: var(--shiki-dark-text-decoration);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

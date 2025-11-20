@@ -18,6 +18,11 @@ import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
+import { MagicText } from "@/components/demos/motion/MagicText";
+import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
+import { Calendar } from "@/components/demos/Calendar";
+import { Loader } from "@/components/demos/motion/Loader";
+import { Thinking } from "@/components/demos/motion/Thinking";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -147,4 +152,11 @@ const COMPONENT_MAP = {
   "artificial-inbox-tabs": <ArtificialInboxTabs />,
   "artificial-inbox-filters": <ArtificialInboxFilters />,
   "artificial-inbox-tasks": <ArtificialTasks />,
+  "motion-magic-text": (
+    <MagicText title="There's one word for that: Magic Text!" />
+  ),
+  "motion-responsive": <ResponsiveContainer />,
+  "motion-calendar": <Calendar />,
+  "motion-loader": <Loader />,
+  "motion-thinking": <Thinking />,
 };

@@ -1,0 +1,174 @@
+---
+title: Practical Motion
+description: Notes on how to what I've learnt on using motion in web application interfaces
+image: /src/assets/inbox-light.jpg
+imageDark: /src/assets/inbox-dark.jpg
+date: 2025-11-20
+type: "post"
+---
+
+import { UIExample } from "@/components/demos/UIExample";
+
+A series of learnings about adding motion into user interfaces on the web. I've learnt a lot of these over the years, particularly when working with React.
+
+[FEATURE ANIMATED GIF/VIDEO]
+
+## Why animations are useful
+
+Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
+
+The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now acustom to seeing. Even with new API's and browser capability, this poses challenges on the web.
+
+---
+
+## Easings & Duration
+
+Easing and duration determine how an animation _feels_.
+
+This plays an important role what the animation communicates.
+Easing and duration can also influence the perception of speed. The popover on the left below uses `ease-in` easing, which starts slow. The one on the right uses `ease-out`, which makes the animation feel faster.
+
+[DEMO]
+
+To know what easing & duration to choose, it comes down to experimentation. However I've found I usually stick to `150ms - 300ms` and these easings:
+
+```css
+:root {
+  /* Elements enter/leave the viewport */
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* Elements change position on the viewport */
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* Use linear for constant, keyframe animations */
+}
+```
+
+---
+
+## Gestures
+
+Gestures are inherent parts of user interfaces. We use them constantly to trigger events (e.g clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
+
+[DEMO]
+
+Adding `active:scale-[0.98]` to the button is a low-effort way to make the click feel much more tactile
+
+---
+
+## Using clip-path animations
+
+`clip-path` is an often overlooked CSS function, typically used to drawing shapes around nodes. But it works great for creating interesting animations.
+
+[DEMO]
+
+Stacking these images and adding `clip-path: (0 var(--pos) 0 0)` whilst we animating the value (e.g 50%) creates this before/after slider.
+
+---
+
+## Between states
+
+Animating transitions between states, such as changing the month on a calendar, can bring the interface to life. When orchestrating motion like this, I use React Motion as working with pure CSS can be fiddly.
+
+<UIExample component="motion-calendar" client:load />
+
+Motion is determined by the state of `key` on the motion component. The container determines the start, middle, and end state of the animation - triggered when `month` changes.
+
+```tsx
+<AnimatePresence initial={false}>
+  <motion.div
+    key={month}
+    inital={{ x: 40, opacity: 0, filter: "blur(2px)" }}
+    animate={{ x: 0, opacity: 1, filter: "blur(0px)" }}
+    exist={{ x: -40, opacity: 0, filter: "blur(2px)" }}
+    transition={{ type: "spring", bounce: 0, duration: 0.4 }} // Consider using ease-out
+  >
+    {month}
+  </motion.div>
+</AnimatePresence>
+```
+
+---
+
+## Feedback and status
+
+Animations provide feedback during pending states, transforming empty waiting time into perceived progress. It's common to see a loading spinner, but you can do so much more with it.
+
+<UIExample component="motion-thinking" client:load />
+
+Here we see different tool calls from an LLM. Beyond the `pending` and `resolved` state, there are sub-states for each tool call. With some React Motion, we can animate both.
+
+```tsx
+<div className="relative h-5 w-56 overflow-hidden">
+  <AnimatePresence initial={false}>
+    <motion.span
+      key={index}
+      className={cn(
+        "absolute inset-0 text-sm font-medium text-gray-12 select-none",
+      )}
+      initial={{ y: 8, opacity: 0, filter: "blur(1px)" }}
+      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+      exit={{ y: -8, opacity: 0, filter: "blur(1px)" }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      {STATUSES[index]}...
+    </motion.span>
+  </AnimatePresence>
+</div>
+```
+
+---
+
+## Responsive size
+
+Animating layout can cause layout shifts and expensive repainting if you're not careful. But changing the dimensions of a container helps reduce wasted space and focuses the attention.
+
+<UIExample component="motion-responsive" client:load />
+
+Measuring the inner content and animating the `height` value can adapt the container nicely to the content whenever it changes.
+
+```tsx
+const [ref, bounds] = useMeasure();
+
+<motion.div
+  animate={{ height: bounds.height }}
+  transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+>
+  <div ref={ref} className="inner-content">
+    ...
+  </div>
+</motion.div>;
+```
+
+---
+
+## Magic Text
+
+Carefully using orchestration allows you to create more interesting animations. One of the best and simplest techniques for orchestration is **staggering**. By staggering each character, we can animate the text in like magic!
+
+<UIExample component="motion-magic-text" client:load>
+  Using a slight blur and spring animation brings this to life
+</UIExample>
+
+Seperating each word allows us more control. Always remember to add the full text for screen readers so they don't announce each word seperately.
+
+```tsx
+<div>
+  <span className="sr-only">{word}</span>
+  {words.map((w, i) => (
+    <motion.span
+      key={i}
+      initial={{ y: 16, originY: 0.2, filter: "blur(4px)", opacity: 0 }}
+      animate={{ y: 0, originY: 0.2, filter: "blur(0px)", opacity: 1 }}
+      transition={{
+        type: "spring",
+        stiffness: 250,
+        damping: 30,
+        delay: i * 0.05,
+      }}
+    >
+      {w}
+    </motion.span>
+  ))}
+</div>
+```
