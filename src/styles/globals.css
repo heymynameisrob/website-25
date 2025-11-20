@@ -5,7 +5,7 @@
 
 @theme {
   /* Colors */
-  --color-background: var(--background);
+  --color-background: var(--gray-1);
   --color-primary: var(--gray-12);
   --color-secondary: var(--gray-11);
   --color-accent: var(--accent);
@@ -40,14 +40,14 @@
   /* Fonts */
   --font-sans: "Inter", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-normal: 450;
-  --font-mediu: 550;
+  --font-serif: "Galaxie", serif;
+  --font-weight-normal: 450;
+  --font-weight-medium: 500;
 
   /* Animations */
   --animate-blink: blink 1s step-end infinite;
-
-  /* Timing functions */
-  --ease-easeOut: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 @layer base {
@@ -91,38 +91,54 @@
 
 @layer components {
   .prose {
-    --prose-color: var(--color-gray-12);
+    --prose-color: var(--color-gray-11);
     --prose-heading-color: var(--color-gray-12);
-    --prose-strong-color: var(--color-gray-12);
+    --prose-strong-color: var(--color-gray-11);
     --prose-link-color: var(--color-gray-12);
     --prose-code-color: var(--color-gray-12);
     --prose-marker-color: var(--color-accent);
-    --prose-link-underline-color: var(--color-accent);
+    --prose-link-underline-color: var(--color-gray-7);
     --prose-th-borders: var(--color-border);
     --prose-td-borders: var(--color-border);
     --prose-hr-color: var(--color-border);
     --prose-blockquote-border-color: var(--color-gray-7);
     color: var(--prose-color);
-    font-size: 1.063rem; /** 17px **/
-    line-height: 1.66;
+    font-size: 1rem;
+    line-height: 1.66em;
+    letter-spacing: -0.01em;
+    font-weight: var(--font-weight-normal);
+  }
+
+  @media (min-width: 48rem) {
+    .prose {
+      font-size: 1.065rem;
+    }
   }
 
   .prose
     :where(:not(.not-prose, .not-prose *))
     + :where(:not(.not-prose, .not-prose *)) {
+    margin-top: calc(var(--spacing) * 12);
+  }
+
+  .prose
+    :where(:not(.not-prose, .not-prose *))
+    + :where(:not(.not-prose, .not-prose p)) {
     margin-top: calc(var(--spacing) * 6);
   }
 
   .prose h2:where(:not(.not-prose, .not-prose *)) {
     font-size: var(--text-xl);
+    font-family: var(--font-sans);
     letter-spacing: -0.025em;
-    color: var(--prose-code-color);
+    color: var(--prose-heading-color);
     font-weight: var(--font-weight-medium);
     margin-top: calc(var(--spacing) * 12);
   }
 
   .prose h3:where(:not(.not-prose, .not-prose *)) {
-    font-size: var(--text-base);
+    font-size: var(--text-lg);
+    font-family: var(--font-sans);
     color: var(--prose-heading-color);
     font-weight: var(--font-weight-medium);
     margin-top: calc(var(--spacing) * 8);
@@ -349,20 +365,15 @@
   }
 
   .prose :not(pre) > code:where(:not(.not-prose, .not-prose *)) {
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-weight: var(--font-weight-medium);
-    background-color: var(--color-gray-4);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-gray-3);
     text-align: center;
     font-size: var(--text-sm);
     user-select: none;
-    padding-inline: calc(var(--spacing) * 1);
-    line-height: normal;
-    border-radius: var(--radius-sm);
-  }
-
-  .prose :not(pre) > code:where(:not(.not-prose, .not-prose *)) {
-    background-color: var(--color-gray-5);
+    padding: calc(var(--spacing) * 1);
+    line-height: none;
+    border-radius: var(--radius-md);
   }
 
   .prose :not(pre) > code:where(:not(.not-prose, .not-prose *)):before,
@@ -415,6 +426,14 @@
   .prose :last-child:where(:not(.not-prose, .not-prose *)) {
     margin-bottom: 0;
   }
+
+  .grid-stack {
+    display: grid;
+    place-items: center;
+    > * {
+      grid-area: 1 / 1;
+    }
+  }
 }
 
 @layer base {
@@ -432,6 +451,18 @@
     font-style: normal;
   }
 
+  @font-face {
+    font-family: "Galaxie";
+    src: url("/src/assets/GalaxieCopernicus-Medium.woff2") format("woff2");
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Galaxie";
+    src: url("/src/assets/GalaxieCopernicus-MediumItalic.woff2") format("woff2");
+    font-style: italic;
+  }
+
   @keyframes blink {
     0%,
     100% {
@@ -439,6 +470,15 @@
     }
     50% {
       visibility: hidden;
+    }
+  }
+
+  @keyframes checkboxFill {
+    0% {
+      stroke: var(--accent);
+    }
+    100% {
+      stroke: #fff;
     }
   }
 
@@ -524,14 +564,12 @@
     @apply outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .astro-code,
-    .astro-code span {
-      color: var(--shiki-dark);
-      font-style: var(--shiki-dark-font-style);
-      font-weight: var(--shiki-dark-font-weight);
-      text-decoration: var(--shiki-dark-text-decoration);
-    }
+  .dark .astro-code,
+  .dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
   }
 
   @media (prefers-reduced-motion: reduce) {

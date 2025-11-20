@@ -4,14 +4,6 @@ import { cn } from "@/lib/utils";
 const { className } = Astro.props;
 ---
 
-<article
-  class={cn(
-    "w-full max-w-none pb-24 px-5",
-    "flex flex-col md:grid grid-cols-[auto_minmax(auto,624px)_auto]",
-    "*:col-start-2 [&_*:not(.demo,.demo_*,.demo *)]:col-start-2  [&_figure]:col-start-1 [&_figure]:col-end-4 [&_section]:col-start-1 [&_section]:col-end-4",
-    "prose",
-    className,
-  )}
->
+<article class={cn("prose w-full max-w-none", className)}>
   <slot />
 </article>

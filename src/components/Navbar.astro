@@ -1,0 +1,13 @@
+---
+import { ArrowUturnLeftIcon } from "@heroicons/react/16/solid";
+import Button from "./Button.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<nav role="navigation" class="flex items-center justify-between p-5">
+  <Button size="icon" variant="ghost" href="/">
+    <ArrowUturnLeftIcon className="size-4" />
+  </Button>
+  <slot />
+  <ThemeToggle />
+</nav>

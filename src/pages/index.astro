@@ -1,49 +1,102 @@
 ---
-import { getCollection } from "astro:content";
-import { getImage } from "astro:assets";
+import { AnimateInUp } from "@/components/Motion.tsx";
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
+
 import Layout from "@/layouts/Layout.astro";
-import HomeNav from "@/components/HomeNav.astro";
-import HomeHeader from "@/components/HomeHeader.astro";
-
-import { ScrollStrip } from "@/components/ScrollStrip";
-
-import { filterPosts } from "@/lib/utils";
-
-const allPosts = await getCollection("posts");
-const allValidPosts = filterPosts(allPosts);
-
-const postsWithOptimizedImages = await Promise.all(
-  allValidPosts.map(async (post) => {
-    let images: any = {};
-    if (post.data.image) {
-      const optimizedImage = await getImage({
-        src: post.data.image,
-        width: 1000,
-        height: 1000,
-        format: "avif",
-        quality: 100,
-      });
-      images.optimizedImageSrc = optimizedImage.src;
-    }
-
-    if (post.data.imageDark) {
-      const optimizedImageDark = await getImage({
-        src: post.data.imageDark,
-        width: 1000,
-        height: 1000,
-        format: "avif",
-        quality: 100,
-      });
-      images.optimizedImageDarkSrc = optimizedImageDark.src;
-    }
-
-    return { ...post, ...images };
-  }),
-);
+import ThemeToggle from "@/components/ThemeToggle.astro";
 ---
-
+<div class="absolute top-5 right-5">
+  <ThemeToggle />
+</div>
 <Layout>
-  <HomeNav />
-  <HomeHeader />
-  <ScrollStrip posts={postsWithOptimizedImages} client:only="react" />
+  <div
+    class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-16 lg:mt-24 px-5"
+  >
+    <AnimateInUp as="header" className="flex flex-col" client:load>
+      <h1 class="text-[20px] leading-tight tracking-tighter font-serif">
+        Rob Hough
+      </h1>
+      <h2
+        class="text-[20px] leading-tight tracking-tight font-serif text-gray-9"
+      >
+        Design Engineer
+      </h2>
+    </AnimateInUp>
+    <AnimateInUp
+      as="section"
+      className="flex flex-col gap-8"
+      delay={0.15}
+      client:load
+    >
+      <p class="text-lg text-primary leading-normal text-balance">
+        Building performant and engaging software for the web. Based in the
+        English countryside. Available for projects.
+      </p>
+      <a
+        href="/work"
+        class="w-fit text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12"
+        >View recent work</a
+      >
+    </AnimateInUp>
+    <ul class="flex flex-col gap-4">
+      <AnimateInUp delay={0.25} as="li" client:load>
+        <a
+          href="https://cushion.so"
+          target="_blank"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Cushion <ArrowUpRightIcon className="size-4 inline" /></a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Modern async messaging for remote teams
+        </p>
+      </AnimateInUp>
+      <AnimateInUp delay={0.35} as="li" client:load>
+        <a
+          href="/posts/practical-motion"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Motion UI</a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Using motion in web interfaces
+        </p>
+      </AnimateInUp>
+      <AnimateInUp delay={0.45} as="li" client:load>
+        <a
+          href="/posts/artificial-io"
+          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
+          >Artifical</a
+        >
+        <p class="text-lg text-secondary leading-normal text-balance">
+          Policy management for underwriters
+        </p>
+      </AnimateInUp>
+    </ul>
+    <ul class="flex flex-col gap-1">
+      <AnimateInUp delay={0.6} as="li" client:load>
+        <a
+          href="mailto:robhough180@gmail.com"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >Email</a
+        >
+      </AnimateInUp>
+      <AnimateInUp delay={0.7} as="li" client:load>
+        <a
+          href="https://github.com/heymynameisrob"
+          target="_blank"
+          rel="nofollow noopener"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >Github</a
+        >
+      </AnimateInUp>
+      <AnimateInUp delay={0.8} as="li" client:load>
+        <a
+          href="https://linkedin.com/in/heymynameisrob"
+          target="_blank"
+          rel="nofollow noopener"
+          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          >LinkedIn</a
+        >
+      </AnimateInUp>
+    </ul>
+  </div>
 </Layout>

@@ -18,11 +18,19 @@ import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 import { ArtificialTasks } from "@/components/demos/ArtificialInbox/Task";
-import { MagicText } from "@/components/demos/motion/MagicText";
-import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
 import { Calendar } from "@/components/demos/Calendar";
+import { Gallery } from "@/components/demos/Gallery";
+import { Calculator } from "@/components/demos/Calculator";
+import { Form } from "@/components/demos/Form";
+import { MagicText } from "@/components/demos/MagicText";
+import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
 import { Loader } from "@/components/demos/motion/Loader";
 import { Thinking } from "@/components/demos/motion/Thinking";
+import { Easing } from "@/components/demos/motion/Easing";
+import { Gestures } from "@/components/demos/motion/Gestures";
+import { ClipPathSlider } from "@/components/demos/motion/ClipPath";
+import { List } from "@/components/demos/motion/List";
+import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -69,7 +77,6 @@ export function UIExample({
         damping: 15,
       },
     });
-    setKey((prev) => prev + 1);
   };
 
   const handleRemount = () => {
@@ -81,8 +88,8 @@ export function UIExample({
   };
 
   return (
-    <figure className="flex flex-col justify-center items-center gap-2 my-8 demo not-prose overflow-hidden">
-      <div className="relative grid place-items-center w-full aspect-3/2 border bg-gray-2 rounded-md after:pointer-events-none after:absolute after:inset-0 bg-[radial-gradient(var(--pattern-fg)_1px,transparent_0)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--border)] my-0">
+    <figure className="flex flex-col justify-center items-center gap-2 my-16">
+      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus transition-all overflow-hidden">
         <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
@@ -92,7 +99,7 @@ export function UIExample({
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onClick={handleRemount}
-            className="absolute bottom-2 right-2"
+            className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all"
           >
             <motion.div animate={controls}>
               <ArrowPathIcon className="w-4 h-4 opacity-70" />
@@ -100,7 +107,7 @@ export function UIExample({
           </Button>
         </Tooltip>
       </div>
-      <span className="text-xs text-secondary">{children}</span>
+      <figcaption className="text-xs text-gray-10">{children}</figcaption>
     </figure>
   );
 }
@@ -152,11 +159,18 @@ const COMPONENT_MAP = {
   "artificial-inbox-tabs": <ArtificialInboxTabs />,
   "artificial-inbox-filters": <ArtificialInboxFilters />,
   "artificial-inbox-tasks": <ArtificialTasks />,
-  "motion-magic-text": (
-    <MagicText title="There's one word for that: Magic Text!" />
-  ),
+  calendar: <Calendar />,
+  gallery: <Gallery />,
+  calculator: <Calculator />,
+  form: <Form />,
+  "motion-magic-text": <MagicText />,
   "motion-responsive": <ResponsiveContainer />,
   "motion-calendar": <Calendar />,
   "motion-loader": <Loader />,
   "motion-thinking": <Thinking />,
+  "motion-easing": <Easing />,
+  "motion-gestures": <Gestures />,
+  "motion-clip": <ClipPathSlider />,
+  "motion-list": <List />,
+  "motion-stagger": <StaggerButtons />,
 };

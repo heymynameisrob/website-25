@@ -54,7 +54,7 @@ const SKELETON_OPTIONS: ArtificialTableOptionsProps = {
 
 export function ArtificialInboxFilters() {
   return (
-    <div className="relative right-16 bottom-0 rounded-md overflow-hidden bg-background w-full shadow-floating aspect-video">
+    <div className="relative right-10 top-10 origin-top mt-auto rounded-md overflow-hidden bg-background w-full shadow-floating">
       <div className="w-full flex flex-col">
         <ArtificialSkeletonTopBar />
         <FiltersMain />

@@ -44,7 +44,7 @@ type TaskFormData = z.infer<typeof taskFormSchema>;
 
 export function ArtificialTasks() {
   return (
-    <div className="absolute inset-10 max-w-full max-h-full rounded-md overflow-hidden bg-background shadow-floating">
+    <div className="relative top-10 left-10  max-w-full max-h-full rounded-md overflow-hidden bg-background shadow-floating text-primary">
       <div className="grid grid-rows-[44px_1fr] h-full">
         <TasksHeader />
         <div className="w-full max-w-prose mx-auto p-6 lg:py-12">

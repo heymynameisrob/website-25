@@ -1,42 +1,62 @@
 import * as React from "react";
 import { motion } from "motion/react";
 
-type MotionVariant = "fadeIn" | "fadeInUp" | "scaleIn";
+type MotionComponent = keyof typeof motion;
 
-export function useMotionVariants(variant: MotionVariant = "fadeIn") {
-  switch (variant) {
-    case "fadeIn":
-      return {
-        initial: { opacity: 0, filter: "blur(3px)" },
-        animate: { opacity: 1, filter: "blur(0px)" },
-        transition: { duration: 0.4, type: "spring", bounce: 0 },
-      };
-    case "fadeInUp":
-      return {
-        initial: { opacity: 0, y: 10, filter: "blur(3px)" },
-        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-        transition: { duration: 0.4, type: "spring", bounce: 0 },
-      };
-    case "scaleIn":
-      return {
-        initial: { opacity: 0, scale: 0.9, filter: "blur(3px)" },
-        animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
-        transition: { duration: 0.4, type: "spring", bounce: 0 },
-      };
-  }
-}
-
-export function Motion({
+export function AnimateInUp({
   children,
   className,
-  ...props
+  delay,
+  as = "div",
 }: {
   children: React.ReactNode;
   className?: string;
-} & Omit<React.ComponentProps<typeof motion.div>, "children" | "className">) {
+  delay?: number;
+  as?: MotionComponent;
+}) {
+  const Component = motion[as] as React.ElementType;
   return (
-    <motion.div className={className} {...props}>
+    <Component
+      className={className}
+      initial={{ opacity: 0, y: 10, filter: "blur(3px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{
+        duration: 0.4,
+        type: "spring",
+        bounce: 0,
+        delay: delay ?? 0,
+      }}
+    >
       {children}
-    </motion.div>
+    </Component>
+  );
+}
+
+export function AnimateIn({
+  children,
+  className,
+  delay,
+  as = "div",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  as?: MotionComponent;
+}) {
+  const Component = motion[as] as React.ElementType;
+  return (
+    <Component
+      className={className}
+      initial={{ opacity: 0, filter: "blur(3px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{
+        duration: 0.4,
+        type: "spring",
+        bounce: 0,
+        delay: delay ?? 0,
+      }}
+    >
+      {children}
+    </Component>
   );
 }
