@@ -32,21 +32,6 @@ const IMAGES: Image[] = [
     aspectRatio: "square",
   },
   {
-    url: "https://ucarecdn.com/e8984722-d538-461d-8459-7bf36770ec6d/",
-    caption: "Photo 3",
-    aspectRatio: "tall",
-  },
-  {
-    url: "https://ucarecdn.com/2d4d807d-ecb7-4d42-a44f-8036a147770d/",
-    caption: "Photo 4",
-    aspectRatio: "wide",
-  },
-  {
-    url: "https://ucarecdn.com/129e6811-e758-4c4c-bca9-69ee645a50b1/",
-    caption: "Photo 5",
-    aspectRatio: "tall",
-  },
-  {
     url: "https://ucarecdn.com/9595131d-ce50-4d19-bfcc-f6c6c305d25c/",
     caption: "Photo 6",
     aspectRatio: "square",
@@ -78,28 +63,24 @@ export function Gallery() {
   }, [currentImage]);
 
   return (
-    <div className="p-2">
-      <Masonry
-        breakpointCols={BREAKPOINT_COLS}
-        className="flex items-start -ml-2 w-auto"
-        columnClassName=" pl-2 bg-clip-padding"
-      >
+    <div className="not-prose w-full max-w-xl mx-auto">
+      <div className="w-full grid grid-cols-2 gap-4">
         {IMAGES.map((img) => (
           <motion.button
             key={img.url}
-            layoutId={transitionType === "open" ? img.url : undefined}
+            layoutId={img.url}
             whileHover={{ opacity: 0.8 }}
-            className="relative break-inside-avoid focus rounded-lg"
+            className="relative aspect-square rounded-2xl bg-gray-2 overflow-hidden border focus transition-all"
             onClick={() => handleImageOpen(img.url)}
           >
             <img
               src={img.url}
-              className="m-0! w-full h-auto object-cover rounded-lg border"
+              className="absolute inset-0 object-cover"
               alt="Preview image"
             />
           </motion.button>
         ))}
-      </Masonry>
+      </div>
 
       <GalleryDialog
         image={currentImage}
@@ -173,10 +154,8 @@ function GalleryDialog({
     return () => window.removeEventListener("keydown", handleKeydown);
   }, [next, prev, onImageChange, transitionType, setTransitionType]);
 
-  const aspectRatio = IMAGES.find((p) => p.url === image)?.aspectRatio;
-
   return (
-    <Portal.Portal>
+    <>
       <AnimatePresence>
         {image ? (
           <motion.div
@@ -187,32 +166,30 @@ function GalleryDialog({
               setTransitionType("open");
               onImageChange(null);
             }}
-            className="fixed inset-0 z-10 bg-black/10 backdrop-blur-sm"
+            className="absolute inset-0 z-10 backdrop-blur-sm"
           />
         ) : null}
       </AnimatePresence>
 
-      <AnimatePresence initial={false} mode="popLayout">
+      <AnimatePresence>
         {image ? (
-          <div className="fixed inset-0 grid place-items-center z-10 pointer-events-none">
+          <div className="absolute inset-4 grid place-items-center z-10 pointer-events-none">
             <motion.div
               key={image}
-              layoutId={transitionType === "open" ? image : undefined}
+              layoutId={image}
               className={cn(
-                "relative aspect-square w-[80vw] max-w-[800px] shadow-2xl",
-                aspectRatio === "tall" && "aspect-3/4",
-                aspectRatio === "wide" && "aspect-4/3",
+                "relative aspect-square w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden",
               )}
             >
               <img
                 src={image}
-                className="absolute inset-0 w-full h-full object-cover rounded-[32px]"
+                className="absolute inset-0 object-cover"
                 alt="Expanded image" // Adding alt for accessibility
               />
             </motion.div>
           </div>
         ) : null}
       </AnimatePresence>
-    </Portal.Portal>
+    </>
   );
 }

@@ -46,9 +46,8 @@
 
   /* Animations */
   --animate-blink: blink 1s step-end infinite;
-
-  /* Timing functions */
-  --ease-easeOut: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 @layer base {

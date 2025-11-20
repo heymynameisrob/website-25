@@ -1,23 +1,25 @@
 ---
 title: Practical Motion
-description: Notes on how to what I've learnt on using motion in web application interfaces
-image: /src/assets/inbox-light.jpg
-imageDark: /src/assets/inbox-dark.jpg
+description: Notes on what I've learnt about using motion in web application interfaces
+image: /src/assets/bacon-motion.jpg
+imageDark: /src/assets/bacon-motion.jpg
 date: 2025-11-20
 type: "post"
 ---
 
 import { UIExample } from "@/components/demos/UIExample";
 
-A series of learnings about adding motion into user interfaces on the web. I've learnt a lot of these over the years, particularly when working with React.
+Animation can bring joy to an interface.
 
-[FEATURE ANIMATED GIF/VIDEO]
+Whether they are animations via interactions (e.g. clicking on a button) or orchestrated (e.g. animating a moving carousel), motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
-## Why animations are useful
+<UIExample component="gallery" client:load>
+  Tip: You can navigate between images with arrow keys
+</UIExample>
 
-Animation can bring life and joy to an interface. Whether they are animations via interactions (e.g clicking on a button) or orchestarted (e.g animating a moving carousel) - motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
+The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now accustomed to seeing. Even with new APIs and browser capability, this poses challenges on the web.
 
-The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now acustom to seeing. Even with new API's and browser capability, this poses challenges on the web.
+Below are lessons from adding motion to user interfaces on the web. I've learnt a lot of these over the years, particularly when working with React.
 
 ---
 
@@ -25,10 +27,12 @@ The web is traditionally a static, document-based medium. The introduction of th
 
 Easing and duration determine how an animation _feels_.
 
-This plays an important role what the animation communicates.
-Easing and duration can also influence the perception of speed. The popover on the left below uses `ease-in` easing, which starts slow. The one on the right uses `ease-out`, which makes the animation feel faster.
+This plays an important role in what the animation communicates.
+Easing and duration can also influence the perception of speed. The popover on the left below uses `ease-in` with a slower duration so you can spot the difference. It doesn't _feel_ right because it starts slow and speeds up.
 
-[DEMO]
+The one on the right uses `ease-out`, which has velocity from the start and comes to a gentle stop. This feels correct and the animation feels faster.
+
+<UIExample component="motion-easing" client:load />
 
 To know what easing & duration to choose, it comes down to experimentation. However I've found I usually stick to `150ms - 300ms` and these easings:
 
@@ -48,21 +52,21 @@ To know what easing & duration to choose, it comes down to experimentation. Howe
 
 ## Gestures
 
-Gestures are inherent parts of user interfaces. We use them constantly to trigger events (e.g clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
+Gestures are parts of user interfaces. We use them constantly to trigger events (e.g. clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
 
-[DEMO]
+<UIExample component="motion-gestures" client:load />
 
-Adding `active:scale-[0.98]` to the button is a low-effort way to make the click feel much more tactile
+Adding `active:scale-[0.96]` to the button is a low-effort way to make the click feel much more tactile.
 
 ---
 
 ## Using clip-path animations
 
-`clip-path` is an often overlooked CSS function, typically used to drawing shapes around nodes. But it works great for creating interesting animations.
+`clip-path` is an often overlooked CSS function, typically used for drawing shapes around nodes. But it works great for creating interesting animations and interactions. You can stack elements, hiding and revealing them by just changing a value.
 
-[DEMO]
+<UIExample component="motion-clip" client:load />
 
-Stacking these images and adding `clip-path: (0 var(--pos) 0 0)` whilst we animating the value (e.g 50%) creates this before/after slider.
+Stacking these images and adding `clip-path: (0 0 var(--pos) 0)` whilst animating the value (e.g. 50%) creates this before/after slider.
 
 ---
 
@@ -78,9 +82,9 @@ Motion is determined by the state of `key` on the motion component. The containe
 <AnimatePresence initial={false}>
   <motion.div
     key={month}
-    inital={{ x: 40, opacity: 0, filter: "blur(2px)" }}
+    initial={{ x: 40, opacity: 0, filter: "blur(2px)" }}
     animate={{ x: 0, opacity: 1, filter: "blur(0px)" }}
-    exist={{ x: -40, opacity: 0, filter: "blur(2px)" }}
+    exit={{ x: -40, opacity: 0, filter: "blur(2px)" }}
     transition={{ type: "spring", bounce: 0, duration: 0.4 }} // Consider using ease-out
   >
     {month}
@@ -150,7 +154,7 @@ Carefully using orchestration allows you to create more interesting animations. 
   Using a slight blur and spring animation brings this to life
 </UIExample>
 
-Seperating each word allows us more control. Always remember to add the full text for screen readers so they don't announce each word seperately.
+Separating each word allows us more control. Always remember to add the full text for screen readers so they don't announce each word separately.
 
 ```tsx
 <div>

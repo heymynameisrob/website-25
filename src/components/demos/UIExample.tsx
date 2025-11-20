@@ -26,6 +26,9 @@ import { MagicText } from "@/components/demos/motion/MagicText";
 import { ResponsiveContainer } from "@/components/demos/motion/ResponsiveContainer";
 import { Loader } from "@/components/demos/motion/Loader";
 import { Thinking } from "@/components/demos/motion/Thinking";
+import { Easing } from "@/components/demos/motion/Easing";
+import { Gestures } from "@/components/demos/motion/Gestures";
+import { ClipPathSlider } from "@/components/demos/motion/ClipPath";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -166,4 +169,7 @@ const COMPONENT_MAP = {
   "motion-calendar": <Calendar />,
   "motion-loader": <Loader />,
   "motion-thinking": <Thinking />,
+  "motion-easing": <Easing />,
+  "motion-gestures": <Gestures />,
+  "motion-clip": <ClipPathSlider />,
 };

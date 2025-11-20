@@ -1,8 +1,7 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Prose from "@/components/Prose.astro";
-import { fromNow } from "@/lib/utils";
 import HomeNav from "@/components/HomeNav.astro";
+import Prose from "@/components/Prose.astro";
+import Layout from "@/layouts/Layout.astro";
 
 import type { PostFrontmatter } from "@/content.config";
 
@@ -32,7 +31,7 @@ const { frontmatter } = Astro.props;
         {frontmatter.title}
       </h1>
       <small class="font-mono font-[500] text-sm text-gray-8 uppercase"
-        >Last updated {fromNow(frontmatter.date, true)}</small
+        >{frontmatter.company || frontmatter.type}</small
       >
     </header>
     <Prose><slot /></Prose>
