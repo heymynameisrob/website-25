@@ -33,7 +33,7 @@ export function Tooltip({
             sideOffset={sideOffset}
             {...props}
             className={cn(
-              "flex items-center z-max overflow-hidden rounded-lg bg-black text-white px-1.5 py-1 h-7 text-xs font-medium tracking-tight shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+              "flex items-center z-50 overflow-hidden rounded-lg bg-black text-white px-1.5 py-1 h-7 text-xs font-medium tracking-tight shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
               "dark:bg-gray-2",
               className,
             )}

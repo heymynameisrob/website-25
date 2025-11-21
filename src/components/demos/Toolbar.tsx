@@ -1,18 +1,23 @@
+import { Checkbox } from "@/components/demos/motion/Checkbox";
 import { Button } from "@/components/primitives/Button";
 import {
   ArrowTurnUpLeftIcon,
+  ArrowUturnLeftIcon,
   CheckCircleIcon,
   DocumentDuplicateIcon,
   TrashIcon,
   UserIcon,
+  XMarkIcon,
 } from "@heroicons/react/16/solid";
 import { useMeasure } from "@uidotdev/usehooks";
-import { UndoIcon } from "lucide-react";
+import { Loader2, SaveIcon, UndoIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 
 export function Toolbar() {
-  const [state, setState] = React.useState<"idle" | "success">("idle");
+  const [state, setState] = React.useState<"idle" | "success" | "loading">(
+    "idle",
+  );
   const [ref, bounds] = useMeasure();
 
   console.log("Render");
@@ -20,7 +25,14 @@ export function Toolbar() {
   const content = React.useMemo(() => {
     switch (state) {
       case "idle":
-        return <Tools onDelete={() => setState("success")} />;
+        return <Tools onSave={() => setState("loading")} />;
+      case "loading":
+        return (
+          <Saving
+            onComplete={() => setState("success")}
+            onUndo={() => setState("idle")}
+          />
+        );
       case "success":
         return <Success onUndo={() => setState("idle")} />;
     }
@@ -37,7 +49,7 @@ export function Toolbar() {
         damping: 45,
         mass: 0.7,
       }}
-      className="dark bg-black text-white rounded-full shadow-floating"
+      className=" bg-black text-white rounded-full shadow-floating"
     >
       <div
         ref={ref}
@@ -60,11 +72,59 @@ export function Toolbar() {
   );
 }
 
+function Saving({
+  onComplete,
+  onUndo,
+}: {
+  onComplete: () => void;
+  onUndo: () => void;
+}) {
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onComplete();
+    }, 2_000);
+
+    return () => clearTimeout(timeout);
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: 1,
+      }}
+      className="flex items-center justify-between gap-2 w-full"
+    >
+      <div className="flex items-center gap-2 pl-3 overflow-x-hidden min-w-32">
+        <Loader2 className="size-5 animate-spin" />
+        <span className="shrink-0 font-medium text-white">Saving...</span>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="ml-auto size-8 shrink-0 gap-1.5 hover:bg-white/10 rounded-full text-secondary"
+          onClick={onUndo}
+        >
+          <XMarkIcon className="size-4 opacity-70" />
+        </Button>
+      </div>
+    </motion.div>
+  );
+}
+
 function Success({ onUndo }: { onUndo: () => void }) {
+  const [checked, setChecked] = React.useState(false);
+  React.useEffect(() => {
+    const check = setTimeout(() => {
+      setChecked(true);
+    }, 250);
+
+    return () => clearTimeout(check);
+  }, [onUndo]);
+
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       onUndo();
-    }, 5000);
+    }, 4_000);
 
     return () => clearTimeout(timeout);
   }, [onUndo]);
@@ -75,57 +135,50 @@ function Success({ onUndo }: { onUndo: () => void }) {
       animate={{
         opacity: 1,
       }}
-      className="flex items-center justify-between gap-2 w-full"
+      className="flex items-center justify-between gap-2 w-full px-3"
     >
-      <div className="flex items-center gap-2 pl-3">
-        <CheckCircleIcon className="shrink-0 size-4 opacity-70" />
+      <div className="flex items-center gap-2 overflow-x-hidden">
+        <Checkbox checked={checked} />
         <span className="shrink-0 font-medium text-white">
-          Document deleted
+          Saved successfully
         </span>
       </div>
-      <Button
-        variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full"
-        onClick={onUndo}
-      >
-        <span>Undo</span>
-      </Button>
     </motion.div>
   );
 }
 
-function Tools({ onDelete }: { onDelete: () => void }) {
+function Tools({ onSave }: { onSave: () => void }) {
   return (
     <div className="flex items-center gap-1">
       <Button
-        rounded-full
         variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full text-red-400"
-        onClick={onDelete}
-      >
-        <TrashIcon className="size-4" />
-        <span>Delete</span>
-      </Button>
-      <Button
-        variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full"
+        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
       >
         <DocumentDuplicateIcon className="size-4" />
         <span>Copy</span>
       </Button>
       <Button
         variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full"
+        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
       >
         <ArrowTurnUpLeftIcon className="size-4" />
         <span>Move to...</span>
       </Button>
       <Button
         variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full"
+        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
       >
         <UserIcon className="size-4" />
         <span>Assign</span>
+      </Button>
+      <Button
+        rounded-full
+        variant="ghost"
+        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
+        onClick={onSave}
+      >
+        <SaveIcon className="size-4" />
+        <span>Save</span>
       </Button>
     </div>
   );

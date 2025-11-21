@@ -279,7 +279,7 @@ const COMPONENTS: ComponentItem[] = [
     id: "toolbar",
     name: "Toolbar",
     description:
-      "Adaptable floating toolbar, used for contextual actions on an item",
+      "Adaptive floating toolbar, used for contextual actions on an item, with loading and success states",
     tech: ["react", "tailwind", "motion"],
     fileName: "Toolbar.tsx",
     isFullWidth: false,
@@ -432,12 +432,12 @@ function WorkDemoFullscreen() {
         <DialogPrimitive.Content
           onCloseAutoFocus={(e) => e.preventDefault()}
           className={cn(
-            "fixed inset-4 z-50 h-full bg-background outline-none",
+            "fixed inset-0 z-50 h-full bg-background outline-none",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:blur-in-md",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md",
           )}
         >
-          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full">
+          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full p-4">
             <aside className="w-full flex flex-col p-4 gap-4">
               <motion.h3
                 {...FADE_IN_BLUR}
@@ -471,7 +471,7 @@ function WorkDemoFullscreen() {
                     href={`https://github.com/heymynameisrob/website-25/blob/main/src/components/demos/${activeComponent?.fileName || ""}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em]"
+                    className="flex items-center gap-2 text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em] focus"
                   >
                     <Code2Icon className="size-4" />
                     <span>View on Github</span>
@@ -483,7 +483,7 @@ function WorkDemoFullscreen() {
               {activeComponent?.component}
             </section>
           </div>
-          <div className="absolute top-0 right-0">
+          <div className="absolute top-4 right-4">
             <DialogPrimitive.Close
               className={buttonVariants({ size: "icon", variant: "ghost" })}
             >

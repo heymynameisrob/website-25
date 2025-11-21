@@ -150,37 +150,39 @@ export function Calendar() {
     >
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <div className="relative shrink-0 w-[400px] overflow-hidden bg-background rounded-xl border">
-          <motion.div animate={{ height: bounds.height ?? 0 }}>
-            <div ref={ref} className="py-6">
-              <div className="flex flex-col justify-center rounded-sm text-center">
-                <motion.div
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0}
-                  style={{ x, opacity }}
-                  className="touch-pan-y"
-                  onDragEnd={handleDragEnd}
-                >
-                  <AnimatePresence
-                    mode="popLayout"
-                    initial={false}
-                    custom={direction}
-                    onExitComplete={() => setIsAnimating(false)}
+          <AnimatePresence initial={false}>
+            <motion.div animate={{ height: bounds.height ?? 0 }}>
+              <div ref={ref} className="py-6">
+                <div className="flex flex-col justify-center rounded-sm text-center">
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0}
+                    style={{ x, opacity }}
+                    className="touch-pan-y"
+                    onDragEnd={handleDragEnd}
                   >
-                    <motion.div
-                      key={monthLabel}
-                      initial="enter"
-                      animate="middle"
-                      exit="exit"
+                    <AnimatePresence
+                      mode="popLayout"
+                      initial={false}
+                      custom={direction}
+                      onExitComplete={() => setIsAnimating(false)}
                     >
-                      <CalendarHeader />
-                      <CalendarMonth />
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
+                      <motion.div
+                        key={monthLabel}
+                        initial="enter"
+                        animate="middle"
+                        exit="exit"
+                      >
+                        <CalendarHeader />
+                        <CalendarMonth />
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </MotionConfig>
     </CalendarContext.Provider>
