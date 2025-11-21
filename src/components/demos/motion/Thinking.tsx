@@ -128,15 +128,15 @@ export function Thinking() {
   `;
 
   const replyContent = dedent`
-    <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@DaveHawkins</span>
+    <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@RobHough</span>
     Yes we have. There were several posts around notification sent to the bugs channel.
-    All of these were posted by <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@RobHough</span>
+    All of these were posted by <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@DaveHawkins</span>
 
     - <span class="px-1.5 rounded-md bg-gray-3 font-medium">📥 Notifications not showing in inbox on mobile</span>
     - <span class="px-1.5 rounded-md bg-gray-3 font-medium">🤖 Notifications not working on Android</span>
     - <span class="px-1.5 rounded-md bg-gray-3 font-medium">👀 Can't see notifications in archived view</span>
 
-    If you want to know more about notifications bugs, you should speak to <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@RobHough</span>
+    If you want to know more about notifications bugs, you should speak to <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@DaveHawkins</span>
   `;
 
   React.useEffect(() => {
