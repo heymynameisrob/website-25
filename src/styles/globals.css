@@ -557,6 +557,18 @@
     @apply outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
+  @view-transition {
+    navigation:auto;
+  }
+
+  ::view-transition-old(root) {
+    @apply animate-out fade-out-0 blur-out-sm duration-400 ease-out
+  }
+
+  ::view-transition-new(root) {
+    @apply animate-in fade-in-0 blur-in-sm duration-400 ease-out
+  }
+
   .dark .astro-code,
   .dark .astro-code span {
     color: var(--shiki-dark) !important;
