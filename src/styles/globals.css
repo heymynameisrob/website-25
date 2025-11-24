@@ -40,7 +40,7 @@
   /* Fonts */
   --font-sans: "Inter", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-serif: "Galaxie", serif;
+  --font-serif: "Cooper", serif;
   --font-weight-normal: 450;
   --font-weight-medium: 500;
 
@@ -452,15 +452,8 @@
   }
 
   @font-face {
-    font-family: "Galaxie";
-    src: url("/src/assets/GalaxieCopernicus-Medium.woff2") format("woff2");
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: "Galaxie";
-    src: url("/src/assets/GalaxieCopernicus-MediumItalic.woff2") format("woff2");
-    font-style: italic;
+    font-family: "Cooper";
+    src: url("/src/assets/cooper-bt-light.woff2") format("woff2");
   }
 
   @keyframes blink {
