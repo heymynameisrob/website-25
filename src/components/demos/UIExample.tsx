@@ -89,7 +89,7 @@ export function UIExample({
 
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-16">
-      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus transition-all overflow-hidden">
+      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus overflow-hidden">
         <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button

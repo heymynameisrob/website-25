@@ -3,6 +3,7 @@ import {
   AnimatePresence,
   LayoutGroup,
   motion,
+  MotionConfig,
   usePresence,
 } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -57,20 +58,67 @@ export function Gallery() {
   }, []);
 
   return (
-    <>
-      {selectedImage && <ExpandedImage ref={ref} image={selectedImage} />}
-      <ul className="flex flex-col lg:grid lg:grid-cols-2 gap-2">
-        {IMAGES.map((image) => (
-          <button
-            key={image.url}
-            onClick={() => setSelectedImage(image)}
-            className="aspect-square h-[200px] rounded-2xl hover:opacity-80 cursor-pointer overflow-hidden outline-none focus transition-all"
+    <MotionConfig transition={{ type: "spring", duration: 0.6 }}>
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+          />
+        )}
+
+        {selectedImage && (
+          <div
+            className="absolute z-50 flex items-center justify-center"
+            ref={ref}
           >
-            <img src={image.url} alt={image.caption} loading="eager" />
-          </button>
-        ))}
+            <motion.div
+              layoutId={`image-${selectedImage.url}`}
+              className="size-[400px] rounded-2xl cursor-pointer overflow-hidden"
+              onClick={() => setSelectedImage(null)}
+            >
+              <img
+                src={selectedImage.url}
+                alt={selectedImage.caption}
+                loading="eager"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <ul className="relative flex flex-col lg:grid lg:grid-cols-2 gap-2">
+        {IMAGES.map((image) => {
+          const isSelected = selectedImage?.url === image.url;
+          return (
+            <li
+              key={image.url}
+              className="size-[200px]"
+              onClick={() => setSelectedImage(image)}
+            >
+              <AnimatePresence>
+                {!isSelected && (
+                  <motion.div
+                    layoutId={`image-${image.url}`}
+                    className="size-[200px] rounded-2xl cursor-pointer overflow-hidden hover:opacity-80"
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.caption}
+                      loading="eager"
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
+          );
+        })}
       </ul>
-    </>
+    </MotionConfig>
   );
 }
 
@@ -78,15 +126,25 @@ const ExpandedImage = React.forwardRef<HTMLDivElement, { image: Image }>(
   ({ image }, ref) => {
     return (
       <>
-        <div className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none" />
-        <div className="absolute inset-4 grid place-items-center z-50">
-          <div
-            ref={ref}
-            className="aspect-square h-[400px] rounded-2xl cursor-pointer overflow-hidden outline-none focus transition-all"
-          >
-            <img src={image.url} alt={image.caption} loading="eager" />
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+          />
+        </AnimatePresence>
+        <AnimatePresence>
+          <div className="absolute inset-4 grid place-items-center z-50">
+            <motion.div
+              ref={ref}
+              layoutId={`image-${image.url}`}
+              className="aspect-square h-[400px] rounded-2xl cursor-pointer overflow-hidden outline-none focus transition-all"
+            >
+              <img src={image.url} alt={image.caption} loading="eager" />
+            </motion.div>
           </div>
-        </div>
+        </AnimatePresence>
       </>
     );
   },
