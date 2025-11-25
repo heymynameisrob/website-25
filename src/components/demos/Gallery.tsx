@@ -1,14 +1,18 @@
 import * as React from "react";
 import {
+  animate,
   AnimatePresence,
   LayoutGroup,
   motion,
   MotionConfig,
+  useMotionValue,
   usePresence,
+  useTransform,
 } from "motion/react";
 import { cn } from "@/lib/utils";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { useClickAway } from "@uidotdev/usehooks";
+import { Tooltip } from "@/components/primitives/Tooltip";
 
 type Image = {
   url: string;
@@ -21,23 +25,23 @@ type TransitionType = "open" | "navigate";
 /** Image List */
 const IMAGES: Image[] = [
   {
-    url: "https://ucarecdn.com/1962184f-0c11-445b-943e-28be734814d9/",
-    caption: "Photo 1",
+    url: "/milos.jpeg",
+    caption: "Milos having a mardy. Summer 2025",
     aspectRatio: "square",
   },
   {
     url: "https://ucarecdn.com/13ed369a-bf01-40cb-a951-d8e4a572f257/",
-    caption: "Photo 2",
+    caption: "Me in grey, rainy Paris. March 2024.",
     aspectRatio: "square",
   },
   {
-    url: "https://ucarecdn.com/9595131d-ce50-4d19-bfcc-f6c6c305d25c/",
-    caption: "Photo 6",
+    url: "/ireland.jpeg",
+    caption: "A beautiful bay in South Cork. May 2025.",
     aspectRatio: "square",
   },
   {
     url: "https://ucarecdn.com/4b0ee38c-7ac6-4b9e-b287-cb39685d8670/",
-    caption: "Photo 7",
+    caption: "Me and Harriet zip-lining in Costa Rica. August 2024.",
     aspectRatio: "square",
   },
 ];
@@ -45,6 +49,10 @@ const IMAGES: Image[] = [
 export function Gallery() {
   const [selectedImage, setSelectedImage] = React.useState<Image | null>(null);
   const ref = useClickAway<HTMLDivElement>(() => setSelectedImage(null));
+
+  const y = useMotionValue(0);
+  const opacity = useTransform(y, [0, 200], [1, 0.5]);
+  const scale = useTransform(y, [0, 200], [1, 0.9]);
 
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -77,14 +85,23 @@ export function Gallery() {
           >
             <motion.div
               layoutId={`image-${selectedImage.url}`}
-              className="size-[400px] rounded-2xl cursor-pointer overflow-hidden"
+              className="size-[400px] rounded-2xl cursor-default overflow-hidden"
+              style={{ y, opacity, scale }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.8}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 100 || info.velocity.y > 500) {
+                  setSelectedImage(null);
+                }
+              }}
               onClick={() => setSelectedImage(null)}
             >
               <img
                 src={selectedImage.url}
                 alt={selectedImage.caption}
                 loading="eager"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover pointer-events-none"
               />
             </motion.div>
           </div>
@@ -101,17 +118,19 @@ export function Gallery() {
             >
               <AnimatePresence>
                 {!isSelected && (
-                  <motion.div
-                    layoutId={`image-${image.url}`}
-                    className="size-[200px] rounded-2xl cursor-pointer overflow-hidden hover:opacity-80"
-                  >
-                    <img
-                      src={image.url}
-                      alt={image.caption}
-                      loading="eager"
-                      className="w-full h-full object-cover"
-                    />
-                  </motion.div>
+                  <Tooltip content={image.caption}>
+                    <motion.div
+                      layoutId={`image-${image.url}`}
+                      className="size-[200px] rounded-2xl cursor-default overflow-hidden hover:opacity-80"
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.caption}
+                        loading="eager"
+                        className="w-full h-full object-cover pointer-events-none"
+                      />
+                    </motion.div>
+                  </Tooltip>
                 )}
               </AnimatePresence>
             </li>
