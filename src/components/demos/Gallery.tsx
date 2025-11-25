@@ -1,6 +1,18 @@
 import * as React from "react";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  animate,
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  MotionConfig,
+  useMotionValue,
+  usePresence,
+  useTransform,
+} from "motion/react";
 import { cn } from "@/lib/utils";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import { useClickAway } from "@uidotdev/usehooks";
+import { Tooltip } from "@/components/primitives/Tooltip";
 
 type Image = {
   url: string;
@@ -13,174 +25,147 @@ type TransitionType = "open" | "navigate";
 /** Image List */
 const IMAGES: Image[] = [
   {
-    url: "https://ucarecdn.com/1962184f-0c11-445b-943e-28be734814d9/",
-    caption: "Photo 1",
+    url: "/milos.jpeg",
+    caption: "Milos having a mardy. Summer 2025",
     aspectRatio: "square",
   },
   {
     url: "https://ucarecdn.com/13ed369a-bf01-40cb-a951-d8e4a572f257/",
-    caption: "Photo 2",
+    caption: "Me in grey, rainy Paris. March 2024.",
     aspectRatio: "square",
   },
   {
-    url: "https://ucarecdn.com/9595131d-ce50-4d19-bfcc-f6c6c305d25c/",
-    caption: "Photo 6",
+    url: "/ireland.jpeg",
+    caption: "A beautiful bay in South Cork. May 2025.",
     aspectRatio: "square",
   },
   {
     url: "https://ucarecdn.com/4b0ee38c-7ac6-4b9e-b287-cb39685d8670/",
-    caption: "Photo 7",
+    caption: "Me and Harriet zip-lining in Costa Rica. August 2024.",
     aspectRatio: "square",
   },
 ];
 
 export function Gallery() {
-  const [currentImage, setCurrentImage] = React.useState<string | null>(null);
-  const [transitionType, setTransitionType] =
-    React.useState<TransitionType>("open");
+  const [selectedImage, setSelectedImage] = React.useState<Image | null>(null);
+  const ref = useClickAway<HTMLDivElement>(() => setSelectedImage(null));
 
-  const handleImageOpen = (image: string) => {
-    setTransitionType("open");
-    setCurrentImage(image);
-  };
+  const y = useMotionValue(0);
+  const opacity = useTransform(y, [0, 200], [1, 0.5]);
+  const scale = useTransform(y, [0, 200], [1, 0.9]);
 
-  /** Stop scrolling when image dialog is open */
   React.useEffect(() => {
-    document.body.style.overflow = currentImage ? "hidden" : "unset";
-
-    return () => {
-      document.body.style.overflow = "unset";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedImage(null);
+      }
     };
-  }, [currentImage]);
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
-    <div className="not-prose w-full max-w-md mx-auto">
-      <div className="w-full grid grid-cols-2 gap-4">
-        {IMAGES.map((img) => (
-          <motion.button
-            key={img.url}
-            layoutId={img.url}
-            whileHover={{ opacity: 0.8 }}
-            className="relative aspect-square rounded-2xl bg-gray-2 overflow-hidden border focus transition-all"
-            onClick={() => handleImageOpen(img.url)}
-          >
-            <img
-              src={img.url}
-              className="absolute inset-0 object-cover"
-              alt="Preview image"
-            />
-          </motion.button>
-        ))}
-      </div>
+    <MotionConfig transition={{ type: "spring", duration: 0.6 }}>
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+          />
+        )}
 
-      <GalleryDialog
-        image={currentImage}
-        onImageChange={setCurrentImage}
-        transitionType={transitionType}
-        setTransitionType={setTransitionType}
-      />
-    </div>
+        {selectedImage && (
+          <div
+            className="absolute z-50 flex items-center justify-center"
+            ref={ref}
+          >
+            <motion.div
+              layoutId={`image-${selectedImage.url}`}
+              className="size-[400px] rounded-2xl cursor-default overflow-hidden"
+              style={{ y, opacity, scale }}
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.8}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 100 || info.velocity.y > 500) {
+                  setSelectedImage(null);
+                }
+              }}
+              onClick={() => setSelectedImage(null)}
+            >
+              <img
+                src={selectedImage.url}
+                alt={selectedImage.caption}
+                loading="eager"
+                className="w-full h-full object-cover pointer-events-none"
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <ul className="relative flex flex-col lg:grid lg:grid-cols-2 gap-2">
+        {IMAGES.map((image) => {
+          const isSelected = selectedImage?.url === image.url;
+          return (
+            <li
+              key={image.url}
+              className="size-[200px]"
+              onClick={() => setSelectedImage(image)}
+            >
+              <AnimatePresence>
+                {!isSelected && (
+                  <Tooltip content={image.caption}>
+                    <motion.div
+                      layoutId={`image-${image.url}`}
+                      className="size-[200px] rounded-2xl cursor-default overflow-hidden hover:opacity-80"
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.caption}
+                        loading="eager"
+                        className="w-full h-full object-cover pointer-events-none"
+                      />
+                    </motion.div>
+                  </Tooltip>
+                )}
+              </AnimatePresence>
+            </li>
+          );
+        })}
+      </ul>
+    </MotionConfig>
   );
 }
 
-function GalleryDialog({
-  image,
-  onImageChange,
-  setTransitionType,
-  transitionType,
-}: {
-  image: string | null;
-  onImageChange: React.Dispatch<React.SetStateAction<string | null>>;
-  transitionType: TransitionType;
-  setTransitionType: React.Dispatch<React.SetStateAction<TransitionType>>;
-}) {
-  const next = React.useCallback(() => {
-    if (!image) return;
-
-    const index = IMAGES.findIndex((p) => p.url === image);
-    if (index === IMAGES.length - 1) return;
-
-    setTransitionType("navigate");
-    onImageChange(IMAGES[index + 1].url);
-  }, [image, onImageChange, setTransitionType]);
-
-  const prev = React.useCallback(() => {
-    if (!image) return;
-
-    const index = IMAGES.findIndex((p) => p.url === image);
-    if (index === 0) return;
-
-    setTransitionType("navigate");
-    onImageChange(IMAGES[index - 1].url);
-  }, [image, onImageChange, setTransitionType]);
-
-  React.useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        setTransitionType("open");
-        onImageChange(null);
-      }
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        if (event.metaKey || event.ctrlKey) {
-          setTransitionType("navigate");
-          onImageChange(IMAGES[0].url);
-        } else {
-          prev();
-        }
-      }
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        if (event.metaKey || event.ctrlKey) {
-          setTransitionType("navigate");
-          onImageChange(IMAGES[IMAGES.length - 1].url);
-        } else {
-          next();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-  }, [next, prev, onImageChange, transitionType, setTransitionType]);
-
-  return (
-    <>
-      <AnimatePresence>
-        {image ? (
+const ExpandedImage = React.forwardRef<HTMLDivElement, { image: Image }>(
+  ({ image }, ref) => {
+    return (
+      <>
+        <AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              setTransitionType("open");
-              onImageChange(null);
-            }}
-            className="absolute inset-0 z-10 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
           />
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {image ? (
-          <div className="absolute inset-10 grid place-items-center z-10 pointer-events-none">
+        </AnimatePresence>
+        <AnimatePresence>
+          <div className="absolute inset-4 grid place-items-center z-50">
             <motion.div
-              key={image}
-              layoutId={image}
-              className={cn(
-                "relative aspect-square w-full max-w-md rounded-3xl shadow-2xl overflow-hidden",
-              )}
+              ref={ref}
+              layoutId={`image-${image.url}`}
+              className="aspect-square h-[400px] rounded-2xl cursor-pointer overflow-hidden outline-none focus transition-all"
             >
-              <img
-                src={image}
-                className="absolute inset-0 object-cover"
-                alt="Expanded image" // Adding alt for accessibility
-              />
+              <img src={image.url} alt={image.caption} loading="eager" />
             </motion.div>
           </div>
-        ) : null}
-      </AnimatePresence>
-    </>
-  );
-}
+        </AnimatePresence>
+      </>
+    );
+  },
+);
+ExpandedImage.displayName = "ExpandedImage";
