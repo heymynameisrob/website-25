@@ -6,16 +6,11 @@ import {
 
 export function ReactAvatar() {
   return (
-    <HoverCard>
-      <HoverCardTrigger className="cursor-zoom-in">
-        <div className="size-8 rounded-full bg-gray-3 ring-2 ring-offset-2 ring-gray-9 ring-offset-background overflow-hidden">
-          <img
-            src="https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/-/preview/100x100/"
-            loading="lazy"
-            alt="Rob Hough"
-            className="object-fit w-full h-full"
-          />
-        </div>
+    <HoverCard openDelay={150}>
+      <HoverCardTrigger className="w-fit">
+        <h1 className="text-[22px] leading-tight tracking-tighter font-serif cursor-default">
+          Rob Hough
+        </h1>
       </HoverCardTrigger>
       <HoverCardContent
         align="start"

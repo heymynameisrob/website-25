@@ -10,6 +10,7 @@ company: artificial
 
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import { UIExample } from "@/components/demos/UIExample";
+import Blockquote from "@/components/Blockquote.astro";
 
 import featureImageLight from "@/assets/inbox-feature-light.jpg";
 import featureImageDark from "@/assets/inbox-feature-dark.jpg";
@@ -19,9 +20,13 @@ import inboxFullDark from "@/assets/inbox-full-dark.jpg";
 
 Artificial is a Series A Enterprise SaaS company that helps top-performing brokers and carriers transform their speciality placement and underwriting strategies.
 
-I worked with them to build a new 'Policy Inbox' to help carriers organise and find important policy information. The project lasted eight weeks, from initial discovery to shipping a v1 to beta users. I led the design and implementation, working with the VP of Product on the core vision and the lead engineer on the data layer.
+I led the design and frontend for a new 'Policy Inbox' to help carriers organise and find important policy information. The project lasted eight weeks, from initial discovery to shipping a beta.
 
 <MediaWrapper src={featureImageLight} darkSrc={featureImageDark} type="image" />
+
+Insurance workers face an uphill battle managing complex policy information. Each policy contains dozens of data points. From coverage details and premium calculations to client communications and renewal dates.
+
+As portfolios grow, underwriters and brokers find themselves drowning in spreadsheets and disparate systems, making it nearly impossible to maintain a clear overview of their work. Policies are moved in and out of their office like an email inbox.
 
 The Inbox is a listing page for all policies, organised by when they were last updated. As the product grew, this caused problems:
 
@@ -31,14 +36,16 @@ The Inbox is a listing page for all policies, organised by when they were last u
 - Customers requested custom dashboard due to lack of filtering options
 - Lots of bugs and UX issues reported
 
-This led to forming a project team of myself, VP of Product, and Lead Engineer to re-imagine the Inbox from the ground up. Our goal was to address the above issues, whilst fixing any remaining bugs that stuck around.
+This led to forming a project team of myself, VP of Product, and Lead Engineer to re-imagine the Inbox from the ground up.
 
-<MediaWrapper
-  src={inboxFigma}
-  type="image"
-  alt="Figma board of unused designs, labelling old screenshots"
-  caption="Iterations started by dissecting what we wanted to keep and what we wanted to redo"
-/>
+**Our goal was to address the above issues, whilst fixing any remaining bugs that stuck around.**
+
+<Blockquote author="Jon Lay, VP Product">
+  I worked with Rob twice as a contractor. He is super skilled, has great taste
+  and brings a ton of experience right across the design ↔ frontend stack.{" "}
+  <br />
+  This guy ships!
+</Blockquote>
 
 ## What we built
 

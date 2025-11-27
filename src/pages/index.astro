@@ -1,23 +1,26 @@
 ---
 import { AnimateInUp } from "@/components/Motion.tsx";
-import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
+import {ReactAvatar} from "@/components/ReactAvatar";
 
 import Layout from "@/layouts/Layout.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
+import AnimatedListItem from "@/components/AnimatedListItem.astro";
 ---
 <div class="absolute top-5 right-5">
   <ThemeToggle />
 </div>
 <Layout>
   <div
-    class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-16 lg:mt-24 px-5"
+    class="w-full max-w-prose mx-auto flex flex-col gap-8 mt-16 lg:mt-24 lg:gap-10 px-5"
   >
     <AnimateInUp as="header" className="flex flex-col" client:load>
-      <h1 class="text-2xl leading-tight tracking-tighter font-serif">
-        Rob Hough
-      </h1>
+      <ReactAvatar client:load>
+        <h1 class="text-[22px] leading-tight tracking-tighter font-serif cursor-default">
+          Rob Hough
+        </h1>
+      </ReactAvatar>
       <h2
-        class="text-2xl leading-tight tracking-tight font-serif text-gray-9"
+        class="text-[22px] leading-tight tracking-tight font-serif text-gray-9"
       >
         Design Engineer
       </h2>
@@ -28,54 +31,71 @@ import ThemeToggle from "@/components/ThemeToggle.astro";
       delay={0.15}
       client:load
     >
-      <p class="text-lg text-primary leading-normal text-balance">
-        Building performant and engaging software for the web. Based in the
-        English countryside. Available for projects.
+      <p class="text-base text-primary text-balance">
+        Designing performant and engaging experiences for the web. Based in the UK/EU. Available for projects.
       </p>
-      <a
-        href="/work"
-        class="w-fit text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12"
-        >View recent work</a
-      >
     </AnimateInUp>
-    <ul class="flex flex-col gap-4">
-      <AnimateInUp delay={0.25} as="li" client:load>
-        <a
-          href="https://cushion.so"
-          target="_blank"
-          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
-          >Cushion <ArrowUpRightIcon className="size-4 inline" /></a
-        >
-        <p class="text-lg text-secondary leading-normal text-balance">
-          Modern async messaging for remote teams
-        </p>
-      </AnimateInUp>
-      <AnimateInUp delay={0.35} as="li" client:load>
-        <a
-          href="/posts/practical-motion"
-          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
-          >Motion UI</a
-        >
-        <p class="text-lg text-secondary leading-normal text-balance">
-          Using motion in web interfaces
-        </p>
-      </AnimateInUp>
-      <AnimateInUp delay={0.45} as="li" client:load>
-        <a
-          href="/posts/artificial-io"
-          class="text-lg text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all"
-          >Artifical</a
-        >
-        <p class="text-lg text-secondary leading-normal text-balance">
-          Policy management for underwriters
-        </p>
-      </AnimateInUp>
+    <AnimateInUp
+      as="section"
+      className="flex flex-col gap-4"
+      delay={0.2}
+      client:load
+    >
+    <h3 class="text-sm font-medium text-gray-10 tracking-tight">Projects</h3>
+    <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-12">
+      <AnimatedListItem
+        href="/work"
+        label="Craft"
+        description="Collection of web interface + interaction work"
+        delay={0.3}
+        featured
+      />
+      <AnimatedListItem
+        href="https://cushion.so"
+        label="Cushion"
+        description="Modern async messaging for remote teams"
+        delay={0.3}
+        external
+      />
+      <AnimatedListItem
+        href="/posts/practical-motion"
+        label="Motion UI"
+        description="Lessons using motion in web UI interfaces"
+        delay={0.4}
+      />
+      <AnimatedListItem
+        href="https://github.com/heymynameisrob/milos-zed-theme"
+        label="Milos"
+        description="Tangerine and Duckegg flavoured Zed theme"
+        delay={0.4}
+        external
+      />
+      <AnimatedListItem
+        href="/posts/artificial-io"
+        label="Artifical"
+        description="Policy inbox for modern specialty (re)insurance"
+        delay={0.5}
+      />
+      <AnimatedListItem
+        href="/posts/lantum-rota-ui"
+        label="Lantum"
+        description="Dashboard for NHS clinician management"
+        delay={0.5}
+      />
     </ul>
+    </AnimateInUp>
+    <AnimateInUp
+      as="section"
+      className="flex flex-col gap-4"
+      delay={0.6}
+      client:load
+    >
+    <h3 class="text-sm font-medium text-gray-10 tracking-tight">Connect</h3>
     <ul class="flex flex-col gap-1">
-      <AnimateInUp delay={0.6} as="li" client:load>
+      <AnimateInUp delay={0.65} as="li" client:load>
         <a
           href="mailto:robhough180@gmail.com"
-          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          class="text-base text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all outline-none focus rounded-md"
           >Email</a
         >
       </AnimateInUp>
@@ -84,7 +104,7 @@ import ThemeToggle from "@/components/ThemeToggle.astro";
           href="https://github.com/heymynameisrob"
           target="_blank"
           rel="nofollow noopener"
-          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          class="text-base text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all outline-none focus rounded-md"
           >Github</a
         >
       </AnimateInUp>
@@ -93,10 +113,11 @@ import ThemeToggle from "@/components/ThemeToggle.astro";
           href="https://linkedin.com/in/heymynameisrob"
           target="_blank"
           rel="nofollow noopener"
-          class="text-lg text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all"
+          class="text-base text-gray-9 leading-normal text-balance underline decoration-gray-7 hover:decoration-gray-12 hover:text-primary transition-all outline-none focus rounded-md"
           >LinkedIn</a
         >
       </AnimateInUp>
     </ul>
+    </AnimateInUp>
   </div>
 </Layout>

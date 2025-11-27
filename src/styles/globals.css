@@ -558,15 +558,15 @@
   }
 
   @view-transition {
-    navigation:auto;
+    navigation: auto;
   }
 
   ::view-transition-old(root) {
-    @apply animate-out fade-out-0 blur-out-sm duration-400 ease-out
+    @apply animate-out fade-out-0 blur-out-sm duration-400 ease-out;
   }
 
   ::view-transition-new(root) {
-    @apply animate-in fade-in-0 blur-in-sm duration-400 ease-out
+    @apply animate-in fade-in-0 blur-in-sm duration-400 ease-out;
   }
 
   .dark .astro-code,

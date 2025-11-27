@@ -1,0 +1,11 @@
+---
+const {author, ...rest} = Astro.props;
+---
+
+<blockquote
+  class="not-prose border-0 p-0 my-12 relative block font-serif text-primary text-xl leading-[1.4] not-italic md:text-3xl [&>p]:inline [&>p]:font-serif [&>p]:font-medium [&>p]:leading-[inherit] [&>p]:opacity-100 [&_*]:opacity-100 [&_em]:font-serif [&_em]:font-normal [&_em]:not-italic"
+  {...rest}
+>
+  <slot />
+  <span class="text-base font-sans not-italic font-medium text-gray-10 ml-auto mt-4 flex w-full items-center justify-end gap-2 md:w-[50%]">{author}</span>
+</blockquote>

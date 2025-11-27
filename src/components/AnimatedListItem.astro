@@ -1,0 +1,32 @@
+---
+import { AnimateInUp } from "@/components/Motion.tsx";
+import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
+import { Badge } from "@/components/primitives/Badge";
+
+interface Props {
+  href: string;
+  label: string;
+  description: string;
+  delay?: number;
+  external?: boolean;
+  featured?: boolean;
+}
+
+const { href, label, description, delay = 0.3, external = false, featured = false } = Astro.props;
+---
+
+<AnimateInUp delay={delay} as="li" className="flex flex-col gap-1" client:load>
+  <a
+    href={href}
+    target={external ? "_blank" : undefined}
+    rel={external ? "nofollow noopener" : undefined}
+    class="text-base text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all outline-none focus rounded-md"
+  >
+    {label}
+    {featured && <Badge className="h-5 px-1.5 relative -top-0.5 ml-1">Featured</Badge>}
+    {external && <ArrowUpRightIcon className="size-4 inline opacity-50" />}
+  </a>
+  <p class="text-base text-secondary leading-normal text-balance">
+    {description}
+  </p>
+</AnimateInUp>
