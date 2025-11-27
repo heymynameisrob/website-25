@@ -5,7 +5,6 @@ image: /src/assets/bacon-motion.jpg
 imageDark: /src/assets/bacon-motion.jpg
 date: 2025-11-20
 type: "post"
-
 ---
 
 import { UIExample } from "@/components/demos/UIExample";
@@ -15,7 +14,7 @@ Animation can bring joy to an interface.
 Whether they are animations via interactions (e.g. clicking on a button) or orchestrated (e.g. animating a moving carousel), motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
 <UIExample component="gallery" client:visible>
-  Tip: You can navigate between images with arrow keys
+  Tip: Push, pull, or hit esc to close the expanded view
 </UIExample>
 
 The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now accustomed to seeing. Even with new APIs and browser capability, this poses challenges on the web.
@@ -231,7 +230,7 @@ const [isInView, setIsInView] = React.useState(false);
   onViewportEnter={() => setIsInView(true)}
   onViewportLeave={() => setIsInView(false)}
   animate={isInView ? { rotate: 360 } : { rotate: 0 }}
-/>
+/>;
 ```
 
 ### Theme switching
@@ -239,10 +238,10 @@ const [isInView, setIsInView] = React.useState(false);
 Avoid triggering transitions during theme changes. When users toggle between light and dark modes, you don't want every element on the page to animate. Use a class to temporarily disable transitions:
 
 ```tsx
-document.documentElement.classList.add('no-transitions');
+document.documentElement.classList.add("no-transitions");
 // Apply theme change
 setTimeout(() => {
-  document.documentElement.classList.remove('no-transitions');
+  document.documentElement.classList.remove("no-transitions");
 }, 0);
 ```
 
@@ -278,9 +277,11 @@ In practice, this doesn't mean removing all motion. Instead, reduce duration sig
 Disable video autoplay for users with `prefers-reduced-motion` enabled. Autoplaying videos can be particularly disorienting:
 
 ```tsx
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+).matches;
 
-<video autoPlay={!prefersReducedMotion} />
+<video autoPlay={!prefersReducedMotion} />;
 ```
 
 ### Screen readers
