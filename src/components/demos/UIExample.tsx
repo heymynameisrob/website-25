@@ -139,7 +139,11 @@ export const FilterMenuExample = () => {
         <FilterMenuInput />
         <FilterMenuList>
           {USERS.map((user) => (
-            <FilterMenuItem key={user.value} value={user.value} keywords={[user.label]}>
+            <FilterMenuItem
+              key={user.value}
+              value={user.value}
+              keywords={[user.label]}
+            >
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full bg-cyan-500" />
                 <span>{user.label}</span>

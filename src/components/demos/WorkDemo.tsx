@@ -23,7 +23,10 @@ import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
-import { FilterMenuExample } from "@/components/demos/FilterMenu";
+import {
+  ComboboxMenu,
+  ComboboxStandalone,
+} from "@/components/demos/FilterMenu";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -302,14 +305,23 @@ const COMPONENTS: ComponentItem[] = [
     component: <Form />,
   },
   {
-    id: "combobox",
+    id: "combobox-menu",
     name: "Combobox Menu",
     description:
-      "Animated form with state transitions we use on cushion.so login",
-    tech: ["react", "tailwind", "motion"],
-    fileName: "Form.tsx",
+      "Input with filterable set of options to select. Mounted in a Popover.",
+    tech: ["react", "tailwind"],
+    fileName: "FilterMenu.tsx",
     isFullWidth: false,
-    component: <FilterMenuExample />,
+    component: <ComboboxMenu />,
+  },
+  {
+    id: "combobox-standalone",
+    name: "Combobox",
+    description: "Input with filterable set of options to select. Standalone.",
+    tech: ["react", "tailwind"],
+    fileName: "FilterMenu.tsx",
+    isFullWidth: false,
+    component: <ComboboxStandalone />,
   },
 ];
 
