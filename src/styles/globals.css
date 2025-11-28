@@ -475,6 +475,15 @@
     }
   }
 
+  @keyframes shimmer{
+    0% {
+      background-position:200%
+    }
+    100% {
+      background-position:-200%
+    }
+  }
+
   :root {
     --gray-1: hsl(150, 33%, 99%);
     --gray-2: hsl(150, 14%, 97%);

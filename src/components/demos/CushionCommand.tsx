@@ -132,6 +132,8 @@ export function CushionCommand() {
 
   return (
     <CommandPrimitive
+      value=""
+      loop
       className={cn(
         "bg-background text-primary flex w-[480px] flex-col overflow-hidden rounded-lg shadow-container dark:bg-gray-2",
         "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-11 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2",
@@ -144,6 +146,7 @@ export function CushionCommand() {
           value={query}
           onKeyDown={handleKeyDown}
           onValueChange={handleInputChange}
+          autoFocus={false}
           className="placeholder:text-gray-9 flex items-center gap-3 h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50 focus-visible:caret-accent"
         />
       </div>

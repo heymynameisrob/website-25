@@ -6,26 +6,24 @@ interface UseTextStreamOptions {
   delayBetweenWords?: number;
 }
 
-type StreamStatus = "idle" | "streaming" | "complete";
+type StreamStatus = "idle" | "thinking" | "streaming" | "complete";
 
 export function useTextStream({
   delayBeforeStart = 3000,
   delayBetweenWords = 20,
 }: UseTextStreamOptions = {}) {
   const message = dedent`
-    Tell me some British artists I might like
+    Give me some British artists I might like
   `;
 
   const response = dedent`
-    Here are some widely admired British artists across different periods and styles. I’ve grouped them so you can explore depending on your taste:
+    Here are some widely admired British artists across different periods and styles.
 
     - J.M.W. Turner – Master of light and atmosphere; dramatic seascapes and landscapes.
-    - John Constable – Famous for pastoral English countryside scenes.
     - William Blake – Visionary poet-artist known for mystical illustrations.
     - David Hockney – Vibrant colors, swimming pools, iPad drawings.
 
-
-    If you tell me what kind of art you like—painting, surrealism, street art, photography—I can tailor a more specific list!
+    I can suggest more if you tell me what styles you like!
   `;
 
   const [displayedText, setDisplayedText] = useState("");
@@ -35,8 +33,11 @@ export function useTextStream({
     // Split response into words (tokens) while preserving whitespace
     const words = response.split(/(\s+)/);
 
-    // Start streaming after a delay
-    const startDelay = setTimeout(() => {
+    // Start thinking phase immediately
+    setStatus("thinking");
+
+    // Transition to streaming after thinking delay (3s)
+    const thinkingDelay = setTimeout(() => {
       setStatus("streaming");
       let currentWordIndex = 0;
 
@@ -52,10 +53,10 @@ export function useTextStream({
       }, delayBetweenWords);
 
       return () => clearInterval(intervalId);
-    }, delayBeforeStart);
+    }, 6_000);
 
-    return () => clearTimeout(startDelay);
-  }, [response, delayBeforeStart, delayBetweenWords]);
+    return () => clearTimeout(thinkingDelay);
+  }, [response, delayBetweenWords]);
 
   return { message, displayedText, status };
 }

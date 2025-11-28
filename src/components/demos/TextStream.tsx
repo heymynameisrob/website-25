@@ -18,7 +18,7 @@ export function TextStream() {
   const { message, displayedText, status } = useTextStream();
 
   return (
-    <div className="w-[480px] flex flex-col justify-start items-start gap-4 mx-auto">
+    <div className="w-full aspect-square flex flex-col justify-start items-start gap-4 mx-auto">
       <article className="w-full flex flex-col items-end gap-2 pl-24">
         <span className="text-sm font-medium text-gray-10">You</span>
         <div className="p-3 rounded-xl bg-gray-3">

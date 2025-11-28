@@ -11,13 +11,19 @@ import { Thinking } from "@/components/demos/motion/Thinking";
 import { MagicText } from "@/components/demos/MagicText";
 import { Button, buttonVariants } from "@/components/primitives/Button";
 import { Tooltip } from "@/components/primitives/Tooltip";
-import { Code2Icon, FullscreenIcon, RefreshCcw } from "lucide-react";
+import {
+  ArrowUpRight,
+  Code2Icon,
+  FullscreenIcon,
+  RefreshCcw,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { TextStream } from "@/components/demos/TextStream";
 import { Toolbar } from "@/components/demos/Toolbar";
+import { Prompt } from "@/components/demos/Prompt";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -249,11 +255,11 @@ const COMPONENTS: ComponentItem[] = [
     id: "ai-stream",
     name: "Streaming",
     description:
-      "Streaming text component used in AI chatbots. Parses markdown and animates in each chunk.",
-    tech: ["react", "tailwind"],
-    fileName: "Streaming.tsx",
+      "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API.",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Prompt.tsx",
     isFullWidth: false,
-    component: <TextStream />,
+    component: <Prompt />,
   },
   {
     id: "checkin",
@@ -372,7 +378,6 @@ function WorkDemoCard({
   className,
 }: WorkDemoCardProps) {
   const [showActions, setShowActions] = React.useState(false);
-  const [isInView, setIsInView] = React.useState(false);
   const [resetKey, setResetKey] = React.useState(0);
 
   const handleReset = React.useCallback(() => {
@@ -384,8 +389,6 @@ function WorkDemoCard({
       tabIndex={0}
       onFocus={() => setShowActions(true)}
       onBlur={() => setShowActions(false)}
-      onViewportEnter={() => setIsInView(true)}
-      onViewportLeave={() => setIsInView(false)}
       onMouseOver={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       className={cn(
@@ -393,9 +396,9 @@ function WorkDemoCard({
         className,
       )}
     >
-      <motion.div key={resetKey}>{isInView ? component : null}</motion.div>
+      <motion.div key={resetKey}>{component}</motion.div>
       <AnimatePresence mode="wait" initial={false}>
-        {showActions && isInView && (
+        {showActions && (
           <WorkDemoActions componentId={componentId} onReset={handleReset} />
         )}
       </AnimatePresence>
@@ -414,6 +417,7 @@ function AnimatedAction({ delay, children }: AnimatedActionProps) {
 
 function WorkDemoFullscreen() {
   const { activeComponentId, setActiveComponentId } = useWorkDemoContext();
+  const [resetKey, setResetKey] = React.useState(0);
 
   const activeComponent = React.useMemo(
     () => COMPONENTS.find((c) => c.id === activeComponentId),
@@ -421,6 +425,10 @@ function WorkDemoFullscreen() {
   );
 
   const handleOpenChange = () => setActiveComponentId(null);
+
+  const handleReset = React.useCallback(() => {
+    setResetKey((prev) => prev + 1);
+  }, []);
 
   return (
     <DialogPrimitive.Root
@@ -464,23 +472,35 @@ function WorkDemoFullscreen() {
               <motion.ul
                 {...FADE_IN_BLUR}
                 transition={STAGGER_TRANSITIONS.links}
-                className="flex flex-col gap-1 mt-4"
+                className="flex flex-col gap-2 mt-4"
               >
+                <li>
+                  <button
+                    onClick={handleReset}
+                    className="flex items-center gap-2 text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em] focus"
+                  >
+                    <RefreshCcw className="size-4" />
+                    <span>Reset instance</span>
+                  </button>
+                </li>
                 <li>
                   <a
                     href={`https://github.com/heymynameisrob/website-25/blob/main/src/components/demos/${activeComponent?.fileName || ""}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em] focus"
+                    className="flex items-center text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em] focus"
                   >
-                    <Code2Icon className="size-4" />
+                    <Code2Icon className="size-4 mr-2" />
                     <span>View on Github</span>
+                    <ArrowUpRight className="ml-1 size-4 opacity-50" />
                   </a>
                 </li>
               </motion.ul>
             </aside>
             <section className="grid place-items-center">
-              {activeComponent?.component}
+              <motion.div key={resetKey}>
+                {activeComponent?.component}
+              </motion.div>
             </section>
           </div>
           <div className="absolute top-4 right-4">
