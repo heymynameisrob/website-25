@@ -23,9 +23,11 @@ import { cn } from "@/lib/utils";
 
 export function Prompt() {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [isCompleted, setIsCompleted] = React.useState(false);
   const [value, setValue] = React.useState(
     "Give me some British artists I might like",
   );
+
   return (
     <div className="w-[480px] flex flex-col gap-4">
       <AnimatePresence mode="popLayout" initial={false}>
@@ -39,14 +41,18 @@ export function Prompt() {
             duration: 0.3,
           }}
         >
-          {isSubmitted ? <TextStream /> : <Welcome />}
+          {isSubmitted ? (
+            <TextStream onComplete={() => setIsCompleted(true)} />
+          ) : (
+            <Welcome />
+          )}
         </motion.div>
       </AnimatePresence>
       <motion.div layout="position">
         <PromptInput
           value={value}
           onValueChange={setValue}
-          disabled={isSubmitted}
+          disabled={isCompleted ? false : isSubmitted}
           onSubmit={() => setIsSubmitted(true)}
           isSubmitted={isSubmitted}
         />
@@ -89,8 +95,8 @@ function PromptInput({
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
-            "text-primary min-h-11 w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-            isSubmitted ? "min-h-11" : "min-h-7",
+            "px-1.5 text-primary min-h-11 w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+            isSubmitted ? "min-h-11" : "min-h-6",
           )}
           disabled={disabled}
           // Just for display purposes
@@ -142,8 +148,8 @@ function PromptInput({
   );
 }
 
-function TextStream() {
-  const { message, displayedText, status } = useTextStream();
+function TextStream({ onComplete }: { onComplete: () => void }) {
+  const { message, displayedText, status } = useTextStream({ onComplete });
 
   return (
     <div className="w-full aspect-square flex flex-col justify-start items-start gap-4 mx-auto">
@@ -253,7 +259,7 @@ function Thinking() {
       className="flex w-full items-center justify-between"
     >
       <button className="flex items-center gap-1 text-sm transition-opacity hover:opacity-80 outline-none focus rounded-md">
-        <TextShimmer className="font-medium">{STATUSES[index]}...</TextShimmer>
+        <TextShimmer className="font-medium">{STATUSES[index]}</TextShimmer>
         <ChevronRightIcon className="text-secondary size-4" />
       </button>
       <button

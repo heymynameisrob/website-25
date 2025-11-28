@@ -36,7 +36,7 @@ export function MagicText({
         className="text-xl lg:text-6xl [&>span]:inline-block -tracking-[1px] text-primary font-bold"
         aria-hidden
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {showFirst &&
             chunks.map((letter, index) => {
               const delay = index * 0.06;

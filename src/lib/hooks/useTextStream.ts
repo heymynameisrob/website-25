@@ -2,16 +2,16 @@ import { useState, useEffect } from "react";
 import dedent from "dedent";
 
 interface UseTextStreamOptions {
-  delayBeforeStart?: number;
   delayBetweenWords?: number;
+  onComplete: () => void;
 }
 
 type StreamStatus = "idle" | "thinking" | "streaming" | "complete";
 
 export function useTextStream({
-  delayBeforeStart = 3000,
   delayBetweenWords = 20,
-}: UseTextStreamOptions = {}) {
+  onComplete,
+}: UseTextStreamOptions) {
   const message = dedent`
     Give me some British artists I might like
   `;
@@ -48,6 +48,7 @@ export function useTextStream({
           currentWordIndex++;
         } else {
           setStatus("complete");
+          onComplete();
           clearInterval(intervalId);
         }
       }, delayBetweenWords);

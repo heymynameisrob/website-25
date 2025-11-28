@@ -2,11 +2,12 @@ import * as React from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import dedent from "dedent";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, type AnimationControls } from "motion/react";
 
 import { Avatar } from "@/components/primitives/Avatar";
 import { Badge } from "@/components/primitives/Badge";
 import { cn } from "@/lib/utils";
+import { useMeasure } from "@uidotdev/usehooks";
 
 interface CommentProps {
   author: {
@@ -16,6 +17,7 @@ interface CommentProps {
   };
   content: string;
   isAgent?: boolean;
+  initial?: any;
 }
 
 const author = {
@@ -33,12 +35,11 @@ const agent = {
 
 function Comment({ author, content, isAgent }: CommentProps) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="group z-10 flex flex-col justify-center gap-2 p-4 transition-colors duration-500 outline-none border-t first:border-t-0"
+    <article
+      className={cn(
+        "group z-10 flex flex-col justify-center gap-2 p-4 transition-colors duration-500 outline-none border-b",
+        isAgent && "border-0",
+      )}
     >
       <div className="flex items-center gap-3">
         <Avatar
@@ -54,7 +55,7 @@ function Comment({ author, content, isAgent }: CommentProps) {
       <div className="prose [--prose-color:var(--color-gray-12)] text-[15px]">
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
@@ -82,7 +83,7 @@ function ThinkingIndicator() {
       animate={{ opacity: 1, filter: "blur(0px)" }}
       exit={{ opacity: 0, filter: "blur(2px)" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="flex flex-col border-t px-3.5 py-2 h-11 bg-gray-1 w-full"
+      className="flex flex-col px-3.5 py-2 h-11 bg-gray-1 w-full"
     >
       <div className="group flex items-center gap-3">
         <div className="relative size-6 grid place-items-center rounded-full shrink-0">
@@ -114,13 +115,10 @@ function ThinkingIndicator() {
   );
 }
 
-function Skeleton({ className }: { className?: string }) {
-  return <div className={`animate-pulse bg-gray-4 rounded ${className}`} />;
-}
-
 export function Thinking() {
   const [showThinking, setShowThinking] = React.useState(true);
   const [showReply, setShowReply] = React.useState(false);
+  const [ref, bounds] = useMeasure();
 
   const commentContent = dedent`
     <span class="px-1.5 rounded-md bg-gray-3 text-accent font-medium underline">@Cushion</span>
@@ -144,13 +142,13 @@ export function Thinking() {
     const thinkingTimer = setTimeout(() => {
       setShowThinking(false);
       setShowReply(true);
-    }, 8_000);
+    }, 6_000);
 
     // Reset animation after 10s from completion (18s total)
     const resetTimer = setTimeout(() => {
       setShowReply(false);
       setShowThinking(true);
-    }, 18_000);
+    }, 12_000);
 
     return () => {
       clearTimeout(thinkingTimer);
@@ -159,14 +157,25 @@ export function Thinking() {
   }, [showThinking, showReply]);
 
   return (
-    <div className="relative z-10 flex flex-col bg-gray-1 my-2 border rounded-lg overflow-hidden max-w-xl mx-auto">
-      <Comment author={author} content={commentContent} />
-      <AnimatePresence mode="wait" initial={false}>
-        {showThinking && <ThinkingIndicator key="thinking" />}
-        {showReply && (
+    <motion.div
+      animate={{ height: bounds.height ?? 0 }}
+      transition={{
+        type: "spring",
+        bounce: 0,
+        duration: 0.4,
+      }}
+      className="relative z-10 flex flex-col bg-gray-1 my-2 border rounded-lg overflow-hidden max-w-xl mx-auto"
+    >
+      <div ref={ref}>
+        <Comment author={author} content={commentContent} />
+        {showThinking ? (
+          <AnimatePresence mode="popLayout">
+            <ThinkingIndicator />
+          </AnimatePresence>
+        ) : (
           <Comment key="reply" author={agent} content={replyContent} isAgent />
         )}
-      </AnimatePresence>
-    </div>
+      </div>
+    </motion.div>
   );
 }
