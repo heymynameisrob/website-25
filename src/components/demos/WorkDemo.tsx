@@ -302,7 +302,7 @@ const COMPONENTS: ComponentItem[] = [
     component: <Form />,
   },
   {
-    id: "form",
+    id: "combobox",
     name: "Combobox Menu",
     description:
       "Animated form with state transitions we use on cushion.so login",
