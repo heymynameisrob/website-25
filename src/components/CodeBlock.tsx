@@ -93,7 +93,7 @@ export function CodeBlock({ children, className }: CodeBlockProps) {
         <>
           <div
             className={cn(
-              "absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-gray-1 to-transparent pointer-events-none duration-300",
+              "absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-gray-1 to-transparent pointer-events-none duration-300",
               showMore ? "opacity-0" : "opacity-100",
             )}
           />
