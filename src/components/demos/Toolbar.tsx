@@ -172,7 +172,6 @@ function Tools({ onSave }: { onSave: () => void }) {
         <span>Assign</span>
       </Button>
       <Button
-        rounded-full
         variant="ghost"
         className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
         onClick={onSave}
