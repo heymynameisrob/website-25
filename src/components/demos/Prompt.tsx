@@ -28,6 +28,11 @@ export function Prompt() {
     "Give me some British artists I might like",
   );
 
+  const handleSubmit = () => {
+    setIsSubmitted(true);
+    setValue("");
+  };
+
   return (
     <div className="w-[480px] flex flex-col gap-4">
       <AnimatePresence mode="popLayout" initial={false}>
@@ -53,7 +58,7 @@ export function Prompt() {
           value={value}
           onValueChange={setValue}
           disabled={isCompleted ? false : isSubmitted}
-          onSubmit={() => setIsSubmitted(true)}
+          onSubmit={handleSubmit}
           isSubmitted={isSubmitted}
         />
       </motion.div>
@@ -92,6 +97,7 @@ function PromptInput({
         <textarea
           value={value}
           name="prompt"
+          placeholder="Ask anything"
           onKeyDown={handleKeyDown}
           rows={1}
           className={cn(
