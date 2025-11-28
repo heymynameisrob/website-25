@@ -2,7 +2,11 @@ import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@/lib/utils";
-import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/16/solid";
 import { matchSorter } from "match-sorter";
 import { useDebounce } from "@uidotdev/usehooks";
 
@@ -14,6 +18,45 @@ function useFilterMenu() {
   }
   return ctx;
 }
+
+const USERS = [
+  { value: "dave-hawkins", label: "Dave Hawkins" },
+  { value: "rob-hough", label: "Rob Hough" },
+  { value: "jon-lay", label: "Jon Lay" },
+  { value: "tim-bates", label: "Tim Bates" },
+];
+
+export const FilterMenuExample = () => {
+  const [selected, setSelected] = React.useState("");
+
+  return (
+    <FilterMenu value={selected} onValueChange={setSelected}>
+      <FilterMenuTrigger className="px-2 w-[160px] inline-flex items-center justify-between h-9 gap-2 bg-gray-1 border transition-all whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0 [&_svg]:opacity-80 text-primary hover:bg-gray-2 active:bg-gray-2 data[state=open]:bg-gray-2 data-[state=open]:bg-gray-2">
+        <div className="flex items-center gap-2">
+          {selected.length > 0 ? (
+            <div className="w-4 h-4 rounded-full bg-cyan-500" />
+          ) : null}
+          {USERS.find((user) => user.value === selected)?.label ??
+            "Select a user"}
+        </div>
+        <ChevronDownIcon className="w-4 h-4 opacity-60" />
+      </FilterMenuTrigger>
+      <FilterMenuContent align="start" className="w-56">
+        <FilterMenuInput />
+        <FilterMenuList items={USERS} keys={["label", "role"]}>
+          {(item) => (
+            <FilterMenuItem value={item.value}>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-cyan-500" />
+                <span>{item.label}</span>
+              </div>
+            </FilterMenuItem>
+          )}
+        </FilterMenuList>
+      </FilterMenuContent>
+    </FilterMenu>
+  );
+};
 
 /**
  * FilterMenu

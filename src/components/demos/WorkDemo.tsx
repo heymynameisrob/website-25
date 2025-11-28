@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSearchParams } from "@/lib/hooks/useSearchParams";
-import { FilterMenuExample } from "@/components/demos/UIExample";
+
 import { Checkin } from "@/components/demos/Checkin";
 import { Calendar } from "@/components/demos/Calendar";
 import { Gallery } from "@/components/demos/Gallery";
@@ -23,6 +23,7 @@ import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
+import { FilterMenuExample } from "@/components/demos/FilterMenu";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -299,6 +300,16 @@ const COMPONENTS: ComponentItem[] = [
     fileName: "Form.tsx",
     isFullWidth: false,
     component: <Form />,
+  },
+  {
+    id: "form",
+    name: "Combobox Menu",
+    description:
+      "Animated form with state transitions we use on cushion.so login",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Form.tsx",
+    isFullWidth: false,
+    component: <FilterMenuExample />,
   },
 ];
 
