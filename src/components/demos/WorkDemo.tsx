@@ -23,6 +23,7 @@ import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
+import { Keyboard } from "@/components/demos/Keyboard";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -300,6 +301,16 @@ const COMPONENTS: ComponentItem[] = [
     isFullWidth: false,
     component: <Form />,
   },
+  {
+    id: "keyboard",
+    name: "Email login",
+    description:
+      "Animated form with state transitions we use on cushion.so login",
+    tech: ["react", "tailwind", "motion"],
+    fileName: "Form.tsx",
+    isFullWidth: false,
+    component: <Keyboard />,
+  },
 ];
 
 const WorkDemoContext = React.createContext<WorkDemoContextProps>(null);
@@ -444,7 +455,7 @@ function WorkDemoFullscreen() {
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md",
           )}
         >
-          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full p-4">
+          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full p-4 group/fullscreen">
             <aside className="w-full flex flex-col p-4 gap-4">
               <motion.h3
                 {...FADE_IN_BLUR}

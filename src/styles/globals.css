@@ -36,6 +36,10 @@
       color-mix(in srgb, var(--shadow) 10%, transparent),
     0px 8px 32px color-mix(in srgb, var(--shadow) 5%, transparent),
     0 0 0 1px var(--border);
+    --shadow-key: 0px 1px 3px
+        color-mix(in srgb, var(--shadow) 10%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--color-black) 10%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--color-white) 5%, transparent),;
 
   /* Fonts */
   --font-sans: "Inter", sans-serif;
