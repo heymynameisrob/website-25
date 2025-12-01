@@ -7,6 +7,12 @@ import { getImage } from "astro:assets";
 import Divider from "@/components/primitives/Divider.astro";
 import CodeBlockWrapper from "@/components/CodeBlockWrapper.astro";
 import Blockquote from "@/components/Blockquote.astro";
+import { ToC } from "@/components/ToC";
+import Navbar from "@/components/Navbar.astro";
+import Prose from "@/components/Prose.astro";
+import Layout from "@/layouts/Layout.astro";
+
+import ThemeToggle from "@/components/ThemeToggle.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -54,10 +60,42 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
 ---
 
-<PostLayout frontmatter={{...post.data, og: post.ogImageSrc}}>
-  {post.data.type === "demo" && <DemoRenderer client:load post={post} />}
-  <Content components={{ hr: Divider, pre: CodeBlockWrapper, blockquote: Blockquote }} />
-</PostLayout>
+<Layout
+  title={`${post.data.title} - @heymynameisrob`}
+  description={post.data.description}
+  og={post.ogImageSrc}
+  canonical={post.data.canonical}
+>
+  <div class="max-h-screen overflow-y-scroll mask-linear mask-b-to-transparent mask-b-from-90% animate-in fade-in-0 blur-in-md duration-400 ease-out">
+    <Navbar />
+    <div
+      class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center py-12 lg:py-24"
+    >
+      <header class="flex flex-col justify-center items-center text-center">
+        <h1
+          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance xl:text-4xl"
+        >
+          {post.data.title}
+        </h1>
+        <h2
+          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance text-gray-10 xl:text-4xl"
+        >
+          {post.data.description}
+        </h2>
+      </header>
+      <Divider />
+      <Prose>
+        <Content components={{ hr: Divider, pre: CodeBlockWrapper, blockquote: Blockquote }} />
+      </Prose>
+      <footer class="w-full flex items-center justify-between mt-12 lg:mt-24">
+        <small class="text-gray-9">&copy; 2025 heymynameisrob</small>
+        <ThemeToggle />
+      </footer>
+    </div>
+  </div>
+  <ToC headings={headings} client:load />
+</Layout>

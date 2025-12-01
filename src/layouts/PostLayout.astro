@@ -4,6 +4,7 @@ import Prose from "@/components/Prose.astro";
 import Layout from "@/layouts/Layout.astro";
 
 import type { PostFrontmatter } from "@/content.config";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 
 interface Props {
   frontmatter: PostFrontmatter & {
@@ -20,34 +21,40 @@ const { frontmatter } = Astro.props;
   og={frontmatter.og}
   canonical={frontmatter.canonical}
 >
+  <div class="max-h-screen overflow-y-scroll mask-linear mask-b-to-transparent mask-b-from-90% animate-in fade-in-0 blur-in-md duration-400 ease-out">
   <Navbar />
-  <div
-    class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center gap-16 pb-16 pt-16 lg:pt-24 lg:gap-24"
-  >
-    <header class="flex flex-col justify-center items-center text-center">
-      <h1
-        class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance xl:text-4xl"
-      >
-        {frontmatter.title}
-      </h1>
-      <h2
-        class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance text-gray-10 xl:text-4xl"
-      >
-        {frontmatter.description}
-      </h2>
-    </header>
-    <div class="not-prose flex w-full items-center justify-center gap-1">
-      <div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
-        class="h-0.5 w-8 rounded-full bg-gray-4"
-      >
-      </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
-        class="h-0.5 w-8 rounded-full bg-gray-4"
-      >
-      </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
-        class="h-0.5 w-8 rounded-full bg-gray-4"
-      >
+    <div
+      class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center gap-16 pb-16 pt-16 lg:pt-24 lg:gap-24"
+    >
+      <header class="flex flex-col justify-center items-center text-center">
+        <h1
+          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance xl:text-4xl"
+        >
+          {frontmatter.title}
+        </h1>
+        <h2
+          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance text-gray-10 xl:text-4xl"
+        >
+          {frontmatter.description}
+        </h2>
+      </header>
+      <div class="not-prose flex w-full items-center justify-center gap-1">
+        <div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+          class="h-0.5 w-8 rounded-full bg-gray-4"
+        >
+        </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+          class="h-0.5 w-8 rounded-full bg-gray-4"
+        >
+        </div><div class="h-0.5 w-8 rounded-full bg-gray-4"></div><div
+          class="h-0.5 w-8 rounded-full bg-gray-4"
+        >
+        </div>
       </div>
+      <Prose><slot /></Prose>
+      <footer class="w-full flex items-center justify-between">
+        <small class="text-gray-9">&copy; 2025 heymynameisrob</small>
+        <ThemeToggle />
+      </footer>
     </div>
-    <Prose><slot /></Prose>
   </div>
 </Layout>
