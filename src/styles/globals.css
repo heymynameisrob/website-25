@@ -29,11 +29,11 @@
   --color-border-accent: var(--border-accent);
 
   --shadow-container: 0 0 0 1px var(--border);
-  --shadow-raised: 0px 0px 16px
-      color-mix(in srgb, var(--shadow) 10%, transparent),
+  --shadow-raised:
+    0px 0px 16px color-mix(in srgb, var(--shadow) 10%, transparent),
     0 0 0 1px var(--border);
-  --shadow-floating: 0px 4px 16px
-      color-mix(in srgb, var(--shadow) 10%, transparent),
+  --shadow-floating:
+    0px 4px 16px color-mix(in srgb, var(--shadow) 10%, transparent),
     0px 8px 32px color-mix(in srgb, var(--shadow) 5%, transparent),
     0 0 0 1px var(--border);
 
@@ -475,12 +475,12 @@
     }
   }
 
-  @keyframes shimmer{
+  @keyframes shimmer {
     0% {
-      background-position:200%
+      background-position: 200%;
     }
     100% {
-      background-position:-200%
+      background-position: -200%;
     }
   }
 
@@ -532,6 +532,13 @@
     overscroll-behavior-y: none;
     color: var(--gray-11);
     background: var(--background);
+    cursor: url("/cursor_gauntlet.png"), auto;
+  }
+
+  a,
+  button,
+  [role="button"] {
+    cursor: url("/cursor_gauntlet.png"), pointer;
   }
 
   * {
