@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSearchParams } from "@/lib/hooks/useSearchParams";
-import { FilterMenuExample } from "@/components/demos/UIExample";
+
 import { Checkin } from "@/components/demos/Checkin";
 import { Calendar } from "@/components/demos/Calendar";
 import { Gallery } from "@/components/demos/Gallery";
@@ -23,6 +23,10 @@ import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
+import {
+  ComboboxMenu,
+  ComboboxStandalone,
+} from "@/components/demos/FilterMenu";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -299,6 +303,25 @@ const COMPONENTS: ComponentItem[] = [
     fileName: "Form.tsx",
     isFullWidth: false,
     component: <Form />,
+  },
+  {
+    id: "combobox-menu",
+    name: "Combobox Menu",
+    description:
+      "Input with filterable set of options to select. Mounted in a Popover.",
+    tech: ["react", "tailwind"],
+    fileName: "FilterMenu.tsx",
+    isFullWidth: false,
+    component: <ComboboxMenu />,
+  },
+  {
+    id: "combobox-standalone",
+    name: "Combobox",
+    description: "Input with filterable set of options to select. Standalone.",
+    tech: ["react", "tailwind"],
+    fileName: "FilterMenu.tsx",
+    isFullWidth: false,
+    component: <ComboboxStandalone />,
   },
 ];
 

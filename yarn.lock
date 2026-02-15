@@ -10863,6 +10863,11 @@ word-wrap@^1.2.5:
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
+world-countries@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/world-countries/-/world-countries-5.1.0.tgz#ea6b6156d9ef80c9ae6ff1e238d11b7ebd90351f"
+  integrity sha512-CXR6EBvTbArDlDDIWU3gfKb7Qk0ck2WNZ234b/A0vuecPzIfzzxH+O6Ejnvg1sT8XuiZjVlzOH0h08ZtaO7g0w==
+
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
