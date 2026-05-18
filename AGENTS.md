@@ -9,11 +9,12 @@ Personal website built with Astro and React, deployed to Netlify. The site featu
 - `pnpm preview` - Preview production build
 - `pnpm prep` - Run type checking and lint fixes
 - `pnpm lint` - Lint source code
+- `pnpm lint:fix` - Fix linting issues automatically
 
 ## Rules
 
 - Always run `nvm use` before installing any packages
-- Always run `pnpm prep` before commiting changes or when working on multi-step tasks
+- Always run `pnpm prep` before committing changes or when working on multi-step tasks
 - When working on `.tsx` files, always load `vercel-react-best-practices` skill
 - When working on animations, always load `animation-best-practices` skill
 - Astro and React components should always be in PascalCase
