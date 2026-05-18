@@ -1,36 +1,26 @@
 ---
-import CushionIcon from "@/assets/cushion.svg";
+import { AnimateInUp } from "./Motion";
+import LinkWithIcon from "./LinkWithIcon.astro";
 ---
-
-<header
-  class="py-[clamp(5rem,6vw,15rem)] px-5 flex flex-col justify-start items-start text-left animate-in fill-mode-backwards fade-in slide-in-from-bottom-4 duration-500 ease-out delay-200 md:justify-center md:items-center md:text-center"
+<AnimateInUp
+  as="section"
+  className="flex flex-col gap-8 max-w-prose"
+  delay={0.2}
+  client:load
 >
-  <h1
-    class="text-xl max-w-prose xl:text-2xl xl:leading-[1.66em] xl:tracking-[-0.015em] xl:text-balance"
-  >
-
-
-      <span>Rob Hough is a design engineer based in the</span>
-      <span>English countryside. </span>
-      <span
-        >Partnering with B2B startups, his work focuses on shipping performant and
-        engaging customer experiences.</span
-      >
-      <span>He also co-runs</span>
-      <a
-        href="https://cushion.so"
-        target="_blank"
-        class="group focus rounded-lg"
-      >
-        <div
-          class="relative hidden align-middle size-8 rounded-full mx-0.5 shadow-md bg-black bg-linear-to-t from-black to-gray-12 text-white scale-100 transition-all will-change-auto duration-200 ease-out group-hover:scale-110 dark:to-gray-3 md:inline-block"
-        >
-          <div class="absolute inset-0 grid place-items-center scale-125">
-            <CushionIcon />
-          </div>
-        </div>
-        <span class="text-accent underline-offset-2 underline">cushion.so</span>
-      </a>
-      <span>, an workplace communication platform for distributed teams.</span>
-  </h1>
-</header>
+  <p class="text-base text-secondary">
+    I'm a design engineer working at
+    <LinkWithIcon href="https://n8n.io" icon="n8n" label="n8n" />,
+    an open-source project building the future of AI automation.
+    I love designing performant, accessible interfaces that are deeply rooted in craft and quality.
+  </p>
+  <AnimateInUp delay={0.25} as="p" className="text-base text-secondary" client:load>
+    Contact me on{" "}
+    <LinkWithIcon href="https://linkedin.com/in/heymynameisrob" icon="linkedin" label="LinkedIn" />
+    or via{" "}
+    <LinkWithIcon href="mailto:robhough180@gmail.com" icon="email" label="email" />{" "}
+    . See my code on{" "}
+    <LinkWithIcon href="https://github.com/heymynameisrob" icon="github" label="GitHub" />
+    .
+  </AnimateInUp>
+</AnimateInUp>

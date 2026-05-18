@@ -10,6 +10,7 @@
   --color-secondary: var(--gray-11);
   --color-accent: var(--accent);
   --color-ring: var(--gray-7);
+
   --color-gray-1: var(--gray-1);
   --color-gray-2: var(--gray-2);
   --color-gray-3: var(--gray-3);
@@ -59,6 +60,24 @@
 }
 
 @layer utilities {
+  .blur-reveal-clip {
+    clip-path: inset(0 100% 0 0 round 9999px);
+    animation: blurRevealUnclip var(--blur-reveal-duration-clip, 2000ms) ease-in-out forwards;
+  }
+
+  .blur-reveal-mask {
+    mask-image: linear-gradient(to left, #000 90%, transparent);
+  }
+
+  .blur-reveal-blur {
+    filter: blur(var(--blur-reveal-blur, 10px));
+    transform: translateZ(0);
+  }
+
+  .blur-reveal-sweep {
+    animation: blurRevealSweep var(--blur-reveal-duration-sweep, 3000ms) ease-in-out forwards;
+  }
+
   p.is-empty::before {
     color: var(--gray-9);
     content: attr(data-placeholder);
@@ -472,6 +491,18 @@
     }
     100% {
       background-position: -200%;
+    }
+  }
+
+  @keyframes blurRevealSweep {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes blurRevealUnclip {
+    to {
+      clip-path: inset(0 0 0 0 round 9999px);
     }
   }
 
