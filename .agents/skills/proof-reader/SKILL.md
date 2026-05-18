@@ -1,6 +1,11 @@
+---
+name: proof-reader
+description: Use this skill when reviewing or writing long-form content.
+---
+
 # Proofreading checks grammar, form, and structure
 
-Resd this writing and suggest edits and changes based on the dos and donts below. Focus on spelling, grammar, and fit for the audience.
+Read this writing and suggest edits and changes based on the dos and donts below. Focus on spelling, grammar, and fit for the audience.
 
 Article: #$ARGUMENTS
 
