@@ -52,11 +52,11 @@ export function DemoRenderer({ post }: DemoRendererProps) {
         damping: 15,
       },
     });
-    setKey((prev) => prev + 1);
+    setKey(prev => prev + 1);
   };
 
   const handleRemount = () => {
-    setKey((prev) => prev + 1);
+    setKey(prev => prev + 1);
   };
 
   if (!post.data.component) return null;

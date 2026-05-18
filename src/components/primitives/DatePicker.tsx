@@ -91,7 +91,7 @@ export function DatePicker({
         className={cn(
           "flex items-center gap-2 w-full justify-start text-left font-normal",
           !date && "text-gray-10",
-          className,
+          className
         )}
       >
         <CalendarDateRangeIcon className="size-4 opacity-70" />
@@ -101,7 +101,7 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0 max-w-[420px]" align="start">
         <Calendar
           selectedDate={date}
-          onSelectDate={(newDate) => {
+          onSelectDate={newDate => {
             onDateChange?.(newDate);
             setOpen(false);
           }}
@@ -118,7 +118,7 @@ interface CalendarProps {
 
 function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const [monthLabel, setMonthLabel] = React.useState<string>(
-    format(selectedDate || new Date(), "yyyy-MM"),
+    format(selectedDate || new Date(), "yyyy-MM")
   );
   const [direction, setDirection] = React.useState<1 | -1 | undefined>();
   const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
@@ -150,18 +150,18 @@ function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
     end: endOfWeek(endOfMonth(month)),
   });
 
-  const handleSelectDate = (date: Date) => {
-    onSelectDate?.(date);
-  };
+  const handleSelectDate = React.useCallback(
+    (date: Date) => {
+      onSelectDate?.(date);
+    },
+    [onSelectDate]
+  );
 
   /** Handle swipe gestures */
   const x = useMotionValue(0);
   const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
-  const handleDragEnd = (
-    _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) => {
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 50;
     if (Math.abs(info.offset.x) > threshold) {
       if (info.offset.x > 0) {
@@ -188,19 +188,31 @@ function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNextMonth, handlePrevMonth, onSelectDate]);
 
+  const contextValue = React.useMemo(
+    () => ({
+      month,
+      monthLabel,
+      direction,
+      selectedDate,
+      setSelectedDate: handleSelectDate,
+      days,
+      onNext: handleNextMonth,
+      onPrev: handlePrevMonth,
+    }),
+    [
+      month,
+      monthLabel,
+      direction,
+      selectedDate,
+      days,
+      handleSelectDate,
+      handleNextMonth,
+      handlePrevMonth,
+    ]
+  );
+
   return (
-    <CalendarContext.Provider
-      value={{
-        month,
-        monthLabel,
-        direction,
-        selectedDate,
-        setSelectedDate: handleSelectDate,
-        days,
-        onNext: handleNextMonth,
-        onPrev: handlePrevMonth,
-      }}
-    >
+    <CalendarContext.Provider value={contextValue}>
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-background p-3">
           <div className="flex flex-col justify-center rounded-sm text-center">
@@ -219,12 +231,7 @@ function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
                   custom={direction}
                   onExitComplete={() => setIsAnimating(false)}
                 >
-                  <motion.div
-                    key={monthLabel}
-                    initial="enter"
-                    animate="middle"
-                    exit="exit"
-                  >
+                  <motion.div key={monthLabel} initial="enter" animate="middle" exit="exit">
                     <CalendarHeader />
                     <CalendarMonth />
                   </motion.div>
@@ -285,8 +292,7 @@ function CalendarHeader() {
 }
 
 function CalendarMonth() {
-  const { direction, selectedDate, setSelectedDate, month, days } =
-    useCalendar();
+  const { direction, selectedDate, setSelectedDate, month, days } = useCalendar();
 
   return (
     <>
@@ -296,16 +302,14 @@ function CalendarMonth() {
         }}
         className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(day => (
           <span
             key={day}
             className={cn(
               "w-10 text-center font-medium",
-              format(new Date(), "E")
-                .toLowerCase()
-                .startsWith(day.toLowerCase())
+              format(new Date(), "E").toLowerCase().startsWith(day.toLowerCase())
                 ? "text-accent"
-                : "text-secondary",
+                : "text-secondary"
             )}
           >
             {day}
@@ -318,18 +322,16 @@ function CalendarMonth() {
         custom={direction}
         className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
-        {days.map((day) => (
+        {days.map(day => (
           <button
             type="button"
             className={cn(
               "flex items-center justify-center w-10 h-10 rounded-full select-none focus font-medium hover:bg-gray-2 active:scale-[0.96] transition-all",
-              format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd") &&
-                "text-accent",
+              format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd") && "text-accent",
               selectedDate &&
-                format(day, "yyyy-MM-dd") ===
-                  format(selectedDate, "yyyy-MM-dd") &&
+                format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") &&
                 "text-white bg-accent hover:bg-accent",
-              isSameMonth(day, month) ? "" : "text-gray-8 pointer-events-none",
+              isSameMonth(day, month) ? "" : "text-gray-8 pointer-events-none"
             )}
             key={format(day, "yyyy-MM-dd")}
             onClick={() => setSelectedDate(day)}

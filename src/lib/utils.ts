@@ -57,15 +57,14 @@ export function fromNow(date: Date, verbose?: boolean) {
 
   // Get the appropriate abbreviation, defaulting to the first character if not found
   const abbreviatedUnit =
-    unitAbbreviations[
-      singularUnit.toLowerCase() as keyof typeof unitAbbreviations
-    ] ?? singularUnit.charAt(0).toLowerCase();
+    unitAbbreviations[singularUnit.toLowerCase() as keyof typeof unitAbbreviations] ??
+    singularUnit.charAt(0).toLowerCase();
 
   return `${value} ${abbreviatedUnit} ago`;
 }
 
 export async function waitFor(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function filterPosts(posts: Post[]) {
@@ -73,12 +72,10 @@ export function filterPosts(posts: Post[]) {
 
   /** If prod, then filter out future posts */
   const validPosts = !isDev
-    ? posts.filter(
-        (post) => isBefore(post.data.date, new Date()) && !post.data.hide,
-      )
-    : posts.filter((post) => !post.data.hide);
+    ? posts.filter(post => isBefore(post.data.date, new Date()) && !post.data.hide)
+    : posts.filter(post => !post.data.hide);
   return validPosts.sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   );
 }
 

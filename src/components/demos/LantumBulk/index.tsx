@@ -19,9 +19,10 @@ export const LantumBulk = () => {
   } = useSessionSelection();
 
   // Optimize session lookups with a Map - O(1) instead of O(n)
-  const sessionMap = useMemo(
-    () => new Map(sessions.map((s) => [s.id, s])),
-    [sessions],
+  const sessionMap = useMemo(() => new Map(sessions.map(s => [s.id, s])), [sessions]);
+  const cellIds = useMemo(
+    () => Array.from({ length: GRID_CONFIG.TOTAL_CELLS }, (_, idx) => idx),
+    []
   );
 
   // Memoize click handler creator to prevent recreating functions on every render
@@ -29,23 +30,19 @@ export const LantumBulk = () => {
     (id: number) => (event: React.MouseEvent<HTMLButtonElement>) => {
       handleSelect(event, id);
     },
-    [handleSelect],
+    [handleSelect]
   );
 
   return (
     <div className="relative left-10 origin-top rounded-md overflow-hidden bg-background w-full shadow-floating">
       <div className="flex flex-row h-full">
         <div className="shrink-0 flex flex-col bg-(--border) gap-y-px border-r h-full">
-          {ROW_HEADERS.map((header) => (
-            <RowHeader
-              key={header.name}
-              name={header.name}
-              role={header.role}
-            />
+          {ROW_HEADERS.map(header => (
+            <RowHeader key={header.name} name={header.name} role={header.role} />
           ))}
         </div>
         <div className="w-full grid justify-end grid-cols-7 gap-y-px gap-x-px bg-(--border)">
-          {[...Array(GRID_CONFIG.TOTAL_CELLS)].map((_, id) => {
+          {cellIds.map(id => {
             const session = sessionMap.get(id);
 
             return (
@@ -55,16 +52,9 @@ export const LantumBulk = () => {
                 style={{ height: `${GRID_CONFIG.ROW_HEIGHT}px` }}
               >
                 {session ? (
-                  <Session
-                    onClick={createClickHandler(id)}
-                    selected={selected.includes(id)}
-                  >
-                    <small className="text-xs! font-medium">
-                      {session.name}
-                    </small>
-                    <span className="text-xs opacity-80">
-                      {session.location}
-                    </span>
+                  <Session onClick={createClickHandler(id)} selected={selected.includes(id)}>
+                    <small className="text-xs! font-medium">{session.name}</small>
+                    <span className="text-xs opacity-80">{session.location}</span>
                   </Session>
                 ) : null}
               </div>

@@ -277,9 +277,7 @@ In practice, this doesn't mean removing all motion. Instead, reduce duration sig
 Disable video autoplay for users with `prefers-reduced-motion` enabled. Autoplaying videos can be particularly disorienting:
 
 ```tsx
-const prefersReducedMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)",
-).matches;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 <video autoPlay={!prefersReducedMotion} />;
 ```

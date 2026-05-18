@@ -67,23 +67,13 @@ export function CodeBlock({ children, className }: CodeBlockProps) {
               : contentHeight,
         }}
         animate={{
-          height:
-            isCollapsible && !showMore ? MAX_COLLAPSED_HEIGHT : contentHeight,
+          height: isCollapsible && !showMore ? MAX_COLLAPSED_HEIGHT : contentHeight,
         }}
-        transition={
-          hasMeasured
-            ? { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
-            : { duration: 0 }
-        }
+        transition={hasMeasured ? { duration: 0.3, ease: [0.4, 0, 0.2, 1] } : { duration: 0 }}
         className="overflow-hidden"
       >
         <div ref={contentRef}>
-          <pre
-            className={cn(
-              "astro-code bg-gray-2 mt-0 mb-0 p-3 overflow-x-scroll",
-              className,
-            )}
-          >
+          <pre className={cn("astro-code bg-gray-2 mt-0 mb-0 p-3 overflow-x-scroll", className)}>
             {children}
           </pre>
         </div>
@@ -94,15 +84,11 @@ export function CodeBlock({ children, className }: CodeBlockProps) {
           <div
             className={cn(
               "absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-gray-1 to-transparent pointer-events-none duration-300",
-              showMore ? "opacity-0" : "opacity-100",
+              showMore ? "opacity-0" : "opacity-100"
             )}
           />
           <div className="absolute bottom-0 inset-x-0 grid place-items-center p-2 opacity-0 group-hover/codeblock:opacity-100">
-            <Button
-              size="sm"
-              className="w-fit"
-              onClick={() => setShowMore((prev) => !prev)}
-            >
+            <Button size="sm" className="w-fit" onClick={() => setShowMore(prev => !prev)}>
               {showMore ? "Show less" : "Show more"}
             </Button>
           </div>

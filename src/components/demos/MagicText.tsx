@@ -1,11 +1,7 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-export function MagicText({
-  children = "Hey My Name is Rob",
-}: {
-  children?: string;
-}) {
+export function MagicText({ children = "Hey My Name is Rob" }: { children?: string }) {
   const chunks = children.split("");
   const [showFirst, setShowFirst] = React.useState(true);
 
@@ -22,9 +18,9 @@ export function MagicText({
   React.useEffect(() => {
     const timer = setTimeout(
       () => {
-        setShowFirst((prev) => !prev);
+        setShowFirst(prev => !prev);
       },
-      (animateInDuration + exitDuration) * 1000,
+      (animateInDuration + exitDuration) * 1000
     );
 
     return () => clearTimeout(timer);
@@ -59,7 +55,7 @@ export function MagicText({
                     filter: "blur(4px)",
                     opacity: 0,
                   }}
-                  key={`first-${index}`}
+                  key={`first-${letter}-${delay}`}
                   style={{
                     ...(letter === " " && {
                       display: "inline",

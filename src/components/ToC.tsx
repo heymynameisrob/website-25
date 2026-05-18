@@ -61,7 +61,7 @@ export function ToC({ headings }: ToCProps) {
   return (
     <>
       {headings
-        .filter((h) => h.depth < 3)
+        .filter(h => h.depth < 3)
         .map((heading, index) => (
           <HeadingObserver
             key={heading.slug}
@@ -90,11 +90,11 @@ export function ToC({ headings }: ToCProps) {
           </motion.div>
           <ul className="flex flex-col gap-4">
             {headings
-              .filter((h) => h.depth < 3)
+              .filter(h => h.depth < 3)
               .map((heading, index) => (
                 <li
                   key={heading.slug}
-                  ref={(el) => {
+                  ref={el => {
                     itemRefs.current[index] = el;
                   }}
                   className="flex h-fit"

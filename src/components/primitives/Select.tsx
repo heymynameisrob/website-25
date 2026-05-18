@@ -17,7 +17,7 @@ function Select({ className, ...props }: React.ComponentProps<"select">) {
           "dark:bg-gray-2 dark:group-hover/select:bg-gray-3",
           "focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-2",
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-          className,
+          className
         )}
         {...props}
       />
@@ -34,17 +34,8 @@ function SelectOption({ ...props }: React.ComponentProps<"option">) {
   return <option data-slot="select-option" {...props} />;
 }
 
-function SelectOptGroup({
-  className,
-  ...props
-}: React.ComponentProps<"optgroup">) {
-  return (
-    <optgroup
-      data-slot="select-optgroup"
-      className={cn(className)}
-      {...props}
-    />
-  );
+function SelectOptGroup({ className, ...props }: React.ComponentProps<"optgroup">) {
+  return <optgroup data-slot="select-optgroup" className={cn(className)} {...props} />;
 }
 
 export { Select, SelectOptGroup, SelectOption };

@@ -47,7 +47,7 @@ export function TextEditor({
           "prose-ol:list-decimal prose-ol:pl-4",
           "prose-li:text-primary",
           "prose-blockquote:border-l-4 prose-blockquote:border-gray-6 prose-blockquote:pl-4 prose-blockquote:italic",
-          className,
+          className
         ),
       },
     },
@@ -58,8 +58,7 @@ export function TextEditor({
     if (!editor || !content) return;
 
     // Check if content has actually changed to avoid unnecessary updates
-    const currentContent =
-      typeof content === "string" ? editor.getHTML() : editor.getJSON();
+    const currentContent = typeof content === "string" ? editor.getHTML() : editor.getJSON();
 
     const hasChanged =
       typeof content === "string"

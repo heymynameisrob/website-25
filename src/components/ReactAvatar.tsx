@@ -1,8 +1,4 @@
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/primitives/HoverCard";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/primitives/HoverCard";
 
 export function ReactAvatar({ children }: { children: React.ReactNode }) {
   return (

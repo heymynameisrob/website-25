@@ -5,12 +5,7 @@ import {
   ArtificialSkeletonTable,
   type ArtificialTableOptionsProps,
 } from "@/components/demos/ArtificialInbox/Skeletons";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/primitives/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/primitives/Tabs";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { Sortable, SortableItem } from "@/components/primitives/Sortable";
 import {
@@ -57,10 +52,7 @@ const OPTIONS_TAB_MAP: Record<string, ArtificialTableOptionsProps> = {
 export type ArtificialInboxTypes = "all" | "renewals" | "at_risk";
 
 export function ArtificialInboxTabs() {
-  const [activeTab, setActiveTab] = useLocalStorage<string>(
-    "artificial-inbox-state",
-    "all",
-  );
+  const [activeTab, setActiveTab] = useLocalStorage<string>("artificial-inbox-state", "all");
   const [tabListOrder, setTabListOrder] = React.useState<string[]>([
     "renewals",
     "at_risk",
@@ -68,8 +60,8 @@ export function ArtificialInboxTabs() {
     "custom",
   ]);
 
-  const name = useArtificialInboxStore((state) => state.name);
-  const emoji = useArtificialInboxStore((state) => state.emoji);
+  const name = useArtificialInboxStore(state => state.name);
+  const emoji = useArtificialInboxStore(state => state.emoji);
 
   const tabConfig = {
     renewals: { label: "🔄 Renewals", value: "renewals" },
@@ -91,10 +83,10 @@ export function ArtificialInboxTabs() {
               <div className="w-1 h-6 bg-gray-3 rounded-full" />
               <Sortable
                 items={tabListOrder}
-                onSort={(newOrder) => setTabListOrder(newOrder)}
+                onSort={newOrder => setTabListOrder(newOrder)}
                 orientation="horizontal"
               >
-                {tabListOrder.map((tabId) => {
+                {tabListOrder.map(tabId => {
                   const tab = tabConfig[tabId as keyof typeof tabConfig];
                   if (!tab) return null;
                   return (

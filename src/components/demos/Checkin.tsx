@@ -13,13 +13,7 @@ import { cn, fromNow } from "@/lib/utils";
 import { Button } from "@/components/primitives/Button";
 import { Tooltip } from "@/components/primitives/Tooltip";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  GitBranchPlus,
-  Loader2,
-  RefreshCcw,
-  SendIcon,
-  SmilePlusIcon,
-} from "lucide-react";
+import { GitBranchPlus, Loader2, RefreshCcw, SendIcon, SmilePlusIcon } from "lucide-react";
 import { subHours } from "date-fns";
 import { EmojiPicker } from "@/components/primitives/EmojiPicker";
 
@@ -49,9 +43,7 @@ interface CheckinContextType {
   setReactions: React.Dispatch<React.SetStateAction<Reaction[]>>;
 }
 
-const CheckinContext = React.createContext<CheckinContextType | undefined>(
-  undefined,
-);
+const CheckinContext = React.createContext<CheckinContextType | undefined>(undefined);
 
 function useCheckin() {
   const context = React.useContext(CheckinContext);
@@ -66,20 +58,22 @@ export function Checkin() {
   const [checkin, setCheckin] = React.useState<Checkin | null>(null);
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [reactions, setReactions] = React.useState<Reaction[]>([]);
+  const contextValue = React.useMemo(
+    () => ({
+      content,
+      setContent,
+      checkin,
+      setCheckin,
+      comments,
+      setComments,
+      reactions,
+      setReactions,
+    }),
+    [content, checkin, comments, reactions]
+  );
 
   return (
-    <CheckinContext.Provider
-      value={{
-        content,
-        setContent,
-        checkin,
-        setCheckin,
-        comments,
-        setComments,
-        reactions,
-        setReactions,
-      }}
-    >
+    <CheckinContext.Provider value={contextValue}>
       {checkin ? <CheckinView /> : <CheckinSubmit />}
     </CheckinContext.Provider>
   );
@@ -118,7 +112,7 @@ function CheckinSubmit() {
   React.useEffect(() => {
     if (showActivity) {
       const interval = setInterval(() => {
-        setActivityLabelIndex((prev) => {
+        setActivityLabelIndex(prev => {
           if (prev === ACTIVITY_LABELS.length - 1) return 0;
           return prev + 1;
         });
@@ -147,10 +141,10 @@ function CheckinSubmit() {
       </div>
       <TextEditor
         content={content}
-        onUpdate={(content) => setContent(content)}
+        onUpdate={content => setContent(content)}
         onKeyDown={handleKeyDown}
         onFocus={() => setShowActivity(true)}
-        onMount={(editor) => (editorRef.current = editor)}
+        onMount={editor => (editorRef.current = editor)}
         placeholder="What did you accomplish today?"
         className="max-h-[200px] min-h-[88px] overflow-y-scroll outline-hidden focus-visible:ring-0 focus-visible:ring-offset-0"
       />
@@ -219,9 +213,7 @@ function CheckinView() {
           <div className="size-4 rounded-full bg-green-500" />
           <div className="flex items-baseline gap-1">
             <p className="text-sm font-medium text-primary! my-0!">Rob Hough</p>
-            <p className="text-sm text-secondary my-0!">
-              {fromNow(checkin.createdAt)}
-            </p>
+            <p className="text-sm text-secondary my-0!">{fromNow(checkin.createdAt)}</p>
           </div>
         </div>
         <TextEditor readOnly={true} content={checkin.content} />
@@ -266,7 +258,7 @@ function CheckinComments() {
   return (
     <div className="flex flex-col gap-2 divide-y" data-testid="checkin-post">
       <AnimatePresence mode="popLayout" initial={false}>
-        {comments?.map((comment) => (
+        {comments?.map(comment => (
           <motion.div
             key={comment.id}
             initial={{ y: 10, opacity: 0 }}
@@ -280,7 +272,7 @@ function CheckinComments() {
       <div className="w-full flex items-center justify-between gap-2 px-2 min-h-[44px] overflow-hidden">
         <TextEditor
           content={content}
-          onUpdate={(content) => setContent(content)}
+          onUpdate={content => setContent(content)}
           onKeyDown={handleKeyDown}
           placeholder="Write a comment..."
           className="min-w-[300px] px-2 outline-hidden focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -316,9 +308,7 @@ function CheckinComment({ comment }: { comment: Comment }) {
         <div className="size-4 rounded-full bg-green-500" />
         <div className="flex items-baseline gap-1.5">
           <p className="text-sm font-medium text-primary my-0!">Rob Hough</p>
-          <p className="text-xs text-secondary my-0!">
-            {fromNow(new Date(comment.createdAt))}
-          </p>
+          <p className="text-xs text-secondary my-0!">{fromNow(new Date(comment.createdAt))}</p>
         </div>
       </div>
       <TextEditor content={comment.content} readOnly={true} />
@@ -356,7 +346,7 @@ function TextEditor({
       extensions={[StarterKit, Placeholder.configure({ placeholder })]}
       content={content}
       onUpdate={handleOnUpdate}
-      onCreate={(props) => onMount?.(props.editor)}
+      onCreate={props => onMount?.(props.editor)}
       editable={!readOnly}
       immediatelyRender={false}
       editorProps={{
@@ -473,7 +463,7 @@ function CheckinActivity() {
         <ul className="flex flex-col p-0! m-0! gap-3">
           {ACTIVITY.map((activity, index) => (
             <motion.li
-              key={index}
+              key={`${activity.action}-${activity.type}-${activity.item.map(item => item.title).join("|")}`}
               initial={{ opacity: 0, y: 10, filter: "blur(2px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, y: -10, filter: "blur(2px)" }}
@@ -489,39 +479,32 @@ function CheckinActivity() {
                 className={cn(
                   "relative flex items-center justify-center size-5 rounded-md ring-2 ring-gray-2 z-10",
                   getActionStyle(activity.action),
-                  "bg-gray-2 dark:bg-gray-2",
+                  "bg-gray-2 dark:bg-gray-2"
                 )}
               >
                 {activity.icon}
               </div>
               <div className="flex items-center gap-1.5 text-sm flex-wrap">
                 <span className="font-medium text-primary">Rob Hough</span>
-                <span className="text-secondary">
-                  {getActionStatus(activity.action)}
-                </span>
+                <span className="text-secondary">{getActionStatus(activity.action)}</span>
                 {activity.type !== "github" &&
-                  activity.item.map((item, index) => {
+                  activity.item.map(item => {
                     return (
                       <button
-                        key={index}
+                        key={`${activity.action}-${item.title}`}
                         className="px-1 py-0.5 h-6 leading-none rounded-md bg-gray-3 hover:bg-gray-4 text-primary font-medium text-sm flex items-center justify-center"
                       >
-                        {item.emoji && (
-                          <span className="mr-1">{item.emoji}</span>
-                        )}
-                        <span className="truncate max-w-[190px]">
-                          {item.title}
-                        </span>
+                        {item.emoji && <span className="mr-1">{item.emoji}</span>}
+                        <span className="truncate max-w-[190px]">{item.title}</span>
                       </button>
                     );
                   })}
                 {activity.type === "github" &&
-                  activity.item.map((item, index) => {
+                  activity.item.map(item => {
                     return (
-                      <Tooltip content={item.tip}>
+                      <Tooltip content={item.tip} key={`${activity.action}-${item.title}`}>
                         <a
                           href="https://github.com"
-                          key={index}
                           className="text-sm font-medium text-primary underline"
                         >
                           {item.title}
@@ -548,7 +531,7 @@ function CheckinReactions() {
         acc[emoji] = (acc[emoji] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
   }, [reactions]);
 
@@ -566,9 +549,9 @@ function CheckinReactions() {
             <Button
               variant="ghost"
               className={cn(
-                "w-auto bg-gray-3 border border-primary/10 h-7 px-2 rounded-full hover:bg-gray-4",
+                "w-auto bg-gray-3 border border-primary/10 h-7 px-2 rounded-full hover:bg-gray-4"
               )}
-              onClick={() => setReactions((prev) => [...prev, { emoji }])}
+              onClick={() => setReactions(prev => [...prev, { emoji }])}
             >
               {emoji} <span className="ml-1 text-xs">{count}</span>
             </Button>
@@ -577,7 +560,7 @@ function CheckinReactions() {
       ))}
 
       <EmojiPicker
-        onEmojiSelect={(emoji) => setReactions((prev) => [...prev, { emoji }])}
+        onEmojiSelect={emoji => setReactions(prev => [...prev, { emoji }])}
         className="rounded-full bg-gray-2 border border-primary/10 hover:bg-gray-4"
         fallback={<SmilePlusIcon className="w-4 h-4 opacity-70" />}
       />

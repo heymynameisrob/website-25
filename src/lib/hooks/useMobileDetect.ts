@@ -9,8 +9,7 @@ const getMobileDetect = (userAgent: string) => {
     return Boolean(userAgent.match(/Safari/i)) && !userAgent.match(/Chrome/i);
   };
 
-  const isMobile = (): boolean =>
-    Boolean(isAndroid() || isIOS() || isOpera() || isWindows());
+  const isMobile = (): boolean => Boolean(isAndroid() || isIOS() || isOpera() || isWindows());
   const isDesktop = (): boolean => Boolean(!isMobile() && !isSSR());
   return {
     isMobile,
@@ -24,7 +23,6 @@ const getMobileDetect = (userAgent: string) => {
 };
 
 export const useMobileDetect = () => {
-  const userAgent =
-    typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
+  const userAgent = typeof navigator === "undefined" ? "SSR" : navigator.userAgent;
   return getMobileDetect(userAgent);
 };

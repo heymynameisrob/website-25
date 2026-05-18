@@ -22,7 +22,7 @@ export const Dropzone = (props: DropzoneProps) => {
           active &&
           active.data.current &&
           !active.data.current.supports.includes(props.data) &&
-          "bg-red-50 border-red-500 border-2 border-r-2 dark:bg-red-500/10",
+          "bg-red-50 border-red-500 border-2 border-r-2 dark:bg-red-500/10"
       )}
     >
       {props.children}

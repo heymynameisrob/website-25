@@ -4,11 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { fetcher } from "@/lib/fetch";
 
 import type { Track } from "@/lib/types";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/primitives/HoverCard";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/primitives/HoverCard";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
 
 export function NowPlaying() {
@@ -34,18 +30,14 @@ export function NowPlaying() {
 
   if (!data) return null;
 
-  const image = data.image.find((img) => img.size === "extralarge")?.url;
+  const image = data.image.find(img => img.size === "extralarge")?.url;
 
   if (!data.nowPlaying) return null;
 
   return (
     <div className="flex items-center gap-1 animate-in fade-in fill-mode-both duration-300 overflow-x-clip h-8">
       <div className="shrink-0 size-5 relative rounded-md overflow-hidden bg-gray-4">
-        <img
-          src={image}
-          loading="lazy"
-          className="absolute inset-0 object-cover"
-        />
+        <img src={image} loading="lazy" className="absolute inset-0 object-cover" />
       </div>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div
@@ -86,9 +78,7 @@ export function NowPlaying() {
                   : undefined
               }
             >
-              <p className="shrink-0 text-xs font-medium text-primary">
-                {data.name} –
-              </p>
+              <p className="shrink-0 text-xs font-medium text-primary">{data.name} –</p>
               <p className="shrink-0 text-xs text-secondary">{data.artist}</p>
             </motion.div>
           </a>

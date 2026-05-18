@@ -30,7 +30,7 @@ export const Avatar = React.forwardRef<
       size === AVATAR_SIZES.sm && "size-8",
       size === AVATAR_SIZES.md && "size-10",
       size === AVATAR_SIZES.lg && "size-12",
-      className,
+      className
     )}
     data-testid="user-avatar"
     {...props}
@@ -40,7 +40,7 @@ export const Avatar = React.forwardRef<
       className={cn(
         "flex h-full w-full items-center justify-center rounded-full bg-background font-medium text-sm uppercase",
         size === AVATAR_SIZES.xs && "text-[10px]",
-        getAvatarColour(fallback),
+        getAvatarColour(fallback)
       )}
     >
       {getInitialsFromFullName(fallback)}
@@ -61,7 +61,7 @@ const AvatarBadge = React.forwardRef<
       ref={ref}
       className={cn(
         "absolute bottom-0 right-0 text-xs bg-background border-background border-2 rounded-full flex items-center px-1",
-        className,
+        className
       )}
       {...props}
     >
@@ -91,7 +91,7 @@ const AvatarFallback = React.forwardRef<
     ref={ref}
     className={cn(
       "flex h-full w-full items-center justify-center rounded-full bg-gray-200",
-      className,
+      className
     )}
     {...props}
   />

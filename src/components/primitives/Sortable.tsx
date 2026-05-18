@@ -52,15 +52,13 @@ export function Sortable<TItems extends (ObjWithId | string | number)[]>({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const getItemId = (item: ItemType<TItems>): string | number => {
     if (typeof item === "object" && item !== null) {
       if (!("id" in item)) {
-        throw new Error(
-          'Objects in the array must have an unique "id" property',
-        );
+        throw new Error('Objects in the array must have an unique "id" property');
       }
       return item.id;
     }
@@ -71,12 +69,8 @@ export function Sortable<TItems extends (ObjWithId | string | number)[]>({
     const { active, over } = event;
 
     if (over !== null && active.id !== over.id) {
-      const oldIndex = items.findIndex(
-        (item) => getItemId(item as ItemType<TItems>) === active.id,
-      );
-      const newIndex = items.findIndex(
-        (item) => getItemId(item as ItemType<TItems>) === over.id,
-      );
+      const oldIndex = items.findIndex(item => getItemId(item as ItemType<TItems>) === active.id);
+      const newIndex = items.findIndex(item => getItemId(item as ItemType<TItems>) === over.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
         const reorderedItems = arrayMove(items, oldIndex, newIndex) as TItems;
@@ -97,7 +91,7 @@ export function Sortable<TItems extends (ObjWithId | string | number)[]>({
       autoScroll={false} // Disable auto-scrolling to prevent conflicts
     >
       <SortableContext
-        items={items.map((item) => getItemId(item as ItemType<TItems>))}
+        items={items.map(item => getItemId(item as ItemType<TItems>))}
         strategy={
           orientation === "vertical"
             ? verticalListSortingStrategy
@@ -118,23 +112,14 @@ interface SortableItemProps {
 }
 
 export function SortableItem({ children, id }: SortableItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-    isOver,
-  } = useSortable({
-    id,
-  });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
+    useSortable({
+      id,
+    });
 
   const style = {
     transform:
-      transform !== null
-        ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-        : undefined,
+      transform !== null ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     transition,
   };
 
@@ -147,7 +132,7 @@ export function SortableItem({ children, id }: SortableItemProps) {
         {...attributes}
         {...listeners}
         className={cn(
-          "relative transform-gpu will-change-transform hover:cursor-grabbing z-max pointer-events-none",
+          "relative transform-gpu will-change-transform hover:cursor-grabbing z-max pointer-events-none"
         )}
       >
         {children}

@@ -6,7 +6,7 @@ export function Motion() {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setActive((prev) => !prev);
+      setActive(prev => !prev);
     }, 3000);
 
     return () => clearInterval(interval);

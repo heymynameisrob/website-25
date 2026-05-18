@@ -36,7 +36,7 @@ export const LantumGrid = () => {
   return (
     <div
       className={cn(
-        "relative left-10 origin-top rounded-md overflow-hidden bg-background w-full shadow-floating",
+        "relative left-10 origin-top rounded-md overflow-hidden bg-background w-full shadow-floating"
       )}
     >
       <div className="flex flex-row h-full">
@@ -54,20 +54,14 @@ export const LantumGrid = () => {
           }}
           onDragEnd={({ over, active }: LantumDragEndEvent) => {
             if (!over) return;
-            if (!active.data.current.supports.includes(over.data.current.type))
-              return;
+            if (!active.data.current.supports.includes(over.data.current.type)) return;
             setParent(over.id);
             setIsDragging(false);
             handleSave();
           }}
           onDragCancel={() => setIsDragging(false)}
         >
-          <DraggableGrid
-            ref={gridRef}
-            isDragging={isDragging}
-            parent={parent}
-            saving={saving}
-          />
+          <DraggableGrid ref={gridRef} isDragging={isDragging} parent={parent} saving={saving} />
         </DndContext>
       </div>
       <SaveToast saving={saving} showToast={showToast} />

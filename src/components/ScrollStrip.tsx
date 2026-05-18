@@ -43,8 +43,7 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
       const visibleLeft = -currentX;
       const visibleRight = visibleLeft + viewportWidth;
       const needsScrolling =
-        elementLeft < visibleLeft + PADDING ||
-        elementRight > visibleRight - PADDING;
+        elementLeft < visibleLeft + PADDING || elementRight > visibleRight - PADDING;
 
       if (needsScrolling) {
         const { leftBound, rightBound } = getBounds();
@@ -69,41 +68,36 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
         });
       }
     },
-    [translateX, getBounds],
+    [translateX, getBounds]
   );
 
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
-      if (!containerRef.current) return;
+  const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLAnchorElement>) => {
+    if (!containerRef.current) return;
 
-      const currentElement = e.currentTarget;
+    const currentElement = e.currentTarget;
 
-      switch (e.key) {
-        case "ArrowLeft": {
-          e.preventDefault();
-          const prevElement =
-            currentElement.previousElementSibling as HTMLAnchorElement;
-          if (prevElement) prevElement.focus();
-          break;
-        }
-        case "ArrowRight": {
-          e.preventDefault();
-          const nextElement =
-            currentElement.nextElementSibling as HTMLAnchorElement;
-          if (nextElement) nextElement.focus();
-          break;
-        }
-        case "Escape":
-          e.preventDefault();
-          currentElement.blur();
-          break;
-        case "Enter":
-          // Let the default behavior handle the link navigation
-          return;
+    switch (e.key) {
+      case "ArrowLeft": {
+        e.preventDefault();
+        const prevElement = currentElement.previousElementSibling as HTMLAnchorElement;
+        if (prevElement) prevElement.focus();
+        break;
       }
-    },
-    [],
-  );
+      case "ArrowRight": {
+        e.preventDefault();
+        const nextElement = currentElement.nextElementSibling as HTMLAnchorElement;
+        if (nextElement) nextElement.focus();
+        break;
+      }
+      case "Escape":
+        e.preventDefault();
+        currentElement.blur();
+        break;
+      case "Enter":
+        // Let the default behavior handle the link navigation
+        return;
+    }
+  }, []);
 
   const handleWheel = React.useCallback(
     (e: WheelEvent) => {
@@ -115,7 +109,7 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
       const newX = clamp(currentX - delta, [rightBound, leftBound]);
       translateX.set(newX);
     },
-    [translateX, getBounds],
+    [translateX, getBounds]
   );
 
   React.useEffect(() => {
@@ -138,13 +132,8 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
     return (
       <div className="p-4 space-y-4">
         <div className="flex flex-col gap-4">
-          {posts.map((post) => (
-            <ScrollStripPost
-              key={post.id}
-              post={post}
-              onFocus={() => {}}
-              onKeyDown={() => {}}
-            />
+          {posts.map(post => (
+            <ScrollStripPost key={post.id} post={post} onFocus={() => {}} onKeyDown={() => {}} />
           ))}
           <a
             href="/posts"
@@ -171,18 +160,18 @@ export function ScrollStrip({ posts }: { posts: Post[] }) {
         layout
         className="flex gap-8 pointer-events-auto h-full"
       >
-        {posts.map((post) => (
+        {posts.map(post => (
           <ScrollStripPost
             key={post.id}
             post={post}
-            onFocus={(e) => scrollElementIntoView(e)}
+            onFocus={e => scrollElementIntoView(e)}
             onKeyDown={handleKeyDown}
           />
         ))}
         <a
           href="/posts"
           className="group grid place-items-center p-6 gap-6 bg-gray-2 aspect-square h-full shrink-0 rounded-xs border transition-all focus dark:bg-gray-3 hover:bg-gray-3 dark:hover:bg-gray-4 lg:p-8 lg:gap-8"
-          onFocus={(e) => scrollElementIntoView(e.currentTarget)}
+          onFocus={e => scrollElementIntoView(e.currentTarget)}
           onKeyDown={handleKeyDown}
         >
           <div className="text-center space-y-1">

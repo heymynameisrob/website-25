@@ -35,7 +35,7 @@ const postsWithOptimizedImages = await Promise.all(
       images.optimizedImageDarkSrc = optimizedImageDark.src;
     }
 
-    return { ...post, ...images };
+    return Object.assign({}, post, images);
   }),
 );
 ---

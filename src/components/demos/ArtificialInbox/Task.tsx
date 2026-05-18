@@ -83,6 +83,10 @@ function TasksForm() {
   });
 
   const watchedData = watch();
+  const watchedDataJson = JSON.stringify(watchedData);
+  const latestWatchedData = React.useRef(watchedData);
+
+  latestWatchedData.current = watchedData;
 
   // Debounced autosave callback
   const debouncedSave = useDebouncedCallback((data: TaskFormData) => {
@@ -102,9 +106,8 @@ function TasksForm() {
       return;
     }
 
-    debouncedSave(watchedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(watchedData)]);
+    debouncedSave(latestWatchedData.current);
+  }, [debouncedSave, watchedDataJson]);
 
   const onSubmit = (data: TaskFormData) => {
     setTask(data as ArtificialTask);
@@ -121,7 +124,7 @@ function TasksForm() {
         onSubmit={handleSubmit(onSubmit)}
         className={cn(
           "flex flex-col gap-4 transition-opacity",
-          isSaving && "pointer-events-none opacity-50",
+          isSaving && "pointer-events-none opacity-50"
         )}
       >
         <Controller
@@ -137,16 +140,8 @@ function TasksForm() {
           )}
         />
         <dl className="grid grid-cols-[120px_1fr] gap-1 px-2">
-          <AssigneeField
-            control={control}
-            name="assignee"
-            options={ASSIGNEE_OPTIONS}
-          />
-          <StatusField
-            control={control}
-            name="status"
-            options={STATUS_OPTIONS}
-          />
+          <AssigneeField control={control} name="assignee" options={ASSIGNEE_OPTIONS} />
+          <StatusField control={control} name="status" options={STATUS_OPTIONS} />
           <DueDateField control={control} name="dueDate" />
         </dl>
         <div className="mt-4 px-2">

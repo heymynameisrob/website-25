@@ -51,48 +51,50 @@ export function ArtificialSkeletonTopBar() {
   );
 }
 
-export function ArtificialSkeletonTable({
-  options,
-}: {
-  options: ArtificialTableOptionsProps;
-}) {
+export function ArtificialSkeletonTable({ options }: { options: ArtificialTableOptionsProps }) {
   const shouldShow = (count: number) => count > 0;
+  const draftRows = Array.from({ length: options.draft }, (_, idx) => ({
+    key: `draft-${idx}`,
+    width: getDeterministicWidth(idx),
+  }));
+  const quotedRows = Array.from({ length: options.quoted }, (_, idx) => ({
+    key: `quoted-${idx}`,
+    width: getDeterministicWidth(idx),
+  }));
+  const boundRows = Array.from({ length: options.bound }, (_, idx) => ({
+    key: `bound-${idx}`,
+    width: getDeterministicWidth(idx),
+  }));
 
   return (
     <div className="flex flex-col divide-y">
       {shouldShow(options.draft) && (
         <>
           <header className="flex-items-center gap-4 px-4 py-0.5 bg-gray-2">
-            <span className="text-sm font-medium text-primary">
-              Draft ({options.draft})
-            </span>
+            <span className="text-sm font-medium text-primary">Draft ({options.draft})</span>
           </header>
-          {Array.from({ length: options.draft }).map((_, i) => (
-            <ArtificialTableRow key={i} width={getDeterministicWidth(i)} />
+          {draftRows.map(row => (
+            <ArtificialTableRow key={row.key} width={row.width} />
           ))}
         </>
       )}
       {shouldShow(options.quoted) && (
         <>
           <header className="flex-items-center gap-4 px-4 py-0.5 bg-gray-2">
-            <span className="text-sm font-medium text-primary">
-              Quoted ({options.quoted})
-            </span>
+            <span className="text-sm font-medium text-primary">Quoted ({options.quoted})</span>
           </header>
-          {Array.from({ length: options.quoted }).map((_, i) => (
-            <ArtificialTableRow key={i} width={getDeterministicWidth(i)} />
+          {quotedRows.map(row => (
+            <ArtificialTableRow key={row.key} width={row.width} />
           ))}
         </>
       )}
       {shouldShow(options.bound) && (
         <>
           <header className="flex-items-center gap-4 px-4 py-0.5 bg-gray-2">
-            <span className="text-sm font-medium text-primary">
-              Bound ({options.bound})
-            </span>
+            <span className="text-sm font-medium text-primary">Bound ({options.bound})</span>
           </header>
-          {Array.from({ length: options.bound }).map((_, i) => (
-            <ArtificialTableRow key={i} width={getDeterministicWidth(i)} />
+          {boundRows.map(row => (
+            <ArtificialTableRow key={row.key} width={row.width} />
           ))}
         </>
       )}
@@ -117,21 +119,21 @@ function ArtificialTableRow({ width }: { width: number }) {
 }
 
 export function ArtificialSkeletonList({ count }: { count: number }) {
+  const listRows = Array.from({ length: count }, (_, idx) => ({
+    key: `list-${idx}`,
+    width: getDeterministicWidth(idx) / 2,
+  }));
   return (
     <>
       <List>
-        {Array.from({ length: count }).map((_, i) => {
-          const width = getDeterministicWidth(i);
+        {listRows.map(row => {
           return (
-            <ListItem className="hover:bg-transparent">
+            <ListItem className="hover:bg-transparent" key={row.key}>
               <ListItemContainer>
                 <ListItemIcon>
                   <Skeleton className="size-4 rounded-sm opacity-70" />
                 </ListItemIcon>
-                <Skeleton
-                  className="h-4 max-w-48"
-                  style={{ width: width / 2 }}
-                />
+                <Skeleton className="h-4 max-w-48" style={{ width: row.width }} />
               </ListItemContainer>
               <ListItemChevron />
             </ListItem>
@@ -143,12 +145,13 @@ export function ArtificialSkeletonList({ count }: { count: number }) {
 }
 
 export function ArtificialSkeletonActivity() {
+  const activityRows = Array.from({ length: 8 }, (_, idx) => `activity-${idx}`);
   return (
     <div className="relative">
       <div className="absolute top-2.5 left-2.5 w-px h-full bg-gray-4 z-0" />
       <div className="relative z-10 flex flex-col gap-1.5">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div className="flex items-center gap-2 h-9">
+        {activityRows.map(rowKey => (
+          <div className="flex items-center gap-2 h-9" key={rowKey}>
             <Skeleton className="size-5 rounded-full ring-2 ring-background" />
             <Skeleton className="w-24 h-3.5" />
             <Skeleton className="w-8 h-3.5" />

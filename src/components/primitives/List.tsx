@@ -5,19 +5,13 @@ import { cn } from "@/lib/utils";
 
 interface ListProps extends React.HTMLAttributes<HTMLElement> {}
 
-const List = React.forwardRef<HTMLElement, ListProps>(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <section
-        ref={ref}
-        className={cn("flex flex-col gap-px p-3", className)}
-        {...props}
-      >
-        {children}
-      </section>
-    );
-  },
-);
+const List = React.forwardRef<HTMLElement, ListProps>(({ className, children, ...props }, ref) => {
+  return (
+    <section ref={ref} className={cn("flex flex-col gap-px p-3", className)} {...props}>
+      {children}
+    </section>
+  );
+});
 List.displayName = "List";
 
 interface ListItemProps extends React.HTMLAttributes<HTMLElement> {
@@ -33,7 +27,7 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
           onClick={onClick}
           className={cn(
             "flex items-center px-2 -mx-1 rounded-md bg-transparent h-8 hover:bg-gray-3 focus-visible:ring-2 focus",
-            className,
+            className
           )}
           {...props}
         >
@@ -48,14 +42,14 @@ const ListItem = React.forwardRef<HTMLElement, ListItemProps>(
         tabIndex={0}
         className={cn(
           "flex items-center px-2 -mx-1 rounded-md bg-transparent h-8 hover:bg-gray-3 focus-visible:ring-2 focus select-none",
-          className,
+          className
         )}
         {...props}
       >
         {children}
       </div>
     );
-  },
+  }
 );
 ListItem.displayName = "ListItem";
 
@@ -70,26 +64,21 @@ const ListItemChevron = React.forwardRef<SVGSVGElement, ListItemChevronProps>(
         {...props}
       />
     );
-  },
+  }
 );
 ListItemChevron.displayName = "ListItemChevron";
 
 interface ListItemContainerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const ListItemContainer = React.forwardRef<
-  HTMLDivElement,
-  ListItemContainerProps
->(({ className, children, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className={cn("flex items-center gap-2", className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-});
+const ListItemContainer = React.forwardRef<HTMLDivElement, ListItemContainerProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <div ref={ref} className={cn("flex items-center gap-2", className)} {...props}>
+        {children}
+      </div>
+    );
+  }
+);
 ListItemContainer.displayName = "ListItemContainer";
 
 interface ListItemIconProps extends React.HTMLAttributes<HTMLSpanElement> {}
@@ -101,14 +90,14 @@ const ListItemIcon = React.forwardRef<HTMLSpanElement, ListItemIconProps>(
         ref={ref}
         className={cn(
           "size-5 grid place-items-center [&_svg]:size-4 [&_svg]:opacity-70",
-          className,
+          className
         )}
         {...props}
       >
         {children}
       </span>
     );
-  },
+  }
 );
 ListItemIcon.displayName = "ListItemIcon";
 
@@ -117,23 +106,12 @@ interface ListItemTitleProps extends React.HTMLAttributes<HTMLSpanElement> {}
 const ListItemTitle = React.forwardRef<HTMLSpanElement, ListItemTitleProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <span
-        ref={ref}
-        className={cn("text-sm font-medium text-primary", className)}
-        {...props}
-      >
+      <span ref={ref} className={cn("text-sm font-medium text-primary", className)} {...props}>
         {children}
       </span>
     );
-  },
+  }
 );
 ListItemTitle.displayName = "ListItemTitle";
 
-export {
-  List,
-  ListItem,
-  ListItemChevron,
-  ListItemContainer,
-  ListItemIcon,
-  ListItemTitle,
-};
+export { List, ListItem, ListItemChevron, ListItemContainer, ListItemIcon, ListItemTitle };

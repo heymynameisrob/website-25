@@ -79,10 +79,7 @@ export function Gallery() {
         )}
 
         {selectedImage && (
-          <div
-            className="absolute z-50 flex items-center justify-center"
-            ref={ref}
-          >
+          <div className="absolute z-50 flex items-center justify-center" ref={ref}>
             <motion.div
               layoutId={`image-${selectedImage.url}`}
               className="size-[400px] rounded-2xl cursor-default overflow-hidden"
@@ -108,14 +105,10 @@ export function Gallery() {
         )}
       </AnimatePresence>
       <ul className="relative flex flex-col lg:grid lg:grid-cols-2 gap-2">
-        {IMAGES.map((image) => {
+        {IMAGES.map(image => {
           const isSelected = selectedImage?.url === image.url;
           return (
-            <li
-              key={image.url}
-              className="size-[200px]"
-              onClick={() => setSelectedImage(image)}
-            >
+            <li key={image.url} className="size-[200px]" onClick={() => setSelectedImage(image)}>
               <AnimatePresence>
                 {!isSelected && (
                   <Tooltip content={image.caption}>
@@ -141,31 +134,29 @@ export function Gallery() {
   );
 }
 
-const ExpandedImage = React.forwardRef<HTMLDivElement, { image: Image }>(
-  ({ image }, ref) => {
-    return (
-      <>
-        <AnimatePresence>
+const ExpandedImage = React.forwardRef<HTMLDivElement, { image: Image }>(({ image }, ref) => {
+  return (
+    <>
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+        />
+      </AnimatePresence>
+      <AnimatePresence>
+        <div className="absolute inset-4 grid place-items-center z-50">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
-          />
-        </AnimatePresence>
-        <AnimatePresence>
-          <div className="absolute inset-4 grid place-items-center z-50">
-            <motion.div
-              ref={ref}
-              layoutId={`image-${image.url}`}
-              className="aspect-square h-[400px] rounded-2xl cursor-pointer overflow-hidden outline-none focus transition-all"
-            >
-              <img src={image.url} alt={image.caption} loading="eager" />
-            </motion.div>
-          </div>
-        </AnimatePresence>
-      </>
-    );
-  },
-);
+            ref={ref}
+            layoutId={`image-${image.url}`}
+            className="aspect-square h-[400px] rounded-2xl cursor-pointer overflow-hidden outline-none focus transition-all"
+          >
+            <img src={image.url} alt={image.caption} loading="eager" />
+          </motion.div>
+        </div>
+      </AnimatePresence>
+    </>
+  );
+});
 ExpandedImage.displayName = "ExpandedImage";

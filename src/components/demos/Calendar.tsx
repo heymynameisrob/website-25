@@ -65,9 +65,7 @@ function useCalendar() {
 }
 
 export function Calendar() {
-  const [monthLabel, setMonthLabel] = React.useState<string>(
-    format(new Date(), "yyyy-MM"),
-  );
+  const [monthLabel, setMonthLabel] = React.useState<string>(format(new Date(), "yyyy-MM"));
   const [direction, setDirection] = React.useState<1 | -1 | undefined>();
   const [isAnimating, setIsAnimating] = React.useState<boolean>(false);
   const [selectedDate, setSelectedDate] = React.useState<string>("");
@@ -105,10 +103,7 @@ export function Calendar() {
   const x = useMotionValue(0);
   const opacity = useTransform(x, [-100, 0, 100], [0.5, 1, 0.5]);
 
-  const handleDragEnd = (
-    _: MouseEvent | TouchEvent | PointerEvent,
-    info: PanInfo,
-  ) => {
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 50; // minimum distance to trigger month change
     if (Math.abs(info.offset.x) > threshold) {
       if (info.offset.x > 0) {
@@ -135,19 +130,31 @@ export function Calendar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNextMonth, handlePrevMonth]);
 
+  const contextValue = React.useMemo(
+    () => ({
+      month,
+      monthLabel,
+      direction,
+      selectedDate,
+      setSelectedDate,
+      days,
+      onNext: handleNextMonth,
+      onPrev: handlePrevMonth,
+    }),
+    [
+      month,
+      monthLabel,
+      direction,
+      selectedDate,
+      setSelectedDate,
+      days,
+      handleNextMonth,
+      handlePrevMonth,
+    ]
+  );
+
   return (
-    <CalendarContext.Provider
-      value={{
-        month,
-        monthLabel,
-        direction,
-        selectedDate,
-        setSelectedDate,
-        days,
-        onNext: handleNextMonth,
-        onPrev: handlePrevMonth,
-      }}
-    >
+    <CalendarContext.Provider value={contextValue}>
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
         <div className="relative shrink-0 w-[400px] overflow-hidden bg-background rounded-xl border">
           <AnimatePresence initial={false}>
@@ -168,12 +175,7 @@ export function Calendar() {
                       custom={direction}
                       onExitComplete={() => setIsAnimating(false)}
                     >
-                      <motion.div
-                        key={monthLabel}
-                        initial="enter"
-                        animate="middle"
-                        exit="exit"
-                      >
+                      <motion.div key={monthLabel} initial="enter" animate="middle" exit="exit">
                         <CalendarHeader />
                         <CalendarMonth />
                       </motion.div>
@@ -234,8 +236,7 @@ function CalendarHeader() {
 }
 
 function CalendarMonth() {
-  const { direction, selectedDate, setSelectedDate, month, days } =
-    useCalendar();
+  const { direction, selectedDate, setSelectedDate, month, days } = useCalendar();
 
   return (
     <>
@@ -245,16 +246,14 @@ function CalendarMonth() {
         }}
         className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(day => (
           <span
             key={day}
             className={cn(
               "w-10 text-center font-medium",
-              format(new Date(), "E")
-                .toLowerCase()
-                .startsWith(day.toLowerCase())
+              format(new Date(), "E").toLowerCase().startsWith(day.toLowerCase())
                 ? "text-accent"
-                : "text-secondary",
+                : "text-secondary"
             )}
           >
             {day}
@@ -267,15 +266,13 @@ function CalendarMonth() {
         custom={direction}
         className="mt-6 grid grid-cols-7 justify-center items-center gap-y-4 px-4 text-sm"
       >
-        {days.map((day) => (
+        {days.map(day => (
           <button
             className={cn(
               "flex items-center justify-center w-10 h-10 rounded-full select-none focus font-medium hover:bg-gray-2 active:scale-[0.96] transition-all",
-              format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd") &&
-                "text-accent",
-              selectedDate === format(day, "yyyy-MM-dd") &&
-                "text-white bg-accent hover:bg-accent",
-              isSameMonth(day, month) ? "" : "text-gray-8 pointer-events-none",
+              format(day, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd") && "text-accent",
+              selectedDate === format(day, "yyyy-MM-dd") && "text-white bg-accent hover:bg-accent",
+              isSameMonth(day, month) ? "" : "text-gray-8 pointer-events-none"
             )}
             key={format(day, "yyyy-MM-dd")}
             onClick={() => setSelectedDate(format(day, "yyyy-MM-dd"))}

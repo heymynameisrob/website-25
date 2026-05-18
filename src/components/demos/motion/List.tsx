@@ -32,11 +32,11 @@ export function List() {
             viewport={{ once: true, amount: "all" }}
             className="flex items-center gap-3 p-3 bg-gray-2 rounded-lg hover:bg-gray-3 cursor-default"
             onClick={() => {
-              setItems((prev) => {
-                return prev.map((prevItem) =>
+              setItems(prev => {
+                return prev.map(prevItem =>
                   prevItem.id === item.id
                     ? { ...prevItem, completed: !prevItem.completed }
-                    : prevItem,
+                    : prevItem
                 );
               });
             }}
@@ -45,7 +45,7 @@ export function List() {
             <span
               className={cn(
                 "text-sm font-medium",
-                item.completed ? "text-gray-11 line-through" : "text-primary",
+                item.completed ? "text-gray-11 line-through" : "text-primary"
               )}
             >
               {item.title}

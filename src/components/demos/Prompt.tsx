@@ -24,9 +24,7 @@ import { cn } from "@/lib/utils";
 export function Prompt() {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isCompleted, setIsCompleted] = React.useState(false);
-  const [value, setValue] = React.useState(
-    "Give me some British artists I might like",
-  );
+  const [value, setValue] = React.useState("Give me some British artists I might like");
 
   const handleSubmit = () => {
     setIsSubmitted(true);
@@ -46,11 +44,7 @@ export function Prompt() {
             duration: 0.3,
           }}
         >
-          {isSubmitted ? (
-            <TextStream onComplete={() => setIsCompleted(true)} />
-          ) : (
-            <Welcome />
-          )}
+          {isSubmitted ? <TextStream onComplete={() => setIsCompleted(true)} /> : <Welcome />}
         </motion.div>
       </AnimatePresence>
       <motion.div layout="position">
@@ -90,7 +84,7 @@ function PromptInput({
       className={cn(
         "w-full min-w-96 flex items-center justify-between gap-2 bg-background cursor-text rounded-3xl p-3 shadow-container overflow-hidden transition-all focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring focus-within:ring-offset-gray-2",
         isSubmitted && "items-end",
-        disabled && "cursor-not-allowed opacity-60",
+        disabled && "cursor-not-allowed opacity-60"
       )}
     >
       <div className="w-full flex flex-col">
@@ -102,7 +96,7 @@ function PromptInput({
           rows={1}
           className={cn(
             "px-1.5 text-primary min-h-11 w-full resize-none border-none bg-transparent shadow-none outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-            isSubmitted ? "min-h-11" : "min-h-6",
+            isSubmitted ? "min-h-11" : "min-h-6"
           )}
           disabled={disabled}
           // Just for display purposes
@@ -140,12 +134,7 @@ function PromptInput({
           </Button>
         </Tooltip>
         <Tooltip content="Send">
-          <Button
-            size="icon"
-            variant="default"
-            className="rounded-full"
-            onClick={onSubmit}
-          >
+          <Button size="icon" variant="default" className="rounded-full" onClick={onSubmit}>
             <ArrowUpIcon className="size-4" />
           </Button>
         </Tooltip>
@@ -182,9 +171,7 @@ function TextStream({ onComplete }: { onComplete: () => void }) {
                 className="prose [--prose-color:var(--color-gray-12)] text-base [&_ul]:mb-6 [&_p]:inline"
               >
                 {displayedText && (
-                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                    {displayedText}
-                  </ReactMarkdown>
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{displayedText}</ReactMarkdown>
                 )}
                 {status !== "complete" && (
                   <span className="inline-block align-middle size-3.5 rounded-full bg-gray-7 not-prose ml-1 animate-blink" />
@@ -241,18 +228,14 @@ function Welcome() {
   );
 }
 
-const STATUSES = [
-  "Understanding query",
-  "Searching the web",
-  "Analyzing results",
-];
+const STATUSES = ["Understanding query", "Searching the web", "Analyzing results"];
 
 function Thinking() {
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setIndex((prev) => (prev + 1) % STATUSES.length);
+      setIndex(prev => (prev + 1) % STATUSES.length);
     }, 2_000);
 
     return () => clearTimeout(timer);

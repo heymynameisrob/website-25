@@ -38,16 +38,19 @@ export const FilterMenu = ({
   const [query, setQuery] = React.useState<string>("");
   const [selectedIndex, setSelectedIndex] = React.useState<number>(0);
 
-  const values = {
-    query,
-    setQuery,
-    open,
-    setOpen,
-    value: value ?? _value,
-    setValue: onValueChange ?? _setValue,
-    selectedIndex,
-    setSelectedIndex,
-  };
+  const values = React.useMemo(
+    () => ({
+      query,
+      setQuery,
+      open,
+      setOpen,
+      value: value ?? _value,
+      setValue: onValueChange ?? _setValue,
+      selectedIndex,
+      setSelectedIndex,
+    }),
+    [query, open, value, _value, onValueChange, selectedIndex]
+  );
 
   return (
     <FilterMenuContext.Provider value={values}>
@@ -83,7 +86,7 @@ export const FilterMenuContent = React.forwardRef<
     sideOffset={sideOffset}
     className={cn(
       "z-50 w-72 rounded-lg border overflow-hidden bg-background p-0 text-secondary shadow-md outline-hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className,
+      className
     )}
     {...props}
   />
@@ -112,19 +115,10 @@ interface ItemElementProps {
  * Handles key navigation and filtering by default
  * Pass optional keys to search for
  */
-export const FilterMenuList = React.forwardRef<
-  HTMLDivElement,
-  FilterMenuListProps<any>
->(
+export const FilterMenuList = React.forwardRef<HTMLDivElement, FilterMenuListProps<any>>(
   <T extends { value: string }>(
-    {
-      items,
-      children,
-      loop = false,
-      keys = ["value"],
-      className,
-    }: FilterMenuListProps<T>,
-    ref: React.ForwardedRef<HTMLDivElement>,
+    { items, children, loop = false, keys = ["value"], className }: FilterMenuListProps<T>,
+    ref: React.ForwardedRef<HTMLDivElement>
   ) => {
     const {
       query,
@@ -177,10 +171,7 @@ export const FilterMenuList = React.forwardRef<
             });
           }
         } else if (e.key === "Enter") {
-          if (
-            itemsRef.current !== null &&
-            itemsRef.current[selectedIndex] !== null
-          ) {
+          if (itemsRef.current !== null && itemsRef.current[selectedIndex] !== null) {
             const selectedItem = itemsRef.current[selectedIndex];
             if (selectedItem !== null) {
               setValue(selectedItem.id);
@@ -189,15 +180,7 @@ export const FilterMenuList = React.forwardRef<
           }
         }
       },
-      [
-        itemsRef,
-        selectedIndex,
-        items.length,
-        loop,
-        setOpen,
-        setSelectedIndex,
-        setValue,
-      ],
+      [itemsRef, selectedIndex, items.length, loop, setOpen, setSelectedIndex, setValue]
     );
 
     React.useEffect(() => {
@@ -211,10 +194,7 @@ export const FilterMenuList = React.forwardRef<
 
     // NOTE (@heymynameisrob): Keep an eye on this, sometimes it bugs out.
     React.useEffect(() => {
-      if (
-        itemsRef.current !== null &&
-        itemsRef.current[selectedIndex] !== null
-      ) {
+      if (itemsRef.current !== null && itemsRef.current[selectedIndex] !== null) {
         itemsRef.current[selectedIndex]?.scrollIntoView({
           block: "nearest",
         });
@@ -226,7 +206,7 @@ export const FilterMenuList = React.forwardRef<
         ref={ref}
         className={cn(
           "flex flex-col gap-px max-h-[300px] p-1 overflow-y-scroll scroll-my-2 scrollbar-hide animate-in duration-200 ease-out",
-          className,
+          className
         )}
       >
         {matches.map((item, index) =>
@@ -235,13 +215,12 @@ export const FilterMenuList = React.forwardRef<
             key: item.value,
             ref: (el: HTMLElement | null) => (itemsRef.current[index] = el),
             "aria-selected": index === selectedIndex,
-            onMouseMove: () =>
-              index !== selectedIndex && setSelectedIndex(index),
-          } as ItemElementProps),
+            onMouseMove: () => index !== selectedIndex && setSelectedIndex(index),
+          } as ItemElementProps)
         )}
       </div>
     );
-  },
+  }
 );
 
 FilterMenuList.displayName = "FilterMenuList";
@@ -250,35 +229,34 @@ FilterMenuList.displayName = "FilterMenuList";
  * FilterMenuInput
  * Wrapper around <input /> that debounces input value
  */
-export const FilterMenuInput = React.forwardRef<
-  HTMLInputElement,
-  { className?: string }
->(({ className, ...props }, ref) => {
-  const { setQuery, query } = useFilterMenu();
+export const FilterMenuInput = React.forwardRef<HTMLInputElement, { className?: string }>(
+  ({ className, ...props }, ref) => {
+    const { setQuery, query } = useFilterMenu();
 
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "relative z-10 flex items-center gap-2 px-3 h-9 bg-gray-1 border-b border-gray-3 rounded-t-md caret-blue-600",
-        "dark:bg-gray-1",
-        className,
-      )}
-    >
-      <MagnifyingGlassIcon className="shrink-0 w-4 h-4 opacity-50 pointer-events-none" />
-      <input
-        type="search"
-        autoFocus
-        autoComplete="off"
-        placeholder="Search..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full h-9 text-sm px-0 border-none outline-hidden bg-transparent focus:outline-hidden focus:border-none focus:ring-0"
-        {...props}
-      />
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "relative z-10 flex items-center gap-2 px-3 h-9 bg-gray-1 border-b border-gray-3 rounded-t-md caret-blue-600",
+          "dark:bg-gray-1",
+          className
+        )}
+      >
+        <MagnifyingGlassIcon className="shrink-0 w-4 h-4 opacity-50 pointer-events-none" />
+        <input
+          type="search"
+          autoFocus
+          autoComplete="off"
+          placeholder="Search..."
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          className="w-full h-9 text-sm px-0 border-none outline-hidden bg-transparent focus:outline-hidden focus:border-none focus:ring-0"
+          {...props}
+        />
+      </div>
+    );
+  }
+);
 
 FilterMenuInput.displayName = "FilterMenuInput";
 
@@ -298,17 +276,19 @@ export const FilterMenuItem = React.forwardRef<
       tabIndex={0}
       ref={ref}
       onMouseDown={() => {
-        onSelect !== undefined ? onSelect() : setValue(value);
+        if (onSelect !== undefined) {
+          onSelect();
+        } else {
+          setValue(value);
+        }
         setOpen(false);
       }}
       className={cn(
         "relative flex w-full cursor-default select-none items-center transition-all rounded-md py-1.5 pr-7 pl-2 text-sm  font-medium text-secondary outline-hidden aria-selected:bg-gray-2 aria-selected:text-primary data-disabled:pointer-events-none data-disabled:opacity-50",
         "focus-visible:ring-2 focus-visible:ring-ring",
         "dark:hover:bg-gray-3",
-        currentValue === value
-          ? "aria-selected:bg-gray-3 bg-gray-3 text-primary"
-          : null,
-        className,
+        currentValue === value ? "aria-selected:bg-gray-3 bg-gray-3 text-primary" : null,
+        className
       )}
       {...props}
     >

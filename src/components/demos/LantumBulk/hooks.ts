@@ -19,7 +19,7 @@ export function useSessionSelection() {
     {
       enabled: isSelecting,
       preventDefault: true,
-    },
+    }
   );
 
   useHotkeys(
@@ -30,7 +30,7 @@ export function useSessionSelection() {
     {
       enabled: isSelecting && toolbarIsToast,
       preventDefault: true,
-    },
+    }
   );
 
   // Cleanup timeout on unmount or when toast state changes
@@ -55,16 +55,14 @@ export function useSessionSelection() {
 
       if (!event.shiftKey && !isSelecting) return;
 
-      setSelected((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-      );
+      setSelected(prev => (prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]));
     },
-    [isSelecting],
+    [isSelecting]
   );
 
   const onRemove = useCallback(() => {
     setToolbarIsToast(true);
-    const filtered = sessions.filter((item) => !selected.includes(item.id));
+    const filtered = sessions.filter(item => !selected.includes(item.id));
     setSessions(filtered);
     setSelected([]);
   }, [sessions, selected]);

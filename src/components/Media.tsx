@@ -1,11 +1,7 @@
 import * as React from "react";
 import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
 import { motion } from "motion/react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-} from "@/components/primitives/Dialog";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/primitives/Dialog";
 
 interface MediaItemProps {
   src: string | undefined;
@@ -82,11 +78,7 @@ function MediaDialog({
               />
             </>
           ) : (
-            <img
-              src={media.src}
-              alt={media.alt}
-              className="w-full h-full object-contain"
-            />
+            <img src={media.src} alt={media.alt} className="w-full h-full object-contain" />
           ))}
       </DialogContent>
     </Dialog>
@@ -153,11 +145,7 @@ export function Media({
             ))}
         </MediaDialog>
       </div>
-      {caption && (
-        <figcaption className="text-center text-sm text-secondary">
-          {caption}
-        </figcaption>
-      )}
+      {caption && <figcaption className="text-center text-sm text-secondary">{caption}</figcaption>}
     </figure>
   );
 }

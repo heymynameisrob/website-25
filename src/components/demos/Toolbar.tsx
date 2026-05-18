@@ -15,9 +15,7 @@ import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 
 export function Toolbar() {
-  const [state, setState] = React.useState<"idle" | "success" | "loading">(
-    "idle",
-  );
+  const [state, setState] = React.useState<"idle" | "success" | "loading">("idle");
   const [ref, bounds] = useMeasure();
 
   console.log("Render");
@@ -27,12 +25,7 @@ export function Toolbar() {
       case "idle":
         return <Tools onSave={() => setState("loading")} />;
       case "loading":
-        return (
-          <Saving
-            onComplete={() => setState("success")}
-            onUndo={() => setState("idle")}
-          />
-        );
+        return <Saving onComplete={() => setState("success")} onUndo={() => setState("idle")} />;
       case "success":
         return <Success onUndo={() => setState("idle")} />;
     }
@@ -72,13 +65,7 @@ export function Toolbar() {
   );
 }
 
-function Saving({
-  onComplete,
-  onUndo,
-}: {
-  onComplete: () => void;
-  onUndo: () => void;
-}) {
+function Saving({ onComplete, onUndo }: { onComplete: () => void; onUndo: () => void }) {
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       onComplete();
@@ -139,9 +126,7 @@ function Success({ onUndo }: { onUndo: () => void }) {
     >
       <div className="flex items-center gap-2 overflow-x-hidden">
         <Checkbox checked={checked} />
-        <span className="shrink-0 font-medium text-white">
-          Saved successfully
-        </span>
+        <span className="shrink-0 font-medium text-white">Saved successfully</span>
       </div>
     </motion.div>
   );
@@ -150,24 +135,15 @@ function Success({ onUndo }: { onUndo: () => void }) {
 function Tools({ onSave }: { onSave: () => void }) {
   return (
     <div className="flex items-center gap-1">
-      <Button
-        variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
-      >
+      <Button variant="ghost" className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11">
         <DocumentDuplicateIcon className="size-4" />
         <span>Copy</span>
       </Button>
-      <Button
-        variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
-      >
+      <Button variant="ghost" className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11">
         <ArrowTurnUpLeftIcon className="size-4" />
         <span>Move to...</span>
       </Button>
-      <Button
-        variant="ghost"
-        className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11"
-      >
+      <Button variant="ghost" className="gap-1.5 hover:bg-white/10 rounded-full focus ring-gray-11">
         <UserIcon className="size-4" />
         <span>Assign</span>
       </Button>

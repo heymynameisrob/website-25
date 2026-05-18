@@ -11,11 +11,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-background shadow-xs hover:opacity-90",
-        accent:
-          "bg-accent text-white border border-accent shadow-xs hover:opacity-90",
+        accent: "bg-accent text-white border border-accent shadow-xs hover:opacity-90",
         destructive: "bg-red-600 shadow-xs text-white hover:bg-destructive/90",
-        secondary:
-          "bg-background text-primary hover:bg-gray-2 dark:bg-gray-3 dark:hover:bg-gray-4",
+        secondary: "bg-background text-primary hover:bg-gray-2 dark:bg-gray-3 dark:hover:bg-gray-4",
         ghost: "border-transparent hover:bg-gray-3",
         link: "underline-offset-4 hover:underline text-accent",
       },
@@ -31,12 +29,11 @@ const buttonVariants = cva(
       variant: "secondary",
       size: "default",
     },
-  },
+  }
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
@@ -47,23 +44,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (title) {
       return (
         <Tooltip content={title}>
-          <Comp
-            className={cn(buttonVariants({ variant, size, className }))}
-            ref={ref}
-            {...props}
-          />
+          <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
         </Tooltip>
       );
     }
 
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
     );
-  },
+  }
 );
 Button.displayName = "Button";
 

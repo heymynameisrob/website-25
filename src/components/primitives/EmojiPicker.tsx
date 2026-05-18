@@ -4,11 +4,7 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 
 import { cn } from "@/lib/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/primitives/Popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/primitives/Popover";
 import { Button } from "@/components/primitives/Button";
 
 type EmojiPickerProps = {
@@ -38,7 +34,7 @@ export const EmojiPicker = ({
           className={cn(
             "size-7 rounded-md bg-gray-1 hover:bg-gray-3 p-px text-base! focus",
             disabled && "pointer-events-none",
-            className,
+            className
           )}
         >
           {emoji || fallback}

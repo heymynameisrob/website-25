@@ -23,7 +23,7 @@ export function TextShimmer({
       className={cn(
         "bg-size-[200%_auto] bg-clip-text font-medium text-transparent",
         "animate-[shimmer_4s_infinite_linear]",
-        className,
+        className
       )}
       style={{
         backgroundImage: `linear-gradient(to right, var(--color-gray-10) ${50 - dynamicSpread}%, var(--color-gray-12) 50%, var(--color-gray-10) ${50 + dynamicSpread}%)`,

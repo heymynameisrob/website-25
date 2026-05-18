@@ -8,10 +8,7 @@ interface UseTextStreamOptions {
 
 type StreamStatus = "idle" | "thinking" | "streaming" | "complete";
 
-export function useTextStream({
-  delayBetweenWords = 20,
-  onComplete,
-}: UseTextStreamOptions) {
+export function useTextStream({ delayBetweenWords = 20, onComplete }: UseTextStreamOptions) {
   const message = dedent`
     Give me some British artists I might like
   `;
@@ -57,7 +54,7 @@ export function useTextStream({
     }, 6_000);
 
     return () => clearTimeout(thinkingDelay);
-  }, [response, delayBetweenWords]);
+  }, [response, delayBetweenWords, onComplete]);
 
   return { message, displayedText, status };
 }

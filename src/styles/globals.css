@@ -30,12 +30,10 @@
 
   --shadow-container: 0 0 0 1px var(--border);
   --shadow-raised:
-    0px 0px 16px color-mix(in srgb, var(--shadow) 10%, transparent),
-    0 0 0 1px var(--border);
+    0px 0px 16px color-mix(in srgb, var(--shadow) 10%, transparent), 0 0 0 1px var(--border);
   --shadow-floating:
     0px 4px 16px color-mix(in srgb, var(--shadow) 10%, transparent),
-    0px 8px 32px color-mix(in srgb, var(--shadow) 5%, transparent),
-    0 0 0 1px var(--border);
+    0px 8px 32px color-mix(in srgb, var(--shadow) 5%, transparent), 0 0 0 1px var(--border);
 
   /* Fonts */
   --font-sans: "Inter", sans-serif;
@@ -115,15 +113,11 @@
     }
   }
 
-  .prose
-    :where(:not(.not-prose, .not-prose *))
-    + :where(:not(.not-prose, .not-prose *)) {
+  .prose :where(:not(.not-prose, .not-prose *)) + :where(:not(.not-prose, .not-prose *)) {
     margin-top: calc(var(--spacing) * 12);
   }
 
-  .prose
-    :where(:not(.not-prose, .not-prose *))
-    + :where(:not(.not-prose, .not-prose p)) {
+  .prose :where(:not(.not-prose, .not-prose *)) + :where(:not(.not-prose, .not-prose p)) {
     margin-top: calc(var(--spacing) * 6);
   }
 
@@ -201,8 +195,7 @@
     color: var(--prose-marker-color);
   }
 
-  .prose
-    a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) {
+  .prose a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) {
     color: var(--prose-link-color);
     font-weight: var(--font-weight-medium);
     text-underline-offset: 3px;
@@ -213,9 +206,7 @@
     text-decoration-thickness: 2px;
   }
 
-  .prose
-    a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *))
-    code {
+  .prose a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) code {
     font-weight: var(--font-weight-medium);
   }
 

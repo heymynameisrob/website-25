@@ -27,9 +27,11 @@ import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
     const localStorageTheme = localStorage?.getItem("theme") ?? "";
     console.log("Setting themes...");
     if (["dark", "light"].includes(localStorageTheme)) {
-      localStorageTheme === "dark"
-        ? document.documentElement.classList.add("dark")
-        : document.documentElement.classList.remove("dark");
+      if (localStorageTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
       return localStorage.setItem("theme", localStorageTheme);
     }
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {

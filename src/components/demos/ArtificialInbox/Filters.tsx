@@ -64,7 +64,7 @@ export function ArtificialInboxFilters() {
 }
 
 function FiltersMain() {
-  const view = useArtificialInboxStore((state) => state.view);
+  const view = useArtificialInboxStore(state => state.view);
   return (
     <>
       <div className="flex items-center justify-end gap-1 h-12 px-3 border-b">
@@ -85,7 +85,7 @@ function FiltersMain() {
 }
 
 function FiltersSheetDefault() {
-  const setView = useArtificialInboxStore((state) => state.setView);
+  const setView = useArtificialInboxStore(state => state.setView);
   const hasChanges = useArtificialInboxStore(selectHasChanges);
   return (
     <>
@@ -104,9 +104,7 @@ function FiltersSheetDefault() {
               <ListItemTitle>Columns</ListItemTitle>
             </ListItemContainer>
             <div className="flex items-center justify-end gap-1 ml-auto">
-              <span className="text-sm text-gray-10 text-right font-medium">
-                6 visible
-              </span>
+              <span className="text-sm text-gray-10 text-right font-medium">6 visible</span>
               <ChevronRightIcon className="size-4 opacity-50" />
             </div>
           </ListItem>
@@ -137,10 +135,10 @@ function FiltersSheetDefault() {
 }
 
 function FiltersNameEmoji() {
-  const name = useArtificialInboxStore((state) => state.name);
-  const setName = useArtificialInboxStore((state) => state.setName);
-  const emoji = useArtificialInboxStore((state) => state.emoji);
-  const setEmoji = useArtificialInboxStore((state) => state.setEmoji);
+  const name = useArtificialInboxStore(state => state.name);
+  const setName = useArtificialInboxStore(state => state.setName);
+  const emoji = useArtificialInboxStore(state => state.emoji);
+  const setEmoji = useArtificialInboxStore(state => state.setEmoji);
   return (
     <div className="flex-1 flex items-center gap-3 pr-1.5">
       <EmojiPicker
@@ -151,7 +149,7 @@ function FiltersNameEmoji() {
       <Input
         name="name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={e => setName(e.target.value)}
         placeholder="Enter name"
         className="font-medium px-2 -mx-2 h-8 border-0 focus-visible:bg-gray-3 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:caret-primary"
       />
@@ -160,8 +158,8 @@ function FiltersNameEmoji() {
 }
 
 function FiltersLayoutOptions() {
-  const layout = useArtificialInboxStore((state) => state.layout);
-  const setLayout = useArtificialInboxStore((state) => state.setLayout);
+  const layout = useArtificialInboxStore(state => state.layout);
+  const setLayout = useArtificialInboxStore(state => state.setLayout);
 
   return (
     <div className="flex items-center justify-between px-1.5 py-3 gap-1.5">
@@ -169,15 +167,13 @@ function FiltersLayoutOptions() {
         onClick={() => setLayout("board")}
         className={cn(
           "group flex-1 flex flex-col gap-2 p-3 focus:outline-none",
-          layout === "board"
-            ? "layout-option-active"
-            : "layout-option-inactive",
+          layout === "board" ? "layout-option-active" : "layout-option-inactive"
         )}
       >
         <div
           className={cn(
             "hover:ring-ring ring-2 ring-offset-2 ring-offset-background ring-transparent rounded-lg transition-all group-focus-visible:ring-2 group-focus-visible:ring-ring",
-            layout === "board" && "ring-2 ring-blue-600 hover:ring-blue-600",
+            layout === "board" && "ring-2 ring-blue-600 hover:ring-blue-600"
           )}
         >
           <ArtificialInboxKanabanLayoutIcon />
@@ -188,13 +184,13 @@ function FiltersLayoutOptions() {
         onClick={() => setLayout("list")}
         className={cn(
           "group flex-1 flex flex-col gap-2 p-3 focus:outline-none",
-          layout === "list" ? "layout-option-active" : "layout-option-inactive",
+          layout === "list" ? "layout-option-active" : "layout-option-inactive"
         )}
       >
         <div
           className={cn(
             "hover:ring-ring ring-2 ring-offset-2 ring-offset-background ring-transparent rounded-lg transition-all group-focus-visible:ring-2 group-focus-visible:ring-ring",
-            layout === "list" && "ring-2 ring-blue-600 hover:ring-blue-600",
+            layout === "list" && "ring-2 ring-blue-600 hover:ring-blue-600"
           )}
         >
           <ArtificialInboxListLayoutIcon />
@@ -205,15 +201,13 @@ function FiltersLayoutOptions() {
         onClick={() => setLayout("table")}
         className={cn(
           "group flex-1 flex flex-col gap-2 p-3 focus:outline-none",
-          layout === "table"
-            ? "layout-option-active"
-            : "layout-option-inactive",
+          layout === "table" ? "layout-option-active" : "layout-option-inactive"
         )}
       >
         <div
           className={cn(
             "hover:ring-ring ring-2 ring-offset-2 ring-offset-background ring-transparent rounded-lg transition-all group-focus-visible:ring-2 group-focus-visible:ring-ring",
-            layout === "table" && "ring-2 ring-blue-600 hover:ring-blue-600",
+            layout === "table" && "ring-2 ring-blue-600 hover:ring-blue-600"
           )}
         >
           <ArtificialInboxTableLayoutIcon />
@@ -225,15 +219,15 @@ function FiltersLayoutOptions() {
 }
 
 function FiltersGroupSelect() {
-  const groupBy = useArtificialInboxStore((state) => state.groupBy);
-  const setGroupBy = useArtificialInboxStore((state) => state.setGroupBy);
+  const groupBy = useArtificialInboxStore(state => state.groupBy);
+  const setGroupBy = useArtificialInboxStore(state => state.setGroupBy);
 
   return (
     <div className="ml-auto">
       <Select
         className="h-7 ml-auto px-2 py-0.5 pr-8 w-[120px] text-sm font-medium"
         value={groupBy}
-        onChange={(e) => setGroupBy(e.target.value as ArtificialInboxGroupBy)}
+        onChange={e => setGroupBy(e.target.value as ArtificialInboxGroupBy)}
       >
         <SelectOption value="status">Status</SelectOption>
         <SelectOption value="client">Client</SelectOption>
@@ -243,15 +237,15 @@ function FiltersGroupSelect() {
 }
 
 function FiltersSortSelect() {
-  const sortBy = useArtificialInboxStore((state) => state.sortBy);
-  const setSortBy = useArtificialInboxStore((state) => state.setSortBy);
+  const sortBy = useArtificialInboxStore(state => state.sortBy);
+  const setSortBy = useArtificialInboxStore(state => state.setSortBy);
 
   return (
     <div className="ml-auto">
       <Select
         className="h-7 ml-auto px-2 py-0.5 pr-2 w-[120px] text-sm font-medium"
         value={sortBy}
-        onChange={(e) => setSortBy(e.target.value as ArtificialInboxSortBy)}
+        onChange={e => setSortBy(e.target.value as ArtificialInboxSortBy)}
       >
         <SelectOption value="last_edited">Last edited</SelectOption>
         <SelectOption value="alphabetically">A-Z</SelectOption>
@@ -262,10 +256,10 @@ function FiltersSortSelect() {
 
 function FiltersSheetColumns() {
   const [query, setQuery] = React.useState("");
-  const columns = useArtificialInboxStore((state) => state.columns);
-  const setColumns = useArtificialInboxStore((state) => state.setColumns);
-  const view = useArtificialInboxStore((state) => state.view);
-  const setView = useArtificialInboxStore((state) => state.setView);
+  const columns = useArtificialInboxStore(state => state.columns);
+  const setColumns = useArtificialInboxStore(state => state.setColumns);
+  const view = useArtificialInboxStore(state => state.view);
+  const setView = useArtificialInboxStore(state => state.setView);
 
   useHotkeys(
     "esc",
@@ -275,12 +269,12 @@ function FiltersSheetColumns() {
     {
       enableOnFormTags: true,
       enabled: view === "columns",
-    },
+    }
   );
 
   const handleToggleColumn = (id: string) => {
-    const updatedColumns = columns.map((col) =>
-      col.id === id ? { ...col, value: !col.value } : col,
+    const updatedColumns = columns.map(col =>
+      col.id === id ? { ...col, value: !col.value } : col
     );
     setColumns(updatedColumns);
   };
@@ -293,7 +287,7 @@ function FiltersSheetColumns() {
     if (!query.trim()) return columns;
 
     const searchTerm = query.toLowerCase();
-    return columns.filter((col) => {
+    return columns.filter(col => {
       const idMatch = col.id.toLowerCase().includes(searchTerm);
       const labelMatch = col.label.toLowerCase().includes(searchTerm);
       return idMatch || labelMatch;
@@ -318,17 +312,13 @@ function FiltersSheetColumns() {
               className="h-9 px-0 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
               value={query}
               autoFocus
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
             />
           </div>
         </div>
         <List>
-          <Sortable
-            items={filteredColumns}
-            onSort={handleSort}
-            orientation="vertical"
-          >
-            {filteredColumns.map((col) => (
+          <Sortable items={filteredColumns} onSort={handleSort} orientation="vertical">
+            {filteredColumns.map(col => (
               <SortableItem key={col.id} id={col.id}>
                 <ListItem className="hover:bg-transparent">
                   <ListItemContainer>

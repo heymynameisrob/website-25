@@ -38,7 +38,7 @@ export const tabsTriggerVariants = cva(
       size: "md",
       variant: "default",
     },
-  },
+  }
 );
 
 export const TabsTrigger = React.forwardRef<
@@ -64,7 +64,7 @@ export const TabsContent = React.forwardRef<
     ref={ref}
     className={cn(
       "rounded-lg transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring",
-      className,
+      className
     )}
     {...props}
   />

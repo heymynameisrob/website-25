@@ -6,13 +6,7 @@ import type { ToolbarProps } from "./types";
 import { ToolbarMenu } from "./ToolbarMenu";
 import { CheckCircleIcon } from "./icons";
 
-export const Toolbar = ({
-  isSelecting,
-  isToast,
-  onRemove,
-  onUndo,
-  onClose,
-}: ToolbarProps) => {
+export const Toolbar = ({ isSelecting, isToast, onRemove, onUndo, onClose }: ToolbarProps) => {
   const [ref, bounds] = useMeasure();
 
   return (
@@ -30,11 +24,7 @@ export const Toolbar = ({
           transition={{ duration: 0.2, bounce: 0, type: "spring" }}
           className="absolute left-0 right-0 bottom-4 grid place-items-center pointer-events-none"
         >
-          <div
-            className={cn(
-              "bg-black rounded-xl border shadow-floating text-white max-w-4xl",
-            )}
-          >
+          <div className={cn("bg-black rounded-xl border shadow-floating text-white max-w-4xl")}>
             <motion.div
               animate={{
                 width: isToast ? 240 : 420,
@@ -55,9 +45,7 @@ export const Toolbar = ({
                   >
                     <div className="flex items-center gap-2">
                       <CheckCircleIcon />
-                      <small className="shrink-0 font-medium text-white">
-                        Sessions removed
-                      </small>
+                      <small className="shrink-0 font-medium text-white">Sessions removed</small>
                     </div>
                     <Button
                       onClick={onUndo}

@@ -56,7 +56,7 @@ export function Calculator() {
         },
       },
     }),
-    [open],
+    [open]
   );
 
   const content = React.useMemo(() => {
@@ -66,7 +66,7 @@ export function Calculator() {
       <button
         className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-3 focus hover:bg-gray-5 focus-visible:bg-gray-5 transition-colors duration-200 ease"
         aria-label="Open calculator menu"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => setOpen(prev => !prev)}
       >
         <CalculatorIcon className="w-5 h-5 text-primary" />
       </button>
@@ -90,7 +90,7 @@ export function Calculator() {
     <div
       className="relative flex items-center w-full h-[400px]"
       ref={ref}
-      onClick={(e) => {
+      onClick={e => {
         // Handle closing when click outside
         if (open && e.currentTarget === e.target) {
           setOpen(false);
@@ -149,24 +149,15 @@ function MenuItems() {
         },
       }}
     >
-      <MenuItem
-        isSelected={selected === 0}
-        onSelectChange={() => setSelected(0)}
-      >
+      <MenuItem isSelected={selected === 0} onSelectChange={() => setSelected(0)}>
         <SquareAsteriskIcon className="w-6 h-6" />
         Basic
       </MenuItem>
-      <MenuItem
-        isSelected={selected === 1}
-        onSelectChange={() => setSelected(1)}
-      >
+      <MenuItem isSelected={selected === 1} onSelectChange={() => setSelected(1)}>
         <Variable className="w-6 h-6" />
         Scientifc
       </MenuItem>
-      <MenuItem
-        isSelected={selected === 2}
-        onSelectChange={() => setSelected(2)}
-      >
+      <MenuItem isSelected={selected === 2} onSelectChange={() => setSelected(2)}>
         <DraftingCompass className="w-6 h-6" />
         Maths notes
       </MenuItem>
@@ -192,7 +183,7 @@ function MenuItem({
       role="menuitem"
       aria-selected={isSelected}
       aria-label={`Select ${children} calculator mode`}
-      onClick={(e) => {
+      onClick={e => {
         e.stopPropagation();
         onSelectChange();
       }}
