@@ -39,12 +39,16 @@ interface ComponentItem {
 interface WorkDemoCardProps {
   component: React.ReactNode;
   componentId: string;
+  title?: string;
+  compact?: boolean;
   className?: string;
+  openOnCardClick?: boolean;
 }
 
 interface WorkDemoActionsProps {
   componentId: string;
   onReset: () => void;
+  className?: string;
 }
 
 interface WorkDemoTechProps {
@@ -282,7 +286,12 @@ function useWorkDemoContext() {
   return context;
 }
 
-export function WorkDemos() {
+interface WorkDemosProps {
+  compact?: boolean;
+  limit?: number;
+}
+
+export function WorkDemos({ compact = false, limit }: WorkDemosProps = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeComponentId, setActiveComponentId] = React.useState<string | null>(null);
 
@@ -320,12 +329,25 @@ export function WorkDemos() {
     [activeComponentId, handleSetActiveComponentId]
   );
 
+  const visibleComponents = React.useMemo(
+    () => (typeof limit === "number" ? COMPONENTS.slice(0, limit) : COMPONENTS),
+    [limit]
+  );
+
   return (
     <WorkDemoContext.Provider value={contextValue}>
-      <div className="px-4 pb-4 lg:px-8 lg:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {COMPONENTS.map(item => (
-            <WorkDemoCard key={item.id} component={item.component} componentId={item.id} />
+      <div className={compact ? "w-full" : "px-4 pb-4 lg:px-8 lg:pb-8"}>
+        <div className={compact ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 lg:grid-cols-2 gap-8"}>
+          {visibleComponents.map(item => (
+            <WorkDemoCard
+              key={item.id}
+              component={item.component}
+              componentId={item.id}
+              title={item.name}
+              compact={compact}
+              className={compact ? "rounded-2xl" : undefined}
+              openOnCardClick={compact}
+            />
           ))}
         </div>
       </div>
@@ -334,7 +356,15 @@ export function WorkDemos() {
   );
 }
 
-function WorkDemoCard({ component, componentId, className }: WorkDemoCardProps) {
+function WorkDemoCard({
+  component,
+  componentId,
+  title,
+  compact = false,
+  className,
+  openOnCardClick = false,
+}: WorkDemoCardProps) {
+  const { setActiveComponentId } = useWorkDemoContext();
   const [showActions, setShowActions] = React.useState(false);
   const [resetKey, setResetKey] = React.useState(0);
 
@@ -351,12 +381,29 @@ function WorkDemoCard({ component, componentId, className }: WorkDemoCardProps) 
       onMouseLeave={() => setShowActions(false)}
       className={cn(
         "relative grid place-items-center aspect-square bg-gray-2 rounded-3xl focus transition-all overflow-hidden 2xl:aspect-video",
+        openOnCardClick && "cursor-pointer",
         className
       )}
     >
-      <motion.div key={resetKey}>{component}</motion.div>
+      {openOnCardClick && (
+        <button
+          type="button"
+          aria-label={`Open ${componentId} demo`}
+          onClick={() => setActiveComponentId(componentId)}
+          className="absolute inset-0 z-10"
+        />
+      )}
+      {compact ? (
+        <div className="px-4 text-center">
+          <p className="text-sm font-medium text-primary">{title ?? componentId}</p>
+        </div>
+      ) : (
+        <motion.div key={resetKey}>{component}</motion.div>
+      )}
       <AnimatePresence mode="wait" initial={false}>
-        {showActions && <WorkDemoActions componentId={componentId} onReset={handleReset} />}
+        {showActions && (
+          <WorkDemoActions componentId={componentId} onReset={handleReset} className="z-20" />
+        )}
       </AnimatePresence>
     </motion.figure>
   );
@@ -463,7 +510,7 @@ function WorkDemoFullscreen() {
   );
 }
 
-function WorkDemoActions({ componentId, onReset }: WorkDemoActionsProps) {
+function WorkDemoActions({ componentId, onReset, className }: WorkDemoActionsProps) {
   const { setActiveComponentId } = useWorkDemoContext();
 
   const thisComponent = React.useMemo(
@@ -472,7 +519,7 @@ function WorkDemoActions({ componentId, onReset }: WorkDemoActionsProps) {
   );
 
   return (
-    <div className="absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3">
+    <div className={cn("absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3", className)}>
       <AnimatedAction delay={0.15}>
         <Tooltip content="Reset">
           <Button size="icon" variant="ghost" onClick={onReset}>

@@ -4,7 +4,7 @@ import LinkWithIcon from "./LinkWithIcon.astro";
 ---
 <AnimateInUp
   as="section"
-  className="flex flex-col gap-8 max-w-prose"
+  className="flex flex-col gap-4 max-w-prose"
   delay={0.2}
   client:load
 >
@@ -14,7 +14,7 @@ import LinkWithIcon from "./LinkWithIcon.astro";
     an open-source project building the future of AI automation.
     I love designing performant, accessible interfaces that are deeply rooted in craft and quality.
   </p>
-  <AnimateInUp delay={0.25} as="p" className="text-base text-secondary" client:load>
+  <p class="text-base text-secondary">
     Contact me on{" "}
     <LinkWithIcon href="https://linkedin.com/in/heymynameisrob" icon="linkedin" label="LinkedIn" />
     or via{" "}
@@ -22,5 +22,5 @@ import LinkWithIcon from "./LinkWithIcon.astro";
     . See my code on{" "}
     <LinkWithIcon href="https://github.com/heymynameisrob" icon="github" label="GitHub" />
     .
-  </AnimateInUp>
+  </p>
 </AnimateInUp>
