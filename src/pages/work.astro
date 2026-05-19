@@ -1,8 +1,7 @@
 ---
 import Navbar from "@/components/Navbar.astro";
 import Layout from "@/layouts/Layout.astro";
-
-import { WorkDemos } from "@/components/demos/WorkDemo";
+import { HomeWorkGrid } from "@/components/demos/HomeWorkGrid";
 ---
 
 <Layout title="Work" description="Interactive component demos and UI examples">
@@ -12,5 +11,7 @@ import { WorkDemos } from "@/components/demos/WorkDemo";
       Interaction + Motion Work
     </p>
   </Navbar>
-  <WorkDemos client:load />
+  <div class="max-w-4xl mx-auto px-5 py-8 lg:py-14">
+    <HomeWorkGrid client:load />
+  </div>
 </Layout>

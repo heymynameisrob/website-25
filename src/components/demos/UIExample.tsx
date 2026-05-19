@@ -31,6 +31,8 @@ import { Gestures } from "@/components/demos/motion/Gestures";
 import { ClipPathSlider } from "@/components/demos/motion/ClipPath";
 import { List } from "@/components/demos/motion/List";
 import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
+import { CushionCommand } from "@/components/demos/CushionCommand";
+import { Prompt } from "@/components/demos/Prompt";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -47,7 +49,7 @@ export function UIExample({
   component,
   children,
 }: {
-  component: "filter-menu" | "checkin";
+  component: string;
   children: React.ReactNode;
 }) {
   const [key, setKey] = React.useState(0);
@@ -87,7 +89,7 @@ export function UIExample({
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-16">
       <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus overflow-hidden">
-        <React.Fragment key={key}>{COMPONENT_MAP[component]}</React.Fragment>
+        <React.Fragment key={key}>{COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}</React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
             size="icon"
@@ -167,4 +169,7 @@ const COMPONENT_MAP = {
   "motion-clip": <ClipPathSlider />,
   "motion-list": <List />,
   "motion-stagger": <StaggerButtons />,
+  "home-command-k": <CushionCommand />,
+  "home-agent-feedback": <Thinking />,
+  "home-streaming": <Prompt />,
 };

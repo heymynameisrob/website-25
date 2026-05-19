@@ -1,22 +1,13 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XMarkIcon } from "@heroicons/react/16/solid";
-import { ArrowUpRight, Code2Icon, FullscreenIcon, RefreshCcw } from "lucide-react";
-import { Button, buttonVariants } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
-import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Thinking } from "@/components/demos/motion/Thinking";
-import { Prompt } from "@/components/demos/Prompt";
 
 interface DemoItem {
   id: string;
   name: string;
   description: string;
-  fileName: string;
+  href: string;
   preview: React.ReactNode;
-  component: React.ReactNode;
 }
 
 const SKELETON_PULSE = {
@@ -327,131 +318,332 @@ function StreamingCommentSkeleton() {
   );
 }
 
+function GalleryPreview() {
+  const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
+  const lastExpandedRef = React.useRef(0);
+
+  React.useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = window.setInterval(() => {
+      setExpandedIndex(currentIndex);
+      lastExpandedRef.current = currentIndex;
+      const closeId = window.setTimeout(() => setExpandedIndex(null), 2200);
+      currentIndex = (currentIndex + 1) % 4;
+      return () => window.clearTimeout(closeId);
+    }, 4400);
+
+    // Start first cycle shortly after mount.
+    const startId = window.setTimeout(() => {
+      lastExpandedRef.current = 0;
+      setExpandedIndex(0);
+    }, 500);
+    const closeStartId = window.setTimeout(() => setExpandedIndex(null), 2700);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.clearTimeout(startId);
+      window.clearTimeout(closeStartId);
+    };
+  }, []);
+
+  const ORIGIN_OFFSET: Record<number, { x: number; y: number }> = {
+    0: { x: -44, y: -44 },
+    1: { x: 44, y: -44 },
+    2: { x: -44, y: 44 },
+    3: { x: 44, y: 44 },
+  };
+  const collapsedOrigin = ORIGIN_OFFSET[lastExpandedRef.current];
+
+  return (
+    <div className="relative w-full max-w-[220px] rounded-xl border border-gray-4 bg-background p-2 overflow-hidden">
+      <div className="relative z-0 grid grid-cols-2 gap-2">
+        {[0, 1, 2, 3].map(index => (
+          <motion.div
+            key={`gallery-cell-${index}`}
+            className="aspect-square rounded-lg bg-gray-3"
+            animate={{ opacity: expandedIndex === index ? 0 : 1 }}
+            transition={{ duration: 0.2 }}
+          />
+        ))}
+      </div>
+
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-10 bg-background/55 backdrop-blur-md"
+        animate={{ opacity: expandedIndex === null ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
+      />
+
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-20 grid place-items-center"
+        animate={{ opacity: expandedIndex === null ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        <motion.div
+          className="size-[170px] rounded-2xl border border-gray-4 bg-[#dbe6cf] shadow-lg"
+          initial={false}
+          animate={{
+            scale: expandedIndex === null ? 0.65 : 1,
+            x: expandedIndex === null ? collapsedOrigin.x : 0,
+            y: expandedIndex === null ? collapsedOrigin.y : 0,
+            opacity: expandedIndex === null ? 0 : 1,
+          }}
+          transition={{ type: "spring", duration: 0.5, bounce: 0.12 }}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
+function MarkdownEditorPreview() {
+  const [step, setStep] = React.useState(0);
+  const lines = [
+    [30, 46, 24, 38, 20],
+    [22, 18, 34, 28, 24, 16],
+    [40, 26, 20, 30, 18],
+    [18, 32, 24, 28, 22, 14],
+    [36, 24, 18, 20, 28],
+  ];
+
+  React.useEffect(() => {
+    const runCycle = () => {
+      setStep(0);
+      const typeId = window.setInterval(() => {
+        setStep(prev => {
+          if (prev >= lines.length) {
+            window.clearInterval(typeId);
+            return lines.length;
+          }
+          return prev + 1;
+        });
+      }, 420);
+      return () => window.clearInterval(typeId);
+    };
+
+    let cleanup = runCycle();
+    const cycleId = window.setInterval(() => {
+      cleanup();
+      cleanup = runCycle();
+    }, 4300);
+
+    return () => {
+      cleanup();
+      window.clearInterval(cycleId);
+    };
+  }, [lines.length]);
+
+  return (
+    <div className="w-full max-w-[260px] rounded-xl border border-gray-4 bg-background overflow-hidden">
+      <div className="h-9 border-b border-gray-4 bg-gray-1 px-2.5 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          {["bold", "italic", "h2", "list", "quote"].map(tool => (
+            <div
+              key={`tool-${tool}`}
+              className="h-4 rounded bg-gray-3"
+              style={{ width: tool === "h2" || tool === "quote" ? "18px" : "14px" }}
+            />
+          ))}
+        </div>
+        <div className="h-4 w-10 rounded bg-gray-3" />
+      </div>
+      <div className="p-3 space-y-2">
+        <div className="h-3 w-24 rounded bg-gray-4" />
+        {lines.map((row, rowIndex) => {
+          const rowKey = row.join("-");
+          if (step <= rowIndex) return <div key={`empty-${rowKey}`} className="h-3" />;
+          return (
+            <div key={`line-${rowKey}`} className="flex flex-wrap gap-1.5">
+              {row.map((w, tokenIndex) => {
+                const repeatCount = row.slice(0, tokenIndex).filter(x => x === w).length;
+                return (
+                <motion.div
+                  key={`line-${rowKey}-${w}-${repeatCount}`}
+                  className="h-3 rounded bg-[#dbe6cf]"
+                  style={{ width: `${w}px` }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.14 }}
+                />
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const DEMOS_WITH_PREVIEWS: DemoItem[] = [
   {
     id: "cmdk",
     name: "Command K",
     description: "⌘K menu used in cushion.so. Full workspace search with pagniation and shortcuts",
-    fileName: "CushionCommand.tsx",
+    href: "/posts/command-k-cushion",
     preview: <CmdkPreview />,
-    component: <CushionCommand />,
   },
   {
     id: "thinking",
     name: "Agent Feedback",
     description:
       "Cushion agent giving status feedback, showing how the model is processing the request and what tools it's using, then replying with the model response to the query.",
-    fileName: "motion/Thinking.tsx",
+    href: "/posts/comment-ux-cushion",
     preview: <AgentFeedbackPreview />,
-    component: <Thinking />,
   },
   {
     id: "ai-stream",
     name: "Streaming",
     description:
       "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API.",
-    fileName: "Prompt.tsx",
+    href: "/posts/designing-agent-chat-interfaces",
     preview: <StreamingPreview />,
-    component: <Prompt />,
+  },
+  {
+    id: "n8n-markdown-editor",
+    name: "n8n Markdown Editor",
+    description:
+      "Markdown editor concept for n8n with a formatting toolbar and streaming preview text for fast workflow documentation.",
+    href: "/posts/n8n-markdown-editor",
+    preview: <MarkdownEditorPreview />,
   },
 ];
 
-export function HomeWorkGrid() {
-  const [activeId, setActiveId] = React.useState<string | null>(null);
-  const [modalResetKey, setModalResetKey] = React.useState(0);
-  const activeDemo = React.useMemo(() => DEMOS_WITH_PREVIEWS.find(item => item.id === activeId), [activeId]);
+type DemoGridCardProps = {
+  cardId: string;
+  href: string;
+  name: string;
+  children: React.ReactNode;
+};
+
+function DemoGridCard({
+  cardId,
+  href,
+  name,
+  children,
+}: DemoGridCardProps) {
+  return (
+    <a
+      href={href}
+      data-card-id={cardId}
+      className="group relative block overflow-hidden rounded-lg border bg-gray-2 p-5 hover:bg-gray-3"
+    >
+      <div className="pointer-events-none grid place-items-center aspect-[4/3]">{children}</div>
+      <span className="sr-only">{name}</span>
+      <div className="absolute inset-0 ring-0 transition-all duration-200 group-hover:ring-1 group-hover:ring-primary/35 group-focus-visible:ring-1 group-focus-visible:ring-primary/35" />
+    </a>
+  );
+}
+
+function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
+  const areaRef = React.useRef<HTMLDivElement | null>(null);
+  const [showHoverCard, setShowHoverCard] = React.useState(false);
+  const [isHoverCardVisible, setIsHoverCardVisible] = React.useState(false);
+  const [activeCardId, setActiveCardId] = React.useState<string | null>(null);
+  const hoverCardRef = React.useRef<HTMLDivElement | null>(null);
+  const cursorRef = React.useRef({ x: 0, y: 0 });
+  const rafRef = React.useRef<number | null>(null);
+  const showTimeoutRef = React.useRef<number | null>(null);
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const area = areaRef.current;
+    if (!area) return;
+
+    const rect = area.getBoundingClientRect();
+    cursorRef.current = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+
+    if (rafRef.current !== null) return;
+    rafRef.current = window.requestAnimationFrame(() => {
+      const hoverCard = hoverCardRef.current;
+      const { x, y } = cursorRef.current;
+      if (hoverCard) {
+        hoverCard.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0)`;
+      }
+      rafRef.current = null;
+    });
+
+    const target = event.target as HTMLElement | null;
+    const card = target?.closest<HTMLAnchorElement>("[data-card-id]");
+    const nextCardId = card?.dataset.cardId ?? null;
+    if (!nextCardId) return;
+
+    setActiveCardId(nextCardId);
+
+    if (nextCardId) {
+      setShowHoverCard(true);
+      if (showTimeoutRef.current === null && !isHoverCardVisible) {
+        showTimeoutRef.current = window.setTimeout(() => {
+          setIsHoverCardVisible(true);
+          showTimeoutRef.current = null;
+        }, 400);
+      }
+    }
+  }
+
+  function handlePointerLeave() {
+    setIsHoverCardVisible(false);
+    setShowHoverCard(false);
+    setActiveCardId(null);
+    if (showTimeoutRef.current !== null) {
+      window.clearTimeout(showTimeoutRef.current);
+      showTimeoutRef.current = null;
+    }
+    if (rafRef.current !== null) {
+      window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }
+
+  React.useEffect(() => {
+    return () => {
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+      if (showTimeoutRef.current !== null) {
+        window.clearTimeout(showTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const activeItem = activeCardId
+    ? DEMOS_WITH_PREVIEWS.find(item => item.id === activeCardId)
+    : undefined;
 
   return (
-    <>
-      <section className="w-full" data-home-work-grid>
-        <div className="grid grid-cols-2 gap-3">
-          {DEMOS_WITH_PREVIEWS.map(item => (
-            <article
-              key={item.id}
-              onClick={() => setActiveId(item.id)}
-              className="relative grid place-items-center p-5 aspect-[4/3] bg-gray-2 rounded-lg border overflow-hidden cursor-pointer"
-            >
-                {item.preview}
-                <span className="sr-only">{item.name}</span>
-              <div className="absolute inset-x-0 bottom-0 p-2 flex justify-end gap-2 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                <Tooltip content="Reset">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={event => {
-                      event.stopPropagation();
-                    }}
-                  >
-                    <RefreshCcw className="size-4 opacity-70" />
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Fullscreen">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={event => {
-                      event.stopPropagation();
-                      setActiveId(item.id);
-                    }}
-                  >
-                    <FullscreenIcon className="size-4 opacity-70" />
-                  </Button>
-                </Tooltip>
-              </div>
-            </article>
-          ))}
+    <div
+      ref={areaRef}
+      className="relative"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
+      {children}
+      {showHoverCard && activeItem && (
+        <div
+          ref={hoverCardRef}
+          className="pointer-events-none absolute left-0 top-0 z-50 w-64 overflow-hidden rounded-md border bg-gray-1 p-2 text-primary shadow-lg will-change-transform transition-opacity duration-150 dark:bg-gray-3"
+          style={{ transform: "translate3d(0px, 0px, 0)", opacity: isHoverCardVisible ? 1 : 0 }}
+        >
+          <p className="text-sm font-medium leading-tight">{activeItem.name}</p>
+          <p className="mt-1 text-xs leading-relaxed text-secondary">{activeItem.description}</p>
         </div>
-      </section>
+      )}
+    </div>
+  );
+}
 
-      <DialogPrimitive.Root open={!!activeId} onOpenChange={open => !open && setActiveId(null)}>
-        <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 backdrop-blur-sm z-40" />
-          <DialogPrimitive.Content
-            onCloseAutoFocus={event => event.preventDefault()}
-            className={cn(
-              "fixed inset-0 z-50 h-full bg-background outline-none",
-              "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:blur-in-md",
-              "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:blur-out-md"
-            )}
-          >
-            <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full p-4">
-              <aside className="w-full flex flex-col p-4 gap-4">
-                <h3 className="text-lg font-medium font-serif text-primary">{activeDemo?.name}</h3>
-                <p className="text-base font-medium text-gray-10 tracking-[-0.01em] text-balance">{activeDemo?.description}</p>
-                <ul className="flex flex-col gap-2 mt-4">
-                  <li>
-                    <button onClick={() => setModalResetKey(prev => prev + 1)} className="flex items-center gap-2 text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em]">
-                      <RefreshCcw className="size-4" />
-                      <span>Reset instance</span>
-                    </button>
-                  </li>
-                  <li>
-                    <a
-                      href={`https://github.com/heymynameisrob/website-25/blob/main/src/components/demos/${activeDemo?.fileName || ""}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-gray-10 font-medium hover:text-primary transition-all tracking-[-0.01em]"
-                    >
-                      <Code2Icon className="size-4 mr-2" />
-                      <span>View on Github</span>
-                      <ArrowUpRight className="ml-1 size-4 opacity-50" />
-                    </a>
-                  </li>
-                </ul>
-              </aside>
-              <section className="grid place-items-center">
-                <motion.div key={`${activeDemo?.id}-${modalResetKey}`}>{activeDemo?.component}</motion.div>
-              </section>
-            </div>
-            <div className="absolute top-4 right-4">
-              <DialogPrimitive.Close className={buttonVariants({ size: "icon", variant: "ghost" })}>
-                <XMarkIcon className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </DialogPrimitive.Close>
-            </div>
-          </DialogPrimitive.Content>
-        </DialogPrimitive.Portal>
-      </DialogPrimitive.Root>
-    </>
+export function HomeWorkGrid() {
+  return (
+    <section className="w-full" data-home-work-grid>
+      <HomeWorkGridHoverLayer>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {DEMOS_WITH_PREVIEWS.map(item => (
+            <DemoGridCard key={item.id} cardId={item.id} href={item.href} name={item.name}>
+              {item.preview}
+            </DemoGridCard>
+          ))}
+          </div>
+      </HomeWorkGridHoverLayer>
+    </section>
   );
 }

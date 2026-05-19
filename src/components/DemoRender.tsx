@@ -10,6 +10,9 @@ import { motion, useAnimation } from "motion/react";
 import { Gallery } from "@/components/demos/Gallery";
 import { Calendar } from "@/components/demos/Calendar";
 import { Image } from "astro:assets";
+import { CushionCommand } from "@/components/demos/CushionCommand";
+import { Thinking } from "@/components/demos/motion/Thinking";
+import { Prompt } from "@/components/demos/Prompt";
 
 interface DemoRendererProps {
   post: Post & {
@@ -25,6 +28,9 @@ export const demoRegistry: Record<string, React.ReactNode> = {
   form: <Form />,
   photos: <Gallery />,
   calendar: <Calendar />,
+  "home-command-k": <CushionCommand />,
+  "home-agent-feedback": <Thinking />,
+  "home-streaming": <Prompt />,
 } as const;
 
 export type DemoId = keyof typeof demoRegistry;

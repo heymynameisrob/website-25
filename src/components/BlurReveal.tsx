@@ -176,7 +176,7 @@ export function BlurReveal({
   const characters = splitCharacters(content);
 
   return (
-    <span className={cn("inline-block whitespace-pre-wrap font-serif text-2xl", className)}>
+    <span className={cn("inline-block whitespace-pre-wrap font-serif font-medium text-3xl", className)}>
       {characters.map(({ character, key }, index) => (
         <CharacterReveal
           key={key}

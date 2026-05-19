@@ -60,24 +60,6 @@
 }
 
 @layer utilities {
-  .blur-reveal-clip {
-    clip-path: inset(0 100% 0 0 round 9999px);
-    animation: blurRevealUnclip var(--blur-reveal-duration-clip, 2000ms) ease-in-out forwards;
-  }
-
-  .blur-reveal-mask {
-    mask-image: linear-gradient(to left, #000 90%, transparent);
-  }
-
-  .blur-reveal-blur {
-    filter: blur(var(--blur-reveal-blur, 10px));
-    transform: translateZ(0);
-  }
-
-  .blur-reveal-sweep {
-    animation: blurRevealSweep var(--blur-reveal-duration-sweep, 3000ms) ease-in-out forwards;
-  }
-
   p.is-empty::before {
     color: var(--gray-9);
     content: attr(data-placeholder);
@@ -554,13 +536,16 @@
     overscroll-behavior-y: none;
     color: var(--gray-11);
     background: var(--background);
-    cursor: url("/cursor_gauntlet.png"), auto;
+    cursor: default;
   }
 
   a,
-  button,
-  [role="button"] {
-    cursor: url("/cursor_gauntlet.png"), pointer;
+  button {
+    cursor: default;
+  }
+
+  a[target="_blank"] {
+    cursor: pointer;
   }
 
   * {
