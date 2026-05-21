@@ -1,6 +1,6 @@
 import * as React from "react";
-import { motion } from "framer-motion";
-import { Thinking } from "@/components/demos/motion/Thinking";
+import { motion, useReducedMotion } from "framer-motion";
+import { HoverCard } from "@/components/HoverCard";
 
 interface DemoItem {
   id: string;
@@ -15,35 +15,64 @@ const SKELETON_PULSE = {
   transition: { duration: 1.6, repeat: Infinity, ease: "easeInOut" as const },
 };
 
-function CmdkPreview() {
+// Static data hoisted to avoid recreation on every render
+const CMDK_ROWS = [
+  { keyHint: "+", w: "w-24" },
+  { keyHint: "#", w: "w-32" },
+  { keyHint: "@", w: "w-20" },
+  { keyHint: null, w: "w-24" },
+  { keyHint: null, w: "w-20" },
+  { keyHint: null, w: "w-40" },
+  { keyHint: null, w: "w-28" },
+] as const;
+
+const STREAMING_TOKEN_ROWS = [
+  [18, 30, 22, 26, 16, 24],
+  [20, 28, 14, 18, 22, 16],
+  [26, 20, 18, 24, 17, 21],
+  [16, 19, 23, 28, 15, 20],
+  [22, 18, 26, 16, 24, 14],
+];
+
+const GALLERY_ORIGIN_OFFSET: Record<number, { x: number; y: number }> = {
+  0: { x: -44, y: -44 },
+  1: { x: 44, y: -44 },
+  2: { x: -44, y: 44 },
+  3: { x: 44, y: 44 },
+};
+
+const MARKDOWN_LINES = [
+  [30, 46, 24, 38, 20],
+  [22, 18, 34, 28, 24, 16],
+  [40, 26, 20, 30, 18],
+  [18, 32, 24, 28, 22, 14],
+  [36, 24, 18, 20, 28],
+];
+
+const CmdkPreview = React.memo(function CmdkPreview() {
+  const reduced = useReducedMotion();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const rowRefs = React.useRef<Array<HTMLDivElement | null>>([]);
 
   React.useEffect(() => {
+    if (reduced) return;
     const id = window.setInterval(() => {
       setSelectedIndex(prev => (prev >= 6 ? 0 : prev + 1));
     }, 700);
     return () => window.clearInterval(id);
-  }, []);
+  }, [reduced]);
 
   React.useEffect(() => {
     const target = rowRefs.current[selectedIndex];
     const container = listRef.current;
     if (!target || !container) return;
-    const top = target.offsetTop + target.clientHeight - container.clientHeight;
-    container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    // Use rAF to avoid forced synchronous layout during render commit
+    requestAnimationFrame(() => {
+      const top = target.offsetTop + target.clientHeight - container.clientHeight;
+      container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
   }, [selectedIndex]);
-
-  const rows = [
-    { keyHint: "+", w: "w-24" },
-    { keyHint: "#", w: "w-32" },
-    { keyHint: "@", w: "w-20" },
-    { keyHint: null, w: "w-24" },
-    { keyHint: null, w: "w-20" },
-    { keyHint: null, w: "w-40" },
-    { keyHint: null, w: "w-28" },
-  ] as const;
 
   return (
     <div className="w-full aspect-[4/3] rounded-xl border border-gray-4 bg-background overflow-hidden text-left">
@@ -52,8 +81,8 @@ function CmdkPreview() {
       </div>
       <div ref={listRef} className="p-2 space-y-1.5 max-h-[180px] overflow-y-auto scroll-smooth">
         <div className="h-3 w-24 rounded bg-gray-4 mx-1" />
-        {rows.slice(0, 3).map((row, index) => {
-          const rowKey = `s-${row.w}-${row.keyHint ?? "none"}`;
+        {CMDK_ROWS.slice(0, 3).map((row, index) => {
+          const rowKey = `cmdk-top-${index}`;
           return (
           <motion.div
             key={rowKey}
@@ -73,11 +102,11 @@ function CmdkPreview() {
           );
         })}
         <div className="h-3 w-16 rounded bg-gray-4 mx-1 mt-1" />
-        {rows.slice(3).map((row, idx) => {
+        {CMDK_ROWS.slice(3).map((row, idx) => {
           const index = idx + 3;
           return (
             <motion.div
-              key={`g-${index}`}
+              key={`cmdk-bottom-${index}`}
               ref={el => {
                 rowRefs.current[index] = el;
               }}
@@ -95,18 +124,20 @@ function CmdkPreview() {
       </div>
     </div>
   );
-}
+});
 
 function ThinkingPreview() {
   return <StreamingPreview />;
 }
 
-function StreamingPreview() {
+const StreamingPreview = React.memo(function StreamingPreview() {
+  const reduced = useReducedMotion();
   const [userVisible, setUserVisible] = React.useState(false);
   const [step, setStep] = React.useState(0);
   const streamContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
+    if (reduced) return;
     let streamInterval: number | null = null;
     let streamStartTimeout: number | null = null;
 
@@ -148,7 +179,7 @@ function StreamingPreview() {
       cleanupCycle();
       window.clearInterval(cycleId);
     };
-  }, []);
+  }, [reduced]);
 
   React.useEffect(() => {
     if (step <= 0) return;
@@ -156,14 +187,6 @@ function StreamingPreview() {
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [step]);
-
-  const tokenRows = [
-    [18, 30, 22, 26, 16, 24],
-    [20, 28, 14, 18, 22, 16],
-    [26, 20, 18, 24, 17, 21],
-    [16, 19, 23, 28, 15, 20],
-    [22, 18, 26, 16, 24, 14],
-  ];
 
   return (
     <div className="w-full h-[200px] flex flex-col px-2 py-3">
@@ -184,16 +207,15 @@ function StreamingPreview() {
             </div>
           </motion.div>
           <div className="h-3 w-10 rounded bg-gray-4" />
-            {tokenRows.map((row, rowIndex) => {
+            {STREAMING_TOKEN_ROWS.map((row, rowIndex) => {
               const visibleStep = rowIndex + 1;
               if (step < visibleStep) return null;
-              const rowKey = `row-${row.join("-")}`;
               return (
-                <div key={rowKey} className="flex flex-wrap gap-1.5">
+                <div key={`stream-${row.join('-')}`} className="flex flex-wrap gap-1.5">
                   {row.map(w => (
                     <motion.div
-                      key={`${rowKey}-${w}`}
-                      className="h-3 rounded bg-[#dbe6cf]"
+                      key={`stream-${w}`}
+                      className="h-3 rounded bg-accent/20 dark:bg-accent/50"
                       style={{ width: `${w}px` }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -203,13 +225,13 @@ function StreamingPreview() {
                 </div>
               );
             })}
-            {step >= 6 && (
+            {step >= 6 ? (
               <div className="flex items-center gap-2 pt-1">
                 <div className="flex flex-wrap gap-1.5">
                   {[20, 24, 18, 22, 16, 19, 23].map(w => (
                     <motion.div
                       key={`tail-${w}`}
-                      className="h-3 rounded bg-[#dbe6cf]"
+                      className="h-3 rounded bg-accent/20 dark:bg-accent/50"
                       style={{ width: `${w}px` }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -218,7 +240,7 @@ function StreamingPreview() {
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       <div className="flex items-center justify-between h-9 shrink-0 rounded-full ring-1 ring-border bg-gray-1 px-3 py-2.5">
@@ -231,12 +253,14 @@ function StreamingPreview() {
       </div>
     </div>
   );
-}
+});
 
-function AgentFeedbackPreview() {
+const AgentFeedbackPreview = React.memo(function AgentFeedbackPreview() {
+  const reduced = useReducedMotion();
   const [expanded, setExpanded] = React.useState(false);
 
   React.useEffect(() => {
+    if (reduced) return;
     const cycle = () => {
       setExpanded(false);
       const expandTimeout = window.setTimeout(() => setExpanded(true), 3300);
@@ -257,7 +281,7 @@ function AgentFeedbackPreview() {
       clearTimers();
       window.clearInterval(intervalId);
     };
-  }, []);
+  }, [reduced]);
 
   return (
     <div className="w-full max-w-[260px] rounded-xl border border-gray-4 bg-background overflow-hidden">
@@ -267,62 +291,72 @@ function AgentFeedbackPreview() {
       <div className="h-px w-full bg-gray-3" />
       <motion.div layout transition={{ duration: 0.35, ease: "easeInOut" }} className="relative p-3 overflow-hidden">
         <motion.div
-          className="flex items-center gap-2"
-          animate={{ opacity: expanded ? 0 : 1, height: expanded ? 0 : "auto" }}
+          className="grid"
+          animate={{ opacity: expanded ? 0 : 1 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
+          style={{ gridTemplateRows: expanded ? '0fr' : '1fr', transition: 'grid-template-rows 0.3s ease-in-out' }}
         >
-          <div className="relative flex size-4 items-center justify-center overflow-hidden rounded-full p-[1px]">
-            <motion.div
-              className="absolute top-[-50%] left-[-50%] h-[200%] w-[200%]"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, transparent 0%, var(--color-primary) 10%, var(--color-primary) 25%, transparent 35%)",
-              }}
-              animate={{ transform: ["rotate(0deg)", "rotate(360deg)"] }}
-              transition={{ duration: 0.475, repeat: Infinity, ease: "linear" }}
-            />
-            <div className="relative z-10 flex size-full items-center justify-center rounded-full bg-background">
-              <div className="size-2.5 rounded-full bg-gray-5" />
+          <div className="overflow-hidden [grid-row:1] [grid-column:1]">
+            <div className="flex items-center gap-2">
+              <div className="relative flex size-4 items-center justify-center overflow-hidden rounded-full p-[1px]">
+                <motion.div
+                  className="absolute top-[-50%] left-[-50%] h-[200%] w-[200%]"
+                  style={{
+                    background:
+                      "conic-gradient(from 0deg, transparent 0%, var(--color-primary) 10%, var(--color-primary) 25%, transparent 35%)",
+                  }}
+                  animate={reduced ? {} : { transform: ["rotate(0deg)", "rotate(360deg)"] }}
+                  transition={reduced ? { duration: 0 } : { duration: 0.475, repeat: Infinity, ease: "linear" }}
+                />
+                <div className="relative z-10 flex size-full items-center justify-center rounded-full bg-background">
+                  <div className="size-2.5 rounded-full bg-gray-5" />
+                </div>
+              </div>
+              <motion.div className="h-3 w-28 rounded bg-gray-3" {...SKELETON_PULSE} transition={{ ...SKELETON_PULSE.transition, delay: 0.1 }} />
+              <motion.div
+                className="ml-1 size-2 rounded-full bg-gray-7"
+                animate={reduced ? {} : { opacity: [0.2, 1, 0.2] }}
+                transition={reduced ? { duration: 0 } : { duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+              />
             </div>
           </div>
-          <motion.div className="h-3 w-28 rounded bg-gray-3" {...SKELETON_PULSE} transition={{ ...SKELETON_PULSE.transition, delay: 0.1 }} />
-          <motion.div
-            className="ml-1 size-2 rounded-full bg-gray-7"
-            animate={{ opacity: [0.2, 1, 0.2] }}
-            transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
-          />
         </motion.div>
 
         <motion.div
-          className="space-y-2"
-          animate={{ opacity: expanded ? 1 : 0, height: expanded ? "auto" : 0 }}
+          className="grid"
+          animate={{ opacity: expanded ? 1 : 0 }}
           transition={{ duration: 0.35, ease: "easeInOut" }}
+          style={{ gridTemplateRows: expanded ? '1fr' : '0fr', transition: 'grid-template-rows 0.35s ease-in-out' }}
         >
-          <StreamingCommentSkeleton />
+          <div className="overflow-hidden [grid-row:1] [grid-column:1]">
+            <StreamingCommentSkeleton />
+          </div>
         </motion.div>
       </motion.div>
     </div>
   );
-}
+});
 
 function StreamingCommentSkeleton() {
   return (
     <>
       <div className="flex items-center gap-2">
         <div className="size-4 rounded-full bg-gray-4" />
-        <div className="h-3 w-20 rounded bg-[#dbe6cf]" />
+        <div className="h-3 w-20 rounded bg-accent/20 dark:bg-accent/50" />
       </div>
-      <div className="h-3 rounded bg-[#dbe6cf]" style={{ width: "100%" }} />
-      <div className="h-3 rounded bg-[#dbe6cf]" style={{ width: "94%" }} />
+      <div className="h-3 rounded bg-accent/20 dark:bg-accent/50" style={{ width: "100%" }} />
+      <div className="h-3 rounded bg-accent/20 dark:bg-accent/50" style={{ width: "94%" }} />
     </>
   );
 }
 
-function GalleryPreview() {
+const GalleryPreview = React.memo(function GalleryPreview() {
+  const reduced = useReducedMotion();
   const [expandedIndex, setExpandedIndex] = React.useState<number | null>(null);
   const lastExpandedRef = React.useRef(0);
 
   React.useEffect(() => {
+    if (reduced) return;
     let currentIndex = 0;
     const intervalId = window.setInterval(() => {
       setExpandedIndex(currentIndex);
@@ -344,22 +378,16 @@ function GalleryPreview() {
       window.clearTimeout(startId);
       window.clearTimeout(closeStartId);
     };
-  }, []);
+  }, [reduced]);
 
-  const ORIGIN_OFFSET: Record<number, { x: number; y: number }> = {
-    0: { x: -44, y: -44 },
-    1: { x: 44, y: -44 },
-    2: { x: -44, y: 44 },
-    3: { x: 44, y: 44 },
-  };
-  const collapsedOrigin = ORIGIN_OFFSET[lastExpandedRef.current];
+  const collapsedOrigin = GALLERY_ORIGIN_OFFSET[lastExpandedRef.current];
 
   return (
     <div className="relative w-full max-w-[220px] rounded-xl border border-gray-4 bg-background p-2 overflow-hidden">
       <div className="relative z-0 grid grid-cols-2 gap-2">
         {[0, 1, 2, 3].map(index => (
           <motion.div
-            key={`gallery-cell-${index}`}
+            key={`gallery-${index}`}
             className="aspect-square rounded-lg bg-gray-3"
             animate={{ opacity: expandedIndex === index ? 0 : 1 }}
             transition={{ duration: 0.2 }}
@@ -379,7 +407,7 @@ function GalleryPreview() {
         transition={{ duration: 0.2 }}
       >
         <motion.div
-          className="size-[170px] rounded-2xl border border-gray-4 bg-[#dbe6cf] shadow-lg"
+          className="size-[170px] rounded-2xl border border-gray-4 bg-accent/20 dark:bg-accent/50 shadow-lg"
           initial={false}
           animate={{
             scale: expandedIndex === null ? 0.65 : 1,
@@ -392,26 +420,21 @@ function GalleryPreview() {
       </motion.div>
     </div>
   );
-}
+});
 
-function MarkdownEditorPreview() {
+const MarkdownEditorPreview = React.memo(function MarkdownEditorPreview() {
+  const reduced = useReducedMotion();
   const [step, setStep] = React.useState(0);
-  const lines = [
-    [30, 46, 24, 38, 20],
-    [22, 18, 34, 28, 24, 16],
-    [40, 26, 20, 30, 18],
-    [18, 32, 24, 28, 22, 14],
-    [36, 24, 18, 20, 28],
-  ];
 
   React.useEffect(() => {
+    if (reduced) return;
     const runCycle = () => {
       setStep(0);
       const typeId = window.setInterval(() => {
         setStep(prev => {
-          if (prev >= lines.length) {
+          if (prev >= MARKDOWN_LINES.length) {
             window.clearInterval(typeId);
-            return lines.length;
+            return MARKDOWN_LINES.length;
           }
           return prev + 1;
         });
@@ -429,7 +452,7 @@ function MarkdownEditorPreview() {
       cleanup();
       window.clearInterval(cycleId);
     };
-  }, [lines.length]);
+  }, [reduced]);
 
   return (
     <div className="w-full max-w-[260px] rounded-xl border border-gray-4 bg-background overflow-hidden">
@@ -447,37 +470,34 @@ function MarkdownEditorPreview() {
       </div>
       <div className="p-3 space-y-2">
         <div className="h-3 w-24 rounded bg-gray-4" />
-        {lines.map((row, rowIndex) => {
-          const rowKey = row.join("-");
-          if (step <= rowIndex) return <div key={`empty-${rowKey}`} className="h-3" />;
+        {MARKDOWN_LINES.map((row, rowIndex) => {
+          // oxlint-disable-next-line react/no-array-index-key
+          if (step <= rowIndex) return <div key={`md-empty-${rowIndex}`} className="h-3" />;
           return (
-            <div key={`line-${rowKey}`} className="flex flex-wrap gap-1.5">
-              {row.map((w, tokenIndex) => {
-                const repeatCount = row.slice(0, tokenIndex).filter(x => x === w).length;
-                return (
+            <div key={`md-${row.join('-')}`} className="flex flex-wrap gap-1.5">
+              {row.map(w => (
                 <motion.div
-                  key={`line-${rowKey}-${w}-${repeatCount}`}
-                  className="h-3 rounded bg-[#dbe6cf]"
+                  key={`md-${row.join('-')}-${w}`}
+                  className="h-3 rounded bg-accent/20 dark:bg-accent/50"
                   style={{ width: `${w}px` }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.14 }}
                 />
-                );
-              })}
+              ))}
             </div>
           );
         })}
       </div>
     </div>
   );
-}
+});
 
 const DEMOS_WITH_PREVIEWS: DemoItem[] = [
   {
     id: "cmdk",
     name: "Command K",
-    description: "⌘K menu used in cushion.so. Full workspace search with pagniation and shortcuts",
+    description: "⌘\u00A0K menu used in cushion.so. Full workspace search with pagination and shortcuts",
     href: "/posts/command-k-cushion",
     preview: <CmdkPreview />,
   },
@@ -514,7 +534,7 @@ type DemoGridCardProps = {
   children: React.ReactNode;
 };
 
-function DemoGridCard({
+const DemoGridCard = React.memo(function DemoGridCard({
   cardId,
   href,
   name,
@@ -524,111 +544,75 @@ function DemoGridCard({
     <a
       href={href}
       data-card-id={cardId}
-      className="group relative block overflow-hidden rounded-lg border bg-gray-2 p-5 hover:bg-gray-3"
+      aria-label={name}
+      className="group relative block overflow-hidden rounded-lg border bg-gray-2 p-5 hover:bg-gray-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <div className="pointer-events-none grid place-items-center aspect-[4/3]">{children}</div>
+      <div aria-hidden="true" className="pointer-events-none grid place-items-center aspect-[4/3]">{children}</div>
       <span className="sr-only">{name}</span>
-      <div className="absolute inset-0 ring-0 transition-all duration-200 group-hover:ring-1 group-hover:ring-primary/35 group-focus-visible:ring-1 group-focus-visible:ring-primary/35" />
     </a>
   );
-}
+});
 
 function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
-  const areaRef = React.useRef<HTMLDivElement | null>(null);
-  const [showHoverCard, setShowHoverCard] = React.useState(false);
-  const [isHoverCardVisible, setIsHoverCardVisible] = React.useState(false);
   const [activeCardId, setActiveCardId] = React.useState<string | null>(null);
-  const hoverCardRef = React.useRef<HTMLDivElement | null>(null);
-  const cursorRef = React.useRef({ x: 0, y: 0 });
-  const rafRef = React.useRef<number | null>(null);
-  const showTimeoutRef = React.useRef<number | null>(null);
+  const activeCardIdRef = React.useRef<string | null>(null);
+  const lastPointerRef = React.useRef({ x: 0, y: 0 });
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const area = areaRef.current;
-    if (!area) return;
-
-    const rect = area.getBoundingClientRect();
-    cursorRef.current = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
-
-    if (rafRef.current !== null) return;
-    rafRef.current = window.requestAnimationFrame(() => {
-      const hoverCard = hoverCardRef.current;
-      const { x, y } = cursorRef.current;
-      if (hoverCard) {
-        hoverCard.style.transform = `translate3d(${x + 12}px, ${y + 12}px, 0)`;
-      }
-      rafRef.current = null;
-    });
-
+    lastPointerRef.current = { x: event.clientX, y: event.clientY };
     const target = event.target as HTMLElement | null;
     const card = target?.closest<HTMLAnchorElement>("[data-card-id]");
     const nextCardId = card?.dataset.cardId ?? null;
     if (!nextCardId) return;
 
     setActiveCardId(nextCardId);
-
-    if (nextCardId) {
-      setShowHoverCard(true);
-      if (showTimeoutRef.current === null && !isHoverCardVisible) {
-        showTimeoutRef.current = window.setTimeout(() => {
-          setIsHoverCardVisible(true);
-          showTimeoutRef.current = null;
-        }, 400);
-      }
-    }
+    activeCardIdRef.current = nextCardId;
   }
 
   function handlePointerLeave() {
-    setIsHoverCardVisible(false);
-    setShowHoverCard(false);
     setActiveCardId(null);
-    if (showTimeoutRef.current !== null) {
-      window.clearTimeout(showTimeoutRef.current);
-      showTimeoutRef.current = null;
-    }
-    if (rafRef.current !== null) {
-      window.cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
+    activeCardIdRef.current = null;
   }
 
+  // When the user scrolls without moving the pointer, pointerleave won't fire
+  // even though the card has moved out from under the pointer. Update on scroll.
   React.useEffect(() => {
-    return () => {
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
+    function handleScroll() {
+      const { x, y } = lastPointerRef.current;
+      const el = document.elementFromPoint(x, y);
+      const card = el?.closest<HTMLAnchorElement>("[data-card-id]");
+      const nextCardId = card?.dataset.cardId ?? null;
+      if (nextCardId !== activeCardIdRef.current) {
+        setActiveCardId(nextCardId);
+        activeCardIdRef.current = nextCardId;
       }
-      if (showTimeoutRef.current !== null) {
-        window.clearTimeout(showTimeoutRef.current);
-      }
-    };
+    }
+    window.addEventListener("scroll", handleScroll, { capture: true, passive: true });
+    return () => window.removeEventListener("scroll", handleScroll, { capture: true });
   }, []);
 
-  const activeItem = activeCardId
-    ? DEMOS_WITH_PREVIEWS.find(item => item.id === activeCardId)
-    : undefined;
+  const activeItem = React.useMemo(() =>
+    activeCardId ? DEMOS_WITH_PREVIEWS.find(item => item.id === activeCardId) : undefined,
+    [activeCardId]
+  );
+
+  const content = activeItem ? (
+    <>
+      <p className="text-sm font-medium leading-tight">{activeItem.name}</p>
+      {/*<p className="mt-1 text-xs leading-relaxed text-secondary">{activeItem.description}</p>*/}
+    </>
+  ) : undefined;
 
   return (
-    <div
-      ref={areaRef}
-      className="relative"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-    >
-      {children}
-      {showHoverCard && activeItem && (
-        <div
-          ref={hoverCardRef}
-          className="pointer-events-none absolute left-0 top-0 z-50 w-64 overflow-hidden rounded-md border bg-gray-1 p-2 text-primary shadow-lg will-change-transform transition-opacity duration-150 dark:bg-gray-3"
-          style={{ transform: "translate3d(0px, 0px, 0)", opacity: isHoverCardVisible ? 1 : 0 }}
-        >
-          <p className="text-sm font-medium leading-tight">{activeItem.name}</p>
-          <p className="mt-1 text-xs leading-relaxed text-secondary">{activeItem.description}</p>
-        </div>
-      )}
-    </div>
+    <HoverCard content={content} contentClass="bg-black p-1 px-1.5 w-fit flex-row gap-2 text-white">
+      <div
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        className="touch-manipulation"
+      >
+        {children}
+      </div>
+    </HoverCard>
   );
 }
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 type MotionComponent = keyof typeof motion;
 
@@ -15,6 +15,11 @@ export function AnimateInUp({
   as?: MotionComponent;
 }) {
   const Component = motion[as] as React.ElementType;
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
   return (
     <Component
       className={className}

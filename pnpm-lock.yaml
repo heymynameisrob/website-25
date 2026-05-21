@@ -197,6 +197,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.16
         version: 4.3.0
+      tegaki:
+        specifier: ^0.17.1
+        version: 0.17.1(react@19.2.6)
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -5744,6 +5747,29 @@ packages:
 
   teex@1.0.1:
     resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
+
+  tegaki@0.17.1:
+    resolution: {integrity: sha512-KhCl5I//xstclHVaBC8+IVjPDWQ7RoDL0gEcVLZz+coH1DCTC5VH0EypN2Cj+GS8JXHRGB51MkJQrfZ1XnAxiw==}
+    peerDependencies:
+      '@nuxt/kit': ^3.0.0 || ^4.0.0
+      harfbuzzjs: ^0.10.3
+      react: '>=18'
+      solid-js: '>=1'
+      svelte: '>=5'
+      vue: '>=3'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      harfbuzzjs:
+        optional: true
+      react:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
 
   text-decoder@1.2.7:
     resolution: {integrity: sha512-vlLytXkeP4xvEq2otHeJfSQIRyWxo/oZGEbXrtEEF9Hnmrdly59sUbzZ/QgyWuLYHctCHxFF4tRQZNQ9k60ExQ==}
@@ -12708,6 +12734,10 @@ snapshots:
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
+
+  tegaki@0.17.1(react@19.2.6):
+    optionalDependencies:
+      react: 19.2.6
 
   text-decoder@1.2.7:
     dependencies:

@@ -505,7 +505,7 @@
     --background: var(--gray-1);
     --shadow: hsl(154, 12%, 12%);
     --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
-    --accent: #5c7c2f;
+    --accent: rgb(0,166,244);
   }
 
   .dark {
@@ -522,9 +522,6 @@
     --gray-11: hsl(160, 5%, 56%);
     --gray-11: hsl(157, 5%, 69%);
     --gray-12: hsl(150, 6%, 93%);
-
-    --accent: #b0e64c;
-    --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
   }
 
   ::selection {
@@ -606,8 +603,8 @@
       animation: none !important;
       animation: none !important;
       transition: none !important;
-      transform: none !important;
       opacity: 1 !important;
+      filter: blur(0) !important;
       animation-delay: 0 !important;
     }
   }
