@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { HoverCard } from "@/components/HoverCard";
+import { CustomHoverCard } from "@/components/CustomHoverCard";
 
 interface DemoItem {
   id: string;
@@ -604,7 +604,7 @@ function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
   ) : undefined;
 
   return (
-    <HoverCard content={content} contentClass="bg-black p-1 px-1.5 w-fit flex-row gap-2 text-white">
+    <CustomHoverCard content={content} contentClass="bg-black p-1 px-1.5 w-fit flex-row gap-2 text-white">
       <div
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
@@ -612,7 +612,7 @@ function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
       >
         {children}
       </div>
-    </HoverCard>
+    </CustomHoverCard>
   );
 }
 

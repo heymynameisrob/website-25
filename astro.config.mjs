@@ -9,6 +9,9 @@ import mdx from "@astrojs/mdx";
 export default defineConfig({
   site: getBaseUrl(),
   output: "static",
+  image: {
+    remotePatterns: [{ protocol: "https", hostname: "ucarecdn.com" }],
+  },
   markdown: {
     shikiConfig: {
       themes: {

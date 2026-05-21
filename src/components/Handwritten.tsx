@@ -215,7 +215,7 @@ export function BallpointHandwritten() {
         time={{ mode: "uncontrolled", speed: 2.25, loop: false }}
         className="text-primary"
         style={{
-          fontSize: "48px",
+          fontSize: "28px",
           opacity: 0.92,
           transform: "rotate(-3deg)",
         }}

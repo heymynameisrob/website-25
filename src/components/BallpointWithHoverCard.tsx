@@ -1,9 +1,9 @@
-import { HoverCard } from "./HoverCard";
+import { CustomHoverCard } from "./CustomHoverCard";
 import { BallpointHandwritten } from "./Handwritten";
 
 export function BallpointWithHoverCard() {
   return (
-    <HoverCard
+    <CustomHoverCard
       contentClass="p-2"
       className="w-fit"
       content={
@@ -15,6 +15,6 @@ export function BallpointWithHoverCard() {
       }
     >
       <BallpointHandwritten />
-    </HoverCard>
+    </CustomHoverCard>
   );
 }

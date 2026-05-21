@@ -1,14 +1,14 @@
 import { cn } from "@/lib/utils";
 import * as React from "react";
 
-interface HoverCardProps {
+interface CustomHoverCardProps {
   children: React.ReactNode;
   content: React.ReactNode;
   contentClass?: string;
   className?: string;
 }
 
-export function HoverCard({ children, content, className, contentClass }: HoverCardProps) {
+export function CustomHoverCard({ children, content, className, contentClass }: CustomHoverCardProps) {
   const areaRef = React.useRef<HTMLDivElement | null>(null);
   const [showHoverCard, setShowHoverCard] = React.useState(false);
   const [isHoverCardVisible, setIsHoverCardVisible] = React.useState(false);

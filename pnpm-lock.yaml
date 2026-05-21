@@ -185,6 +185,9 @@ importers:
       rehype-raw:
         specifier: ^7.0.0
         version: 7.0.0
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
       sonner:
         specifier: ^1.7.4
         version: 1.7.4(react-dom@19.2.6(react@19.2.6))(react@19.2.6)

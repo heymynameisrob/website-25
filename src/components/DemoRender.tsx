@@ -9,7 +9,6 @@ import { Tooltip } from "@/components/primitives/Tooltip";
 import { motion, useAnimation } from "motion/react";
 import { Gallery } from "@/components/demos/Gallery";
 import { Calendar } from "@/components/demos/Calendar";
-import { Image } from "astro:assets";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Thinking } from "@/components/demos/motion/Thinking";
 import { Prompt } from "@/components/demos/Prompt";
