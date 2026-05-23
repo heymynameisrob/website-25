@@ -8,15 +8,15 @@ import {
   XCircleIcon,
   ChevronDownIcon,
 } from "lucide-react";
-import { DatePicker } from "@/components/primitives/DatePicker";
-import { Avatar } from "@/components/primitives/Avatar";
+import { DatePicker } from "@/components/DatePicker";
+import { Avatar } from "@/components/Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/primitives/DropdownMenu";
+} from "@/components/DropdownMenu";
 import { Controller } from "react-hook-form";
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { cn } from "@/lib/utils";

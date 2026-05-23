@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, type ReactNode } from "react";
 import { DocumentDuplicateIcon, CheckIcon } from "@heroicons/react/16/solid";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import { cn } from "@/lib/utils";
 
 const MAX_COLLAPSED_HEIGHT = 300;
@@ -70,10 +70,10 @@ export function CodeBlock({ children, className }: CodeBlockProps) {
           height: isCollapsible && !showMore ? MAX_COLLAPSED_HEIGHT : contentHeight,
         }}
         transition={hasMeasured ? { duration: 0.3, ease: [0.4, 0, 0.2, 1] } : { duration: 0 }}
-        className="overflow-hidden"
+        className="overflow-hidden bg-gray-2 rounded-xl inset-ring-[0.5px] inset-ring-border shadow-xs overflow-hidden focus-within"
       >
         <div ref={contentRef}>
-          <pre className={cn("astro-code bg-gray-2 mt-0 mb-0 p-3 overflow-x-scroll", className)}>
+          <pre className={cn("astro-code mt-0 mb-0 p-3 overflow-x-scroll", className)}>
             {children}
           </pre>
         </div>

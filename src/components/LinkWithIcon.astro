@@ -3,8 +3,10 @@ import N8nIcon from "@/assets/n8n.svg";
 import LinkedInIcon from "@/assets/linkedin.svg";
 import GitHubIcon from "@/assets/github.svg";
 import { EnvelopeIcon } from "@heroicons/react/16/solid";
+import { Undo2Icon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type IconKey = "n8n" | "linkedin" | "email" | "github";
+type IconKey = "n8n" | "linkedin" | "email" | "github" | "back";
 
 interface Props {
   href: string;
@@ -12,6 +14,7 @@ interface Props {
   icon: IconKey;
   target?: string;
   rel?: string;
+  className?: string;
 }
 
 const { href, label, icon, target = "_blank", rel = "noopener noreferrer" } = Astro.props;
@@ -21,6 +24,7 @@ const iconColor: Record<IconKey, string> = {
   linkedin: "#0A66C2",
   email: "var(--color-primary)",
   github: "#171515",
+  back: "",
 };
 
 const iconClass = "size-3.5 shrink-0";
@@ -30,18 +34,25 @@ const iconClass = "size-3.5 shrink-0";
   href={href}
   target={target}
   rel={rel}
-  class="group inline-flex items-center gap-1 whitespace-nowrap font-medium focus text-primary relative top-px rounded-md"
+  class={cn(
+    "group inline-flex items-center gap-1 whitespace-nowrap font-medium focus text-primary relative top-px rounded-md",
+    Astro.props.className
+  )}
+  )
 >
   <span
     class:list={["shrink-0", icon === "github" && "text-[#171515] dark:text-white"]}
     style={icon === "github" ? undefined : `color: ${iconColor[icon]};`}
   >
+    {icon === "back" && <Undo2Icon className={iconClass} />}
     {icon === "n8n" && <N8nIcon class={iconClass} />}
     {icon === "linkedin" && <LinkedInIcon class={iconClass} />}
     {icon === "email" && <EnvelopeIcon className={iconClass} />}
     {icon === "github" && <GitHubIcon class={iconClass} />}
   </span>
-  <span class="underline font-medium decoration-2 underline-offset-2 decoration-gray-7 group-hover:decoration-primary">
+  <span
+    class="underline font-medium decoration-2 underline-offset-2 decoration-gray-7 group-hover:decoration-primary"
+  >
     {label}
   </span>
 </a>

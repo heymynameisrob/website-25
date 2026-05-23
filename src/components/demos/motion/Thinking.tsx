@@ -4,8 +4,8 @@ import rehypeRaw from "rehype-raw";
 import dedent from "dedent";
 import { motion, AnimatePresence, type AnimationControls } from "motion/react";
 
-import { Avatar } from "@/components/primitives/Avatar";
-import { Badge } from "@/components/primitives/Badge";
+import { Avatar } from "@/components/Avatar";
+import { Badge } from "@/components/Badge";
 import { cn } from "@/lib/utils";
 import { useMeasure } from "@uidotdev/usehooks";
 

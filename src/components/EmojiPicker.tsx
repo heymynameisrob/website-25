@@ -4,8 +4,8 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/primitives/Popover";
-import { Button } from "@/components/primitives/Button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
+import { Button } from "@/components/Button";
 
 type EmojiPickerProps = {
   emoji?: string | undefined;

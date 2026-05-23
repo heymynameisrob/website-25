@@ -2,8 +2,8 @@ import * as React from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 
-import { Skeleton } from "@/components/primitives/Skeleton";
-import { Button } from "@/components/primitives/Button";
+import { Skeleton } from "@/components/Skeleton";
+import { Button } from "@/components/Button";
 import { CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDeterministicWidth } from "@/components/demos/ArtificialInbox/Skeletons";

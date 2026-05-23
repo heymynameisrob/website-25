@@ -1,5 +1,5 @@
 ---
-layout: "@/layouts/PostLayout.astro"
+layout: "@/components/post/PostLayout.astro"
 title: Things I don't like
 date: 2024-12-14
 ---

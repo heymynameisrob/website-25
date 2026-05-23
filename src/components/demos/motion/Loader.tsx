@@ -1,4 +1,4 @@
-import { Avatar } from "@/components/primitives/Avatar";
+import { Avatar } from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@heroicons/react/16/solid";
 import { Loader2, LoaderIcon } from "lucide-react";

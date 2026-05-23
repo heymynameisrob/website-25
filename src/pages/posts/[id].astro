@@ -1,22 +1,19 @@
 ---
 import { getCollection, render } from "astro:content";
-import PostLayout from "@/layouts/PostLayout.astro";
-import { DemoRenderer } from "@/components/DemoRender";
-import { filterPosts } from "@/lib/utils";
 import { getImage } from "astro:assets";
-import Divider from "@/components/primitives/Divider.astro";
+import type { PostWithImages } from "@/components/post/PostLayout.astro";
+
+import PostLayout from "@/components/post/PostLayout.astro";
+import Divider from "@/components/Divider.astro";
 import CodeBlockWrapper from "@/components/CodeBlockWrapper.astro";
 import Blockquote from "@/components/Blockquote.astro";
-import { ToC } from "@/components/ToC";
-import Navbar from "@/components/Navbar.astro";
-import Prose from "@/components/Prose.astro";
-import Layout from "@/layouts/Layout.astro";
+import LinkWithIcon from "@/components/LinkWithIcon.astro";
 
-import ThemeToggle from "@/components/ThemeToggle.astro";
+import { ToC } from "@/components/ToC";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  const pathsPromises = posts.map(async (post) => {
+  const pathsPromises = posts.map(async post => {
     let images: any = {};
     if (post.data.image) {
       const optimizedImage = await getImage({
@@ -59,43 +56,32 @@ export async function getStaticPaths() {
   return Promise.all(pathsPromises);
 }
 
-const { post } = Astro.props;
-const { Content, headings } = await render(post);
+interface Props {
+  post: PostWithImages;
+}
 
+const { post } = Astro.props as Props;
+const { Content, headings } = await render(post);
 ---
 
-<Layout
-  title={`${post.data.title} - @heymynameisrob`}
-  description={post.data.description}
-  og={post.ogImageSrc}
-  canonical={post.data.canonical}
->
-  <div class="max-h-screen overflow-y-scroll mask-linear mask-b-to-transparent mask-b-from-90% animate-in fade-in-0 blur-in-md duration-400 ease-out">
-    <Navbar />
-    <div
-      class="max-w-3xl mx-auto px-5 flex flex-col justify-center items-center py-12 lg:py-24"
-    >
-      <header class="flex flex-col justify-center items-center text-center">
-        <h1
-          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance xl:text-4xl"
-        >
-          {post.data.title}
-        </h1>
-        <h2
-          class="text-2xl font-serif tracking-tight lg:text-3xl lg:text-balance text-gray-10 xl:text-4xl"
-        >
-          {post.data.description}
-        </h2>
-      </header>
-      <Divider />
-      <Prose>
-        <Content components={{ hr: Divider, pre: CodeBlockWrapper, blockquote: Blockquote }} />
-      </Prose>
-      <footer class="w-full flex items-center justify-between mt-12 lg:mt-24">
-        <small class="text-gray-9">&copy; 2025 heymynameisrob</small>
-        <ThemeToggle />
-      </footer>
-    </div>
+<PostLayout post={post} layout={post.data.layout}>
+  <div slot="before">
+    <aside class="flex flex-col gap-10 xl:fixed xl:top-24 xl:left-10">
+      <LinkWithIcon
+        href="/"
+        target="_self"
+        icon="back"
+        label="Back"
+        className="text-sm [&_span]:no-underline text-gray-9 hover:text-primary"
+      />
+      <ToC headings={headings} client:load />
+    </aside>
   </div>
-  <ToC headings={headings} client:load />
-</Layout>
+  <Content
+    components={{
+      hr: Divider,
+      pre: CodeBlockWrapper,
+      blockquote: Blockquote,
+    }}
+  />
+</PostLayout>

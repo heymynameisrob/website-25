@@ -4,3 +4,6 @@ export const SEO_DESCRIPTION =
 export const AVAILABLE = true;
 
 export const HOME_POST_LIMIT = 5;
+
+export const FORMAT_DATE_TIME = "h:mmaaa";
+export const FORMAT_DATE = "MMM yy";

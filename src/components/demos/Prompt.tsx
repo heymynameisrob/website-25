@@ -16,8 +16,8 @@ import {
 } from "@heroicons/react/16/solid";
 
 import { TextShimmer } from "@/components/demos/TextShimmer";
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import { useTextStream } from "@/lib/hooks/useTextStream";
 import { cn } from "@/lib/utils";
 

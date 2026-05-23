@@ -12,8 +12,8 @@ import {
   ViewColumnsIcon,
 } from "@heroicons/react/16/solid";
 
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import {
   ArtificialSkeletonList,
   ArtificialSkeletonTable,
@@ -26,25 +26,25 @@ import {
   type ArtificialInboxGroupBy,
   type ArtificialInboxSortBy,
 } from "@/components/demos/ArtificialInbox/Store";
-import { EmojiPicker } from "@/components/primitives/EmojiPicker";
-import { Input } from "@/components/primitives/Input";
+import { EmojiPicker } from "@/components/EmojiPicker";
+import { Input } from "@/components/Input";
 import {
   List,
   ListItem,
   ListItemContainer,
   ListItemIcon,
   ListItemTitle,
-} from "@/components/primitives/List";
+} from "@/components/List";
 import {
   ArtificialInboxKanabanLayoutIcon,
   ArtificialInboxListLayoutIcon,
   ArtificialInboxTableLayoutIcon,
 } from "@/components/demos/ArtificialInbox/Icons";
 import { cn } from "@/lib/utils";
-import { Select, SelectOption } from "@/components/primitives/Select";
-import { Sortable, SortableItem } from "@/components/primitives/Sortable";
+import { Select, SelectOption } from "@/components/Select";
+import { Sortable, SortableItem } from "@/components/Sortable";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Badge } from "@/components/primitives/Badge";
+import { Badge } from "@/components/Badge";
 
 const SKELETON_OPTIONS: ArtificialTableOptionsProps = {
   draft: 6,

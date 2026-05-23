@@ -3,18 +3,18 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDebouncedCallback } from "use-debounce";
-import { Input } from "@/components/primitives/Input";
-import { TextEditor } from "@/components/primitives/TextEditor";
+import { Input } from "@/components/Input";
+import { TextEditor } from "@/components/TextEditor";
 import { useArtificialInboxStore, type ArtificialTask } from "./Store";
 import { AssigneeField, StatusField, DueDateField } from "./TaskFormFields";
-import { Badge } from "@/components/primitives/Badge";
+import { Badge } from "@/components/Badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ArtificialSkeletonActivity } from "@/components/demos/ArtificialInbox/Skeletons";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 
 // Define form options
 const ASSIGNEE_OPTIONS = [

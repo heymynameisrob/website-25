@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/primitives/Skeleton";
+import { Skeleton } from "@/components/Skeleton";
 
 import type { ArtificialInboxTypes } from "@/components/demos/ArtificialInbox/Tabs";
 import {
@@ -7,7 +7,7 @@ import {
   ListItemChevron,
   ListItemContainer,
   ListItemIcon,
-} from "@/components/primitives/List";
+} from "@/components/List";
 
 export type ArtificialTableOptionsProps = {
   draft: number;

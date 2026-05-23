@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/primitives/DropdownMenu";
+} from "@/components/DropdownMenu";
 import { AVAILABLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { SquareArrowOutUpRightIcon } from "lucide-react";

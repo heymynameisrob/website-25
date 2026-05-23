@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { fetcher } from "@/lib/fetch";
 
 import type { Track } from "@/lib/types";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/primitives/HoverCard";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/HoverCard";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
 
 export function NowPlaying() {

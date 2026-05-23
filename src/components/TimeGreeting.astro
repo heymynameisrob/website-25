@@ -1,9 +1,11 @@
 ---
+
 ---
 
 <small id="timeGreeting" class="text-xs text-gray-9"></small>
 
 <script>
+  import { FORMAT_DATE_TIME } from "@/lib/constants";
   import { format } from "date-fns";
 
   function getGreeting(now: Date): string {
@@ -27,7 +29,7 @@
 
   function updateGreeting() {
     const now = new Date();
-    const time = format(now, "h:mmaaa");
+    const time = format(now, FORMAT_DATE_TIME);
     const greeting = getGreeting(now);
     const el = document.getElementById("timeGreeting");
     if (el) el.textContent = `It's ${time}. ${greeting}`;

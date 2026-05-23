@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import { HeartIcon, ShareIcon, BookmarkIcon } from "@heroicons/react/16/solid";
 
 const FADE_IN_BLUR = {

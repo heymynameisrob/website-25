@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Calculator } from "@/components/demos/Calculator";
 import { Form } from "@/components/demos/Form";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 
 import type { Post } from "@/content.config";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 import { motion, useAnimation } from "motion/react";
 import { Gallery } from "@/components/demos/Gallery";
 import { Calendar } from "@/components/demos/Calendar";

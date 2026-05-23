@@ -1,0 +1,13 @@
+---
+import { FORMAT_DATE } from "@/lib/constants";
+
+const { data } = Astro.props;
+import { formatDate } from "date-fns";
+---
+
+<header class="flex flex-col gap-6">
+  <h1 class="font-serif text-4xl leading-[1.2] font-bold tracking-wide lg:text-[2.5rem]">
+    {data.title}
+  </h1>
+  <span class="text-gray-9 italic">Last updated {formatDate(data.date, FORMAT_DATE)}</span>
+</header>

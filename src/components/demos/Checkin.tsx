@@ -10,12 +10,12 @@ import { EditorProvider, type Editor, type JSONContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { cn, fromNow } from "@/lib/utils";
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import { AnimatePresence, motion } from "motion/react";
 import { GitBranchPlus, Loader2, RefreshCcw, SendIcon, SmilePlusIcon } from "lucide-react";
 import { subHours } from "date-fns";
-import { EmojiPicker } from "@/components/primitives/EmojiPicker";
+import { EmojiPicker } from "@/components/EmojiPicker";
 
 type Checkin = {
   id: string;

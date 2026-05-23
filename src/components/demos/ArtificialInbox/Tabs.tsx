@@ -5,16 +5,16 @@ import {
   ArtificialSkeletonTable,
   type ArtificialTableOptionsProps,
 } from "@/components/demos/ArtificialInbox/Skeletons";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/primitives/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { Sortable, SortableItem } from "@/components/primitives/Sortable";
+import { Sortable, SortableItem } from "@/components/Sortable";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/primitives/ContextMenu";
+} from "@/components/ContextMenu";
 import { GlobeAltIcon, PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 

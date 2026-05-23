@@ -1,8 +1,8 @@
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/primitives/DropdownMenu";
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/DropdownMenu";
 import {
   ArrowTurnUpRightIcon,
   GlobeAltIcon,

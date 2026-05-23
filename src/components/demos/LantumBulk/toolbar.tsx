@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import type { ToolbarProps } from "./types";
 import { ToolbarMenu } from "./ToolbarMenu";
 import { CheckCircleIcon } from "./icons";

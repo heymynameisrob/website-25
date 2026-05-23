@@ -1,9 +1,9 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { cn, waitFor } from "@/lib/utils";
-import { Input } from "@/components/primitives/Input";
-import { Label } from "@/components/primitives/Label";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 import { Loader2 } from "lucide-react";
 
 export function Form() {

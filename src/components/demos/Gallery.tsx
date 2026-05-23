@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { useClickAway } from "@uidotdev/usehooks";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 
 type Image = {
   url: string;

@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 
 const buttonVariants = cva(
   "inline-flex items-center whitespace-nowrap border justify-center rounded-lg text-sm leading-4 font-medium transition-colors outline-hidden focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",

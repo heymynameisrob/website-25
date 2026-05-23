@@ -11,8 +11,8 @@ import { ChevronDownIcon, ArrowPathIcon } from "@heroicons/react/16/solid";
 import { Checkin } from "@/components/demos/Checkin";
 import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
-import { Button } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Button } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
 import { motion, useAnimation } from "motion/react";
 import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
@@ -88,8 +88,10 @@ export function UIExample({
 
   return (
     <figure className="flex flex-col justify-center items-center gap-2 my-16">
-      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-2xl focus overflow-hidden">
-        <React.Fragment key={key}>{COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}</React.Fragment>
+      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-2 rounded-xl inset-ring-[0.5px] inset-ring-border focus overflow-hidden">
+        <React.Fragment key={key}>
+          {COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}
+        </React.Fragment>
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
             size="icon"

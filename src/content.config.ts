@@ -1,13 +1,15 @@
 import { defineCollection, z, type CollectionEntry } from "astro:content";
 import { glob } from "astro/loaders";
-import { PostTypes } from "@/lib/types";
+import { PostLayouts, PostTypes } from "@/lib/types";
 
 // Define the schema separately
+
 export const postSchema = z.object({
   title: z.string(),
   description: z.string(),
   date: z.date(),
   type: z.enum([...PostTypes]),
+  layout: z.enum(PostLayouts).optional(),
   company: z.string().optional(),
   isExternal: z.boolean().default(false).optional(),
   video_url: z.string().optional(),

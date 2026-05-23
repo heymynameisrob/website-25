@@ -17,8 +17,8 @@ import {
   BoltIcon,
 } from "@heroicons/react/16/solid";
 
-import { Badge } from "@/components/primitives/Badge";
-import { Key } from "@/components/primitives/Key";
+import { Badge } from "@/components/Badge";
+import { Key } from "@/components/Key";
 import { cn } from "@/lib/utils";
 
 type Page = "home" | "posts" | "channels" | "chat";

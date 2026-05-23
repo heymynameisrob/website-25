@@ -27,3 +27,4 @@ export type Track = {
 };
 
 export const PostTypes = ["post", "case-study", "demo", "photos", "project"] as const;
+export const PostLayouts = ["agent", "command-k", "comments", "markdown"] as const;
