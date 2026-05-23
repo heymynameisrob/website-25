@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro";
 import ThemeToggle from "@/components/ThemeToggle.astro";
 import AnimatedListItem from "@/components/AnimatedListItem.astro";
 import HomeHeader from "@/components/HomeHeader.astro";
+import Footer from "@/components/Footer.astro";
 
 import { AnimateInUp } from "@/components/Motion";
 import { HomeWorkGrid } from "@/components/HomeWorkGrid";
@@ -72,18 +73,8 @@ const polaroidImages = [
       />
     </ul>
     </AnimateInUp>
-    <AnimateInUp
-      as="section"
-      className="flex flex-col gap-4"
-      delay={0.6}
-      client:load
-    >
-      <footer class="w-full flex items-center gap-2">
-        <small class="text-xs text-gray-9">&copy; 2026 heymynameisrob • </small>
-        <a href="https://github.com/heymynameisrob/website-25" rel="noopener noreferrer" target="_blank" class="text-xs text-gray-9 underline hover:text-primary">View code</a>
-        <ThemeToggle />
-      </footer>
-    </AnimateInUp>
+
+      <Footer />
 
   </div>
 </Layout>

@@ -1,6 +1,25 @@
+import { useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { TegakiRenderer } from "tegaki/react";
 import bundle from "tegaki/fonts/caveat";
+
+/** Check whether the handwriting animation has already played this session. */
+function hasPlayed(key: string): boolean {
+  try {
+    return sessionStorage.getItem(key) === "true";
+  } catch {
+    return false;
+  }
+}
+
+/** Mark the handwriting animation as completed for this session. */
+function markPlayed(key: string): void {
+  try {
+    sessionStorage.setItem(key, "true");
+  } catch {
+    /* no-op if sessionStorage is unavailable */
+  }
+}
 
 const InkDistressFilter = (
   <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
@@ -53,12 +72,19 @@ const InkDistressFilter = (
 );
 
 export function Handwritten() {
+  const [alreadyPlayed] = useState(() => hasPlayed("tegaki-handwritten"));
+
   return (
     <div style={{ filter: "url(#ink-distress)" }}>
       {InkDistressFilter}
       <TegakiRenderer
         font={bundle as any}
-        time={{ mode: "uncontrolled", speed: 2.25, loop: false }}
+        time={
+          alreadyPlayed
+            ? { mode: "controlled", value: 1, unit: "progress" }
+            : { mode: "uncontrolled", speed: 2.25, loop: false }
+        }
+        onComplete={alreadyPlayed ? undefined : () => markPlayed("tegaki-handwritten")}
         style={{
           fontSize: "48px",
           color: "#000",
@@ -202,6 +228,7 @@ const DistortionMap = (
 
 export function BallpointHandwritten() {
   const reduced = useReducedMotion();
+  const [alreadyPlayed] = useState(() => hasPlayed("tegaki-ballpoint"));
 
   if (reduced) {
     return <h1>Hey, my name is Rob :)</h1>;
@@ -212,7 +239,14 @@ export function BallpointHandwritten() {
       {DistortionMap}
       <TegakiRenderer
         font={bundle as any}
-        time={{ mode: "uncontrolled", speed: 2.25, loop: false }}
+        time={
+          alreadyPlayed
+            ? { mode: "controlled", value: 1, unit: "progress" }
+            : { mode: "uncontrolled", speed: 2.25, loop: false }
+        }
+        onComplete={
+          alreadyPlayed ? undefined : () => markPlayed("tegaki-ballpoint")
+        }
         className="text-primary"
         style={{
           fontSize: "28px",

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, type Transition } from "framer-motion";
 
 interface PolaroidProps extends React.PropsWithChildren {
   imageSrc: string;
@@ -12,7 +12,7 @@ interface PolaroidProps extends React.PropsWithChildren {
 
 export function Polaroid({ children, imageSrc, imageAlt, imageWidth, imageHeight, className }: PolaroidProps) {
   return (
-    <figure className={cn("max-w-64 p-2 rounded-xs shadow-md bg-[#fffdfa]", className)}>
+    <figure className={cn("w-64 p-2 rounded-xs shadow-md bg-[#fffdfa] dark:bg-gray-3 dark:ring-[0.5px] dark:ring-border", className)}>
       <div className="aspect-[3.4/2.8] overflow-hidden object-cover bg-background ring-[0.5px] ring-border shadow-[inset_0px_1px_1px_rgba(0,_0,_0,_0.8)] rounded-px">
         <img
           src={imageSrc}
@@ -21,10 +21,11 @@ export function Polaroid({ children, imageSrc, imageAlt, imageWidth, imageHeight
           height={imageHeight}
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover select-none"
+          draggable={false}
         />
       </div>
-      <figcaption className="p-2 text-center">
+      <figcaption className="p-2 text-center h-14">
         {children}
       </figcaption>
     </figure>
@@ -43,11 +44,11 @@ interface PolaroidsProps extends React.PropsWithChildren {
   className?: string;
 }
 
-const STACK_OFFSETS = [
-  { rotate: -2, x: 0, y: 0 },
-  { rotate: 4, x: 4, y: 4 },
-  { rotate: -4, x: 8, y: 8 },
-];
+const SPRING: Transition = {
+  type: "spring",
+  stiffness: 300,
+  damping: 15,
+};
 
 export function Polaroids({
   children,
@@ -56,22 +57,52 @@ export function Polaroids({
   imageHeight,
   className,
 }: PolaroidsProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const [stack, setStack] = React.useState(() => images.map((_, i) => i));
 
-  if (shouldReduceMotion) {
-    return (
-      <div className={cn("relative", className)}>
-        {images.map((item, i) => {
-          const offset = STACK_OFFSETS[i % STACK_OFFSETS.length];
-          const isTop = i === 0;
+  function handleDragEnd() {
+    setStack((prev) => {
+      const next = [...prev];
+      const top = next.pop()!;
+      next.unshift(top);
+      return next;
+    });
+  }
+
+  return (
+    <div className={cn("relative select-none w-fit", className)}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        {stack.map((imageIndex, stackPosition) => {
+          const item = images[imageIndex];
+          const isTop = stackPosition === 1;
+
           return (
-            <div
+            <motion.div
               key={item.src}
-              className={cn(isTop ? "relative" : "absolute top-0")}
-              style={{
-                transform: `rotate(${offset.rotate}deg) translateX(${offset.x}px) translateY(${offset.y}px)`,
-                zIndex: images.length - i,
+              layout
+              animate={{
+                scale: isTop ? 1 : 0.95,
+                x: isTop ? 0 : 8,
+                y: isTop ? 0 : 4,
+                rotate: isTop ? "-2deg" : "4deg",
               }}
+              transition={SPRING}
+              drag={isTop ? "x" : false}
+              dragElastic={0.3}
+              dragSnapToOrigin
+              dragTransition={SPRING}
+              whileDrag={{
+                cursor: "grabbing",
+                scale: 0.9,
+                opacity: 0.8,
+                rotate: "-3deg",
+              }}
+              onDragEnd={isTop ? handleDragEnd : undefined}
+              className={cn(
+                isTop
+                  ? "relative cursor-grab active:cursor-grabbing"
+                  : "absolute top-0"
+              )}
+              style={{ zIndex: stackPosition }}
             >
               <Polaroid
                 imageSrc={item.src}
@@ -81,58 +112,10 @@ export function Polaroids({
               >
                 {isTop ? children : undefined}
               </Polaroid>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
-    );
-  }
-
-  return (
-    <div className={cn("relative", className)}>
-      {images.map((item, i) => {
-        const offset = STACK_OFFSETS[i % STACK_OFFSETS.length];
-        const isTop = i === 0;
-        return (
-          <motion.div
-            key={item.src}
-            className={cn(isTop ? "relative" : "absolute top-0")}
-            style={{ zIndex: images.length - i }}
-            initial={{
-              opacity: 0,
-              scale: 0.98,
-              bottom:0,
-              rotate: 0,
-              x: 0,
-              y: offset.y + 8,
-              filter: "blur(3px)",
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: offset.rotate,
-              x: offset.x,
-              y: offset.y,
-              filter: "blur(0px)",
-            }}
-            transition={{
-              duration: 0.4,
-              type: "spring",
-              bounce: 0.1,
-              delay: i * 0.12,
-            }}
-          >
-            <Polaroid
-              imageSrc={item.src}
-              imageAlt={item.alt}
-              imageWidth={imageWidth}
-              imageHeight={imageHeight}
-            >
-              {isTop ? children : undefined}
-            </Polaroid>
-          </motion.div>
-        );
-      })}
+      </AnimatePresence>
     </div>
   );
 }
