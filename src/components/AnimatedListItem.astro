@@ -15,21 +15,24 @@ interface Props {
 const { href, label, description, delay = 0.3, external = false, featured = false } = Astro.props;
 ---
 
-<AnimateInUp delay={delay} as="li"  client:load>
+<AnimateInUp delay={delay} as="li" client:load>
   <a
     href={href}
     target={external ? "_blank" : undefined}
     rel={external ? "nofollow noopener" : undefined}
     class="group flex items-center gap-1.5 -mx-3 bg-transparent px-3 h-10 rounded-lg hover:bg-gray-3 focus focus-visible:bg-gray-3"
   >
-    <h3
-    class="text-base text-primary">
-    {label}
-    {featured && <Badge className="h-5 px-1.5 relative -top-0.5 ml-1">Featured</Badge>}
+    <h3 class="text-base text-primary">
+      {label}
+      {featured && <Badge className="h-5 px-1.5 relative -top-0.5 ml-1">Featured</Badge>}
     </h3>
     <p class="text-base text-secondary leading-normal text-balance truncate">
       {description}
     </p>
-      {external && <ArrowUpRightIcon className="opacity-0 group-hover:opacity-100 size-4 -ml-0.5 inline duration-100" />}
+    {
+      external && (
+        <ArrowUpRightIcon className="opacity-0 group-hover:opacity-100 size-4 -ml-0.5 inline duration-100 text-gray-9" />
+      )
+    }
   </a>
 </AnimateInUp>

@@ -11,70 +11,95 @@ import { BallpointHandwritten } from "@/components/Handwritten";
 import { Polaroids } from "@/components/Polaroid";
 import { inferRemoteSize } from "astro:assets";
 
-const polaroidSize = await inferRemoteSize("https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/");
+import meAndHaz from "@/assets/me-and-haz.jpeg";
+import meMilos from "@/assets/me-milos.jpeg";
+
+const polaroidSize1 = await inferRemoteSize(
+  "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/"
+);
+const polaroidSize2 = await inferRemoteSize(
+  "https://ucarecdn.com/7d0a8d78-8315-4c29-82ee-33e8f03ec5de/-/preview/230x230/"
+);
 
 const polaroidImages = [
-  { src: "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/", alt: "Me in the Spanish mountains, 2024" },
-  { src: "https://ucarecdn.com/7d0a8d78-8315-4c29-82ee-33e8f03ec5de/-/preview/230x230/", alt: "Me in the garden, '97" },
+  {
+    src: "https://ucarecdn.com/7d0a8d78-8315-4c29-82ee-33e8f03ec5de/-/preview/230x230/",
+    alt: "Me in the garden, '97",
+    width: polaroidSize2.width,
+    height: polaroidSize2.height,
+  },
+  {
+    src: meAndHaz.src,
+    alt: "Me and Haz",
+    width: meAndHaz.width,
+    height: meAndHaz.height,
+  },
+  {
+    src: meMilos.src,
+    alt: "Me by the Senne",
+    width: meMilos.width,
+    height: meMilos.height,
+  },
+  {
+    src: "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/",
+    alt: "Me in the Spanish mountains, 2024",
+    width: polaroidSize1.width,
+    height: polaroidSize1.height,
+  },
+];
+
+const projects = [
+  {
+    href: "https://github.com/heymynameisrob/reader-mode",
+    label: "EasyReader",
+    description: "Strip slop from websites so you can actually read them",
+  },
+  {
+    href: "#",
+    label: "Travel",
+    description: "Gallery of my travel photos over the years",
+  },
+  {
+    href: "https://cushion.so",
+    label: "Cushion",
+    description: "Modern collaboration platform for remote teams",
+  },
+  {
+    href: "https://github.com/heymynameisrob/milos-zed-theme",
+    label: "Milos",
+    description: "Tangerine and duck-egg flavoured Zed theme",
+  },
+  {
+    href: "https://github.com/heymynameisrob/pi-config",
+    label: "Pi",
+    description: "My setup for agentic coding with pi.dev",
+  },
 ];
 ---
+
 <Layout>
-  <div
-    class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5"
-  >
-   <Polaroids images={polaroidImages} imageWidth={polaroidSize.width} imageHeight={polaroidSize.height} client:load>
-     <BallpointHandwritten client:load />
-   </Polaroids>
-   <HomeHeader />
-   <AnimateInUp
-     as="section"
-     className="flex flex-col gap-4"
-     delay={0.3}
-     client:load
-   >
-   <h3 class="text-sm font-medium text-gray-10 tracking-tight">Work</h3>
-   <HomeWorkGrid client:load />
-   </AnimateInUp>
-    <AnimateInUp
-      as="section"
-      className="flex flex-col gap-4"
-      delay={0.4}
-      client:load
-    >
-    <h3 class="text-sm font-medium text-gray-10 tracking-tight">Projects</h3>
-    <ul class="flex flex-col gap-px">
-      <AnimatedListItem
-        href="#"
-        label="Travel"
-        description="Gallery of my travel photos over the years"
-        delay={0.4}
-        external
-      />
-      <AnimatedListItem
-        href="https://cushion.so"
-        label="Cushion"
-        description="Modern collaboration platform for remote teams"
-        delay={0.45}
-        external
-      />
-      <AnimatedListItem
-        href="https://github.com/heymynameisrob/milos-zed-theme"
-        label="Milos"
-        description="Tangerine and duck-egg flavoured Zed theme"
-        delay={0.5}
-        external
-      />
-      <AnimatedListItem
-        href="https://github.com/heymynameisrob/agent-config"
-        label="Agent config"
-        description="My setup for agentic coding"
-        delay={0.55}
-        external
-      />
-    </ul>
+  <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5">
+    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
+      <Polaroids images={polaroidImages} client:load>
+        <BallpointHandwritten client:load />
+      </Polaroids>
+    </AnimateInUp>
+    <HomeHeader />
+    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
+      <h3 class="text-sm font-medium text-gray-10 tracking-tight">Work</h3>
+      <HomeWorkGrid client:load />
+    </AnimateInUp>
+    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
+      <h3 class="text-sm font-medium text-gray-10 tracking-tight">Projects</h3>
+      <ul class="flex flex-col gap-px">
+        {
+          projects.map((project, i) => (
+            <AnimatedListItem {...project} delay={0.4 + i * 0.05} external />
+          ))
+        }
+      </ul>
     </AnimateInUp>
 
-      <Footer />
-
+    <Footer />
   </div>
 </Layout>

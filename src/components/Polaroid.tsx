@@ -5,14 +5,26 @@ import { AnimatePresence, motion, type Transition } from "framer-motion";
 interface PolaroidProps extends React.PropsWithChildren {
   imageSrc: string;
   imageAlt: string;
-  imageWidth: number;
-  imageHeight: number;
+  imageWidth?: number;
+  imageHeight?: number;
   className?: string;
 }
 
-export function Polaroid({ children, imageSrc, imageAlt, imageWidth, imageHeight, className }: PolaroidProps) {
+export function Polaroid({
+  children,
+  imageSrc,
+  imageAlt,
+  imageWidth,
+  imageHeight,
+  className,
+}: PolaroidProps) {
   return (
-    <figure className={cn("w-64 p-2 rounded-xs shadow-md bg-[#fffdfa] dark:bg-gray-3 dark:ring-[0.5px] dark:ring-border", className)}>
+    <figure
+      className={cn(
+        "w-64 p-2 rounded-xs shadow-md bg-[#fffdfa] dark:bg-gray-3 dark:ring-[0.5px] dark:ring-border",
+        className
+      )}
+    >
       <div className="aspect-[3.4/2.8] overflow-hidden object-cover bg-background ring-[0.5px] ring-border shadow-[inset_0px_1px_1px_rgba(0,_0,_0,_0.8)] rounded-px">
         <img
           src={imageSrc}
@@ -25,9 +37,7 @@ export function Polaroid({ children, imageSrc, imageAlt, imageWidth, imageHeight
           draggable={false}
         />
       </div>
-      <figcaption className="p-2 text-center h-14">
-        {children}
-      </figcaption>
+      <figcaption className="p-2 text-center h-14">{children}</figcaption>
     </figure>
   );
 }
@@ -35,12 +45,14 @@ export function Polaroid({ children, imageSrc, imageAlt, imageWidth, imageHeight
 interface PolaroidItem {
   src: string;
   alt: string;
+  width?: number;
+  height?: number;
 }
 
 interface PolaroidsProps extends React.PropsWithChildren {
   images: PolaroidItem[];
-  imageWidth: number;
-  imageHeight: number;
+  imageWidth?: number;
+  imageHeight?: number;
   className?: string;
 }
 
@@ -60,7 +72,7 @@ export function Polaroids({
   const [stack, setStack] = React.useState(() => images.map((_, i) => i));
 
   function handleDragEnd() {
-    setStack((prev) => {
+    setStack(prev => {
       const next = [...prev];
       const top = next.pop()!;
       next.unshift(top);
@@ -68,12 +80,14 @@ export function Polaroids({
     });
   }
 
+  const visibleStack = stack.slice(-2);
+
   return (
     <div className={cn("relative select-none w-fit", className)}>
       <AnimatePresence mode="popLayout" initial={false}>
-        {stack.map((imageIndex, stackPosition) => {
+        {visibleStack.map((imageIndex, visiblePosition) => {
           const item = images[imageIndex];
-          const isTop = stackPosition === 1;
+          const isTop = visiblePosition === visibleStack.length - 1;
 
           return (
             <motion.div
@@ -89,6 +103,7 @@ export function Polaroids({
               drag={isTop ? "x" : false}
               dragElastic={0.3}
               dragSnapToOrigin
+              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
               dragTransition={SPRING}
               whileDrag={{
                 cursor: "grabbing",
@@ -98,17 +113,15 @@ export function Polaroids({
               }}
               onDragEnd={isTop ? handleDragEnd : undefined}
               className={cn(
-                isTop
-                  ? "relative cursor-grab active:cursor-grabbing"
-                  : "absolute top-0"
+                isTop ? "relative cursor-grab active:cursor-grabbing" : "absolute top-0"
               )}
-              style={{ zIndex: stackPosition }}
+              style={{ zIndex: visiblePosition }}
             >
               <Polaroid
                 imageSrc={item.src}
                 imageAlt={item.alt}
-                imageWidth={imageWidth}
-                imageHeight={imageHeight}
+                imageWidth={item.width ?? imageWidth}
+                imageHeight={item.height ?? imageHeight}
               >
                 {isTop ? children : undefined}
               </Polaroid>
