@@ -84,21 +84,23 @@ const CmdkPreview = React.memo(function CmdkPreview() {
         {CMDK_ROWS.slice(0, 3).map((row, index) => {
           const rowKey = `cmdk-top-${index}`;
           return (
-          <motion.div
-            key={rowKey}
-            ref={el => {
-              rowRefs.current[index] = el;
-            }}
-            className="h-9 rounded-lg px-2 flex items-center justify-between"
-            animate={{ backgroundColor: selectedIndex === index ? "var(--color-gray-2)" : "transparent" }}
-            transition={{ duration: 0.18 }}
-          >
-            <div className="flex items-center gap-2">
-              <div className="size-4 rounded bg-gray-4" />
-              <div className={`h-3 rounded bg-gray-5 ${row.w}`} />
-            </div>
-            {row.keyHint && <div className="h-5 w-5 rounded bg-gray-3" />}
-          </motion.div>
+            <motion.div
+              key={rowKey}
+              ref={el => {
+                rowRefs.current[index] = el;
+              }}
+              className="h-9 rounded-lg px-2 flex items-center justify-between"
+              animate={{
+                backgroundColor: selectedIndex === index ? "var(--color-gray-2)" : "transparent",
+              }}
+              transition={{ duration: 0.18 }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="size-4 rounded bg-gray-4" />
+                <div className={`h-3 rounded bg-gray-5 ${row.w}`} />
+              </div>
+              {row.keyHint && <div className="h-5 w-5 rounded bg-gray-3" />}
+            </motion.div>
           );
         })}
         <div className="h-3 w-16 rounded bg-gray-4 mx-1 mt-1" />
@@ -111,7 +113,9 @@ const CmdkPreview = React.memo(function CmdkPreview() {
                 rowRefs.current[index] = el;
               }}
               className="h-9 rounded-lg px-2 flex items-center justify-between"
-              animate={{ backgroundColor: selectedIndex === index ? "var(--color-gray-2)" : "transparent" }}
+              animate={{
+                backgroundColor: selectedIndex === index ? "var(--color-gray-2)" : "transparent",
+              }}
               transition={{ duration: 0.18 }}
             >
               <div className="flex items-center gap-2">
@@ -190,10 +194,10 @@ const StreamingPreview = React.memo(function StreamingPreview() {
 
   return (
     <div className="w-full h-[200px] flex flex-col px-2 py-3">
-        <div
-          ref={streamContainerRef}
-          className="space-y-2 pt-1 flex-1 min-h-0 overflow-y-auto scroll-smooth pr-1 pb-2 mask-y-from-70%"
-        >
+      <div
+        ref={streamContainerRef}
+        className="space-y-2 pt-1 flex-1 min-h-0 overflow-y-auto scroll-smooth pr-1 pb-2 mask-y-from-70%"
+      >
         <div className="w-full pt-1 space-y-2">
           <motion.div
             className="flex justify-end"
@@ -207,49 +211,49 @@ const StreamingPreview = React.memo(function StreamingPreview() {
             </div>
           </motion.div>
           <div className="h-3 w-10 rounded bg-gray-4" />
-            {STREAMING_TOKEN_ROWS.map((row, rowIndex) => {
-              const visibleStep = rowIndex + 1;
-              if (step < visibleStep) return null;
-              return (
-                <div key={`stream-${row.join('-')}`} className="flex flex-wrap gap-1.5">
-                  {row.map(w => (
-                    <motion.div
-                      key={`stream-${w}`}
-                      className="h-3 rounded bg-accent/20 dark:bg-accent/50"
-                      style={{ width: `${w}px` }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.14 }}
-                    />
-                  ))}
-                </div>
-              );
-            })}
-            {step >= 6 ? (
-              <div className="flex items-center gap-2 pt-1">
-                <div className="flex flex-wrap gap-1.5">
-                  {[20, 24, 18, 22, 16, 19, 23].map(w => (
-                    <motion.div
-                      key={`tail-${w}`}
-                      className="h-3 rounded bg-accent/20 dark:bg-accent/50"
-                      style={{ width: `${w}px` }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.14 }}
-                    />
-                  ))}
-                </div>
+          {STREAMING_TOKEN_ROWS.map((row, rowIndex) => {
+            const visibleStep = rowIndex + 1;
+            if (step < visibleStep) return null;
+            return (
+              <div key={`stream-${row.join("-")}`} className="flex flex-wrap gap-1.5">
+                {row.map(w => (
+                  <motion.div
+                    key={`stream-${w}`}
+                    className="h-3 rounded bg-accent/20 dark:bg-accent/50"
+                    style={{ width: `${w}px` }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.14 }}
+                  />
+                ))}
               </div>
-            ) : null}
-          </div>
+            );
+          })}
+          {step >= 6 ? (
+            <div className="flex items-center gap-2 pt-1">
+              <div className="flex flex-wrap gap-1.5">
+                {[20, 24, 18, 22, 16, 19, 23].map(w => (
+                  <motion.div
+                    key={`tail-${w}`}
+                    className="h-3 rounded bg-accent/20 dark:bg-accent/50"
+                    style={{ width: `${w}px` }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.14 }}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
+      </div>
       <div className="flex items-center justify-between h-9 shrink-0 rounded-full ring-1 ring-border bg-gray-1 px-3 py-2.5">
         <div className="h-3 w-24 rounded bg-gray-3" />
 
-          <div className="flex items-center gap-2">
-            <div className="size-3 rounded bg-gray-3" />
-            <div className="size-5 rounded-full bg-gray-5" />
-          </div>
+        <div className="flex items-center gap-2">
+          <div className="size-3 rounded bg-gray-3" />
+          <div className="size-5 rounded-full bg-gray-5" />
+        </div>
       </div>
     </div>
   );
@@ -289,12 +293,19 @@ const AgentFeedbackPreview = React.memo(function AgentFeedbackPreview() {
         <StreamingCommentSkeleton />
       </div>
       <div className="h-px w-full bg-gray-3" />
-      <motion.div layout transition={{ duration: 0.35, ease: "easeInOut" }} className="relative p-3 overflow-hidden">
+      <motion.div
+        layout
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="relative p-3 overflow-hidden"
+      >
         <motion.div
           className="grid"
           animate={{ opacity: expanded ? 0 : 1 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          style={{ gridTemplateRows: expanded ? '0fr' : '1fr', transition: 'grid-template-rows 0.3s ease-in-out' }}
+          style={{
+            gridTemplateRows: expanded ? "0fr" : "1fr",
+            transition: "grid-template-rows 0.3s ease-in-out",
+          }}
         >
           <div className="overflow-hidden [grid-row:1] [grid-column:1]">
             <div className="flex items-center gap-2">
@@ -306,17 +317,27 @@ const AgentFeedbackPreview = React.memo(function AgentFeedbackPreview() {
                       "conic-gradient(from 0deg, transparent 0%, var(--color-primary) 10%, var(--color-primary) 25%, transparent 35%)",
                   }}
                   animate={reduced ? {} : { transform: ["rotate(0deg)", "rotate(360deg)"] }}
-                  transition={reduced ? { duration: 0 } : { duration: 0.475, repeat: Infinity, ease: "linear" }}
+                  transition={
+                    reduced
+                      ? { duration: 0 }
+                      : { duration: 0.475, repeat: Infinity, ease: "linear" }
+                  }
                 />
                 <div className="relative z-10 flex size-full items-center justify-center rounded-full bg-background">
                   <div className="size-2.5 rounded-full bg-gray-5" />
                 </div>
               </div>
-              <motion.div className="h-3 w-28 rounded bg-gray-3" {...SKELETON_PULSE} transition={{ ...SKELETON_PULSE.transition, delay: 0.1 }} />
+              <motion.div
+                className="h-3 w-28 rounded bg-gray-3"
+                {...SKELETON_PULSE}
+                transition={{ ...SKELETON_PULSE.transition, delay: 0.1 }}
+              />
               <motion.div
                 className="ml-1 size-2 rounded-full bg-gray-7"
                 animate={reduced ? {} : { opacity: [0.2, 1, 0.2] }}
-                transition={reduced ? { duration: 0 } : { duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                transition={
+                  reduced ? { duration: 0 } : { duration: 0.9, repeat: Infinity, ease: "easeInOut" }
+                }
               />
             </div>
           </div>
@@ -326,7 +347,10 @@ const AgentFeedbackPreview = React.memo(function AgentFeedbackPreview() {
           className="grid"
           animate={{ opacity: expanded ? 1 : 0 }}
           transition={{ duration: 0.35, ease: "easeInOut" }}
-          style={{ gridTemplateRows: expanded ? '1fr' : '0fr', transition: 'grid-template-rows 0.35s ease-in-out' }}
+          style={{
+            gridTemplateRows: expanded ? "1fr" : "0fr",
+            transition: "grid-template-rows 0.35s ease-in-out",
+          }}
         >
           <div className="overflow-hidden [grid-row:1] [grid-column:1]">
             <StreamingCommentSkeleton />
@@ -474,10 +498,10 @@ const MarkdownEditorPreview = React.memo(function MarkdownEditorPreview() {
           // oxlint-disable-next-line react/no-array-index-key
           if (step <= rowIndex) return <div key={`md-empty-${rowIndex}`} className="h-3" />;
           return (
-            <div key={`md-${row.join('-')}`} className="flex flex-wrap gap-1.5">
+            <div key={`md-${row.join("-")}`} className="flex flex-wrap gap-1.5">
               {row.map(w => (
                 <motion.div
-                  key={`md-${row.join('-')}-${w}`}
+                  key={`md-${row.join("-")}-${w}`}
                   className="h-3 rounded bg-accent/20 dark:bg-accent/50"
                   style={{ width: `${w}px` }}
                   initial={{ opacity: 0 }}
@@ -497,7 +521,8 @@ const DEMOS_WITH_PREVIEWS: DemoItem[] = [
   {
     id: "cmdk",
     name: "Command K",
-    description: "⌘\u00A0K menu used in cushion.so. Full workspace search with pagination and shortcuts",
+    description:
+      "⌘\u00A0K menu used in cushion.so. Full workspace search with pagination and shortcuts",
     href: "/posts/command-k-cushion",
     preview: <CmdkPreview />,
   },
@@ -511,7 +536,7 @@ const DEMOS_WITH_PREVIEWS: DemoItem[] = [
   },
   {
     id: "ai-stream",
-    name: "Streaming",
+    name: "Designing Agents",
     description:
       "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API.",
     href: "/posts/designing-agent-chat-interfaces",
@@ -547,7 +572,9 @@ const DemoGridCard = React.memo(function DemoGridCard({
       aria-label={name}
       className="group relative block overflow-hidden rounded-lg border bg-gray-2 p-5 hover:bg-gray-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      <div aria-hidden="true" className="pointer-events-none grid place-items-center aspect-[4/3]">{children}</div>
+      <div aria-hidden="true" className="pointer-events-none grid place-items-center aspect-[4/3]">
+        {children}
+      </div>
       <span className="sr-only">{name}</span>
     </a>
   );
@@ -591,8 +618,8 @@ function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("scroll", handleScroll, { capture: true });
   }, []);
 
-  const activeItem = React.useMemo(() =>
-    activeCardId ? DEMOS_WITH_PREVIEWS.find(item => item.id === activeCardId) : undefined,
+  const activeItem = React.useMemo(
+    () => (activeCardId ? DEMOS_WITH_PREVIEWS.find(item => item.id === activeCardId) : undefined),
     [activeCardId]
   );
 
@@ -604,7 +631,10 @@ function HomeWorkGridHoverLayer({ children }: { children: React.ReactNode }) {
   ) : undefined;
 
   return (
-    <CustomHoverCard content={content} contentClass="bg-black p-1 px-1.5 w-fit flex-row gap-2 text-white">
+    <CustomHoverCard
+      content={content}
+      contentClass="bg-black p-1 px-1.5 w-fit flex-row gap-2 text-white"
+    >
       <div
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
@@ -626,7 +656,7 @@ export function HomeWorkGrid() {
               {item.preview}
             </DemoGridCard>
           ))}
-          </div>
+        </div>
       </HomeWorkGridHoverLayer>
     </section>
   );

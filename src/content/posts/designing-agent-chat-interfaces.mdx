@@ -1,12 +1,126 @@
 ---
-title: Streaming
-description: "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API."
+title: Designing agents
+description: Description goes here
 date: 2026-05-19
-type: "demo"
-component: "home-streaming"
-company: "Personal"
+type: "post"
 ---
 
 import { UIExample } from "@/components/demos/UIExample";
 
-<UIExample component="home-streaming" client:load />
+Agents [work among us](https://www.youtube.com/watch?v=Zi4xKBfL3hY)!
+
+The explosion of AI agents over the last few years has been extrodinary. Highlighted by the release of Claude Code and Codex in the software space, agents has transformed how we leverage AI to do work for us.
+
+Agents are an LLM with access to tools (e.g bash, API, MCP), operating in a loop until their goal is achieved. This allows them to accomplish complex multi-step tasks autonomously.
+
+```
+Animation showing the loop process of an agent
+```
+
+Agents are surrounded by a 'harness', which come in various shapes and sizes. From TUI's like [Claude Code](https://code.claude.com/docs/en/overview) to cloud platforms for long-running tasks like those on [n8n](https://www.n8n.io/).
+
+## What makes agents so powerful
+
+Agents are quite different to traditional software. They are non-deterministic, which means you do not pre-program every possible path ahead of time. Instead, you give them a goal, a set of tools, and enough context to decide what to do next.
+
+That loop is what makes them powerful. An agent can plan a step, call a tool, inspect the result, update its plan, and continue until it reaches a useful end state. This is why coding agents can read files, edit code, run tests, inspect failures, and try again without needing a human to describe every intermediate action.
+
+The best agents are not magic. They are systems with clear tools, tight feedback loops, and a way to check their work. They work best when humans steer intent and judgement, while the agent handles the slower work of searching, trying, validating, and repeating.
+
+- **Tools give agents reach**: They can query APIs, read files, run commands, search the web, or update other systems instead of only generating text.
+- **Loops give agents persistence**: They can use each result as new context, recover from errors, and make progress over many turns.
+- **Feedback gives agents ground truth**: Tests, logs, evals, screenshots, and human review help the agent know whether its work is correct.
+- **Composability gives agents flexibility**: Small, well-described tools let the agent combine actions in ways the designer did not need to predict upfront.
+
+## Designing agentic interfaces
+
+When I was kid, I used to love the turn-based adventure books. I was never a big reader, and preferred to be on the computer or playing outside. But these adventure books gripped me. Being able to decide your own adventure hooked me in to the story, instead of leaving me feeling like a spectator.
+
+Agent interfaces are much the same. You as the user are constantly involved in shaping what the interface is. Each experience is unqiue to the session itself. The interface constructing itself overon each turn.
+
+The UI acts as a series of patterns the agent can decide to use to help the user make choices, stay informed, or get an answer.
+
+### Conversation
+
+Chatbots are historically one of the worst interfaces in GUI. They offer very little affordances on what a system can do and how it works. Because most systems are designed with a set of capabilities, users need these capabilities clearly displayed.
+
+Agents flip this around. The user can ask a broad question, add a constraint, correct course, or ask what the system can do without learning a new control surface first. Agents also help users discover what it can do that the developers never intended. They are _emergent by design_.
+
+```
+Visual: Chat prompt with a short user request, a concise streaming agent reply, attached file chips, model selector, context meter, and send button.
+```
+
+The textbox is the starting point, then the interface can add files, model choice, context controls, and suggested actions around each turn.
+
+Good agent chat should stay brief, direct, and easy to steer. Long sessions need visible context management because every message, tool result, and system instruction competes for the same window. Give the user a way to see what context is attached, what has been compacted, and when the conversation is getting too full to remain useful.
+
+### Disclosure
+
+An agent should clearly disclose that it is an agent. The user should never have to infer whether they are talking to a person, a bot, or a delegated system acting on behalf of someone else. Labels, avatars, activity feeds, and assignee states should make that boundary obvious.
+
+Agents can do work, but a human still owns the outcome. The interface should show who delegated the task, who can approve it, and where responsibility sits if something goes wrong.
+
+```
+Visual: Activity feed where human users and agent users appear together, with agent badges, a delegated-by label, and a human owner shown as accountable.
+```
+
+Disclosure also means the agent should be honest about its agent-ness during the interaction, avoiding fake personality or pretending it is a sentient being.
+
+Some products tend to put `SOUL.md` or `PERSONALITY.md` files in their agents to give them whimsy and human-like qualities. Whilst this can have it's place, it's important to remember the ethical responsibility to not mystify AI agents more than they already are. This risks to a false expectation of what agents can do (at best) and [risk of AI psychosis](https://pmc.ncbi.nlm.nih.gov/articles/PMC12712562/) at worst.
+
+### Transparency
+
+Silence makes agents feel broken. When an agent is invoked, it should immediately show that it has received the request, then keep exposing its state as it moves through planning, tool use, waiting, failure, and completion. The user should be able to understand the current state at a glance without reading a wall of logs.
+
+Agent tasks can often take a long time by typical computing standards. Even the fastest of agent tasks can be multiple seconds. Providing constant yet updating feedback helps the experience not feel broken.
+
+```
+Visual: Agent message with a collapsible work log showing states such as Thinking, Reading files, Calling API, Running tests, and Finished, each with loading, success, or failed indicators.
+```
+
+Transparency should be progressive. Most users need a clear status line like “Reading docs” or “Running tests”, while expert users may need to inspect tool calls, prompts, reasoning summaries, logs, and outputs. This is how the interface turns a non-deterministic system into something the user can supervise.
+
+### Tool use
+
+Tools are where agents become useful. They let an agent query a database, read files, call APIs, search the web, run code, or update another product. The interface should show tool calls in plain language, close to the conversation, so the user can see how the agent is gathering ground truth from the environment.
+
+Whilst helpful, tools can inflate context. Whilst a typical computer program can read hundreds of rows and iterate over them until it finds one with no problem - an agent will bloat it's context by doing so. Agent tools should with the smallest surface area possible, on the understanding agents can read their output and choose to run again with tweaked parameters.
+
+```
+Visual: Tool-call stack inside a chat response, with human-readable tool names, input/output previews, approval controls for risky actions, and a warning state for untrusted external content.
+```
+
+Tool use also changes the risk profile. External data can carry prompt injection, actions can have side effects, and long-running tasks can drift. Good interfaces make tool output inspectable, ask for approval before sensitive actions, support cancellation, and use guardrails or sandboxes for work that should not touch production directly.
+
+### Human in the loop
+
+Agents work best when humans steer and agents execute. The user should be able to pause, redirect, approve, reject, or stop work without fighting the system. If the user asks the agent to disengage, it should step back immediately and wait for a clear signal before continuing.
+
+```
+Component: Running tools call with input box. User can hit esc whilst focused and it triggers a interrupted state, like a coding agent.
+```
+
+Human-in-the-loop design is not only about approvals. It is also about checkpoints, escalation, and feedback loops. The agent should know when to ask for judgement, when to present options, and when to hand over to a person because accountability, taste, or business context matters more than automation.
+
+## Good patterns
+
+Put a list of cool patterns in agentic interfaces ?
+
+Linear do a great job of this by showing who delegated it when assigning an issue to a coding agent. This makes it really clear who 'owns the outcome' of the agent run, as it [can never be the agent itself](https://linear.app/developers/aig#an-agent-cannot-be-held-accountable).
+
+- Linear : agent delegation
+- Pi: /tree context management
+- Claude Code: whimsy verbs
+- n8n: Memories card / something else
+
+## Resources
+
+List interesting resources that I used to help shape this
+
+https://www.anthropic.com/engineering/building-effective-agents
+https://openai.com/index/harness-engineering/
+https://linear.app/developers/aig#an-agent-cannot-be-held-accountable
+https://every.to/guides/agent-native
+https://mariozechner.at/posts/2025-11-30-pi-coding-agent/#toc_11
+
+_AI was used to help edit, provide feedback, and structure this article. The points and thoughts in it are from me._

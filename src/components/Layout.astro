@@ -11,13 +11,7 @@ interface Props {
   canonical?: string;
 }
 
-const {
-  title = SEO_TITLE,
-  description = SEO_DESCRIPTION,
-  og,
-  noIndex,
-  canonical,
-} = Astro.props;
+const { title = SEO_TITLE, description = SEO_DESCRIPTION, og, noIndex, canonical } = Astro.props;
 ---
 
 <!doctype html>
@@ -37,19 +31,12 @@ const {
     <meta property="og:url" content="https://heymynameisrob.com" />
     <meta property="og:type" content="page" />
     <meta property="og:description" content={description} />
-    <meta
-      property="og:image"
-      content={og || `https://heymynameisrob.com/og-image.png`}
-    />
+    <meta property="og:image" content={og || `https://heymynameisrob.com/og-image.png`} />
     <meta name="twitter:card" content="summary_large_image" />
     {canonical && <link rel="canonical" href={canonical} />}
     {noIndex && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <title>{title}</title>
   </head>
   <body class="w-full">

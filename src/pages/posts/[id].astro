@@ -74,7 +74,7 @@ const { Content, headings } = await render(post);
         label="Back"
         className="text-sm [&_span]:no-underline text-gray-9 hover:text-primary"
       />
-      <ToC headings={headings} client:load />
+      <ToC headings={headings} title={post.data.title} client:load />
     </aside>
   </div>
   <Content
