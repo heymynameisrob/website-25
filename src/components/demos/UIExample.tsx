@@ -33,6 +33,7 @@ import { List } from "@/components/demos/motion/List";
 import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Prompt } from "@/components/demos/Prompt";
+import { AgentLoopDemo } from "@/components/remotion";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -88,7 +89,7 @@ export function UIExample({
 
   return (
     <figure className="flex flex-col justify-center items-center gap-2 mt-6">
-      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-1 rounded-xl inset-ring-[0.5px] inset-ring-border focus overflow-hidden">
+      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-1 rounded-xl ring-[0.5px] ring-border focus overflow-hidden">
         <React.Fragment key={key}>
           {COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}
         </React.Fragment>
@@ -175,4 +176,5 @@ const COMPONENT_MAP = {
   "home-command-k": <CushionCommand />,
   "home-agent-feedback": <Thinking />,
   "home-streaming": <Prompt />,
+  "agent-loop": <AgentLoopDemo />,
 };

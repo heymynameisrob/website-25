@@ -6,16 +6,18 @@ type: "post"
 ---
 
 import { UIExample } from "@/components/demos/UIExample";
+import { AgentWhileLoop } from "@/components/mdx/AgentWhileLoop";
+import { Disclosure } from "@/components/mdx/Disclosure";
 
 Agents [work among us](https://www.youtube.com/watch?v=Zi4xKBfL3hY)!
 
 The explosion of AI agents over the last few years has been extrodinary. Highlighted by the release of Claude Code and Codex in the software space, agents has transformed how we leverage AI to do work for us.
 
-Agents are an LLM with access to tools (e.g bash, API, MCP), operating in a loop until their goal is achieved. This allows them to accomplish complex multi-step tasks autonomously.
+Agents are an LLM with access to tools (e.g bash, API, MCP), operating in a loop until their goal is achieved. This allows them to accomplish complex multi-step tasks autonomously. Despite being incredibly powerful, they are <Disclosure label="rather simple" client:load><AgentWhileLoop /></Disclosure>.
 
-```
-Animation showing the loop process of an agent
-```
+<UIExample component="agent-loop" client:load>
+  Agents are just an LLM with tools, in a fancy while loop
+</UIExample>
 
 Agents are surrounded by a 'harness', which come in various shapes and sizes. From TUI's like [Claude Code](https://code.claude.com/docs/en/overview) to cloud platforms for long-running tasks like those on [n8n](https://www.n8n.io/).
 

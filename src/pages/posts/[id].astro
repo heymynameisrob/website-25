@@ -4,11 +4,12 @@ import { getImage } from "astro:assets";
 import type { PostWithImages } from "@/components/post/PostLayout.astro";
 
 import PostLayout from "@/components/post/PostLayout.astro";
-import Divider from "@/components/Divider.astro";
-import CodeBlockWrapper from "@/components/CodeBlockWrapper.astro";
-import Blockquote from "@/components/Blockquote.astro";
+import Divider from "@/components/mdx/Divider.astro";
+import CodeBlockWrapper from "@/components/mdx/CodeBlockWrapper.astro";
+import Blockquote from "@/components/mdx/Blockquote.astro";
 import LinkWithIcon from "@/components/LinkWithIcon.astro";
 
+import { Disclosure } from "@/components/mdx/Disclosure";
 import { ToC } from "@/components/ToC";
 
 export async function getStaticPaths() {
@@ -82,6 +83,7 @@ const { Content, headings } = await render(post);
       hr: Divider,
       pre: CodeBlockWrapper,
       blockquote: Blockquote,
+      Disclosure,
     }}
   />
 </PostLayout>
