@@ -1,6 +1,6 @@
 ---
-title: Designing agents
-description: Description goes here
+title: Agentic Chat
+description: Notes on designing chat inputs and message patterns for AI agents.
 date: 2026-05-19
 type: "post"
 ---
@@ -9,120 +9,322 @@ import { UIExample } from "@/components/demos/UIExample";
 import { AgentWhileLoop } from "@/components/mdx/AgentWhileLoop";
 import { Disclosure } from "@/components/mdx/Disclosure";
 
-Agents [work among us](https://www.youtube.com/watch?v=Zi4xKBfL3hY)!
+Chatbots have historically been one of the weakest GUI patterns. They offer few affordances for what a system can do or how it works, and most products were better served by buttons, forms, and direct manipulation.
 
-The explosion of AI agents over the last few years has been extrodinary. Highlighted by the release of Claude Code and Codex in the software space, agents has transformed how we leverage AI to do work for us.
+Agents change that. They are open-ended systems, so open-ended text becomes useful rather than a fallback. Users discover what an agent can do through questioning, iteration, and back-and-forth conversation.
 
-Agents are an LLM with access to tools (e.g bash, API, MCP), operating in a loop until their goal is achieved. This allows them to accomplish complex multi-step tasks autonomously. Despite being incredibly powerful, they are <Disclosure label="rather simple" client:load><AgentWhileLoop /></Disclosure>.
+That does not mean the interface is solved by adding a textbox. Agents still need controls that help users choose context, understand activity, and step in when the system goes off course.
 
-<UIExample component="agent-loop" client:load>
-  Agents are just an LLM with tools, in a fancy while loop
+The best agent chat interfaces do three things well. They keep the main action lightweight, make agent activity visible without turning the chat into a log, and let users interrupt or steer the system when needed.
+
+This post breaks the interface into three parts: the chat input, messages, and human-in-the-loop patterns.
+
+## Composer
+
+The composer is the main channel of communication with an agent. Because agents respond to open-ended text, the composer has to make writing, reviewing, and sending prompts feel simple.
+
+<UIExample component="agent-chat-input" client:load>
+  The entry point to every app nowadays
 </UIExample>
 
-Agents are surrounded by a 'harness', which come in various shapes and sizes. From TUI's like [Claude Code](https://code.claude.com/docs/en/overview) to cloud platforms for long-running tasks like those on [n8n](https://www.n8n.io/).
+A composer may look like a textbox, but it has to carry more state than a normal input. It often needs model selection, attachments, upload progress, and send state.
 
-## What makes agents so powerful
+Keeping those controls inside one visual container helps users understand that they belong to the same action: sending a message to the agent. Splitting them across a toolbar or separate panel makes the action feel less direct.
 
-Agents are quite different to traditional software. They are non-deterministic, which means you do not pre-program every possible path ahead of time. Instead, you give them a goal, a set of tools, and enough context to decide what to do next.
+```tsx title="Composer.tsx"
+function Composer() {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { sendMessage, setMessage, setFiles, message, files, model, onModelChange } =
+    useSendAgentMessage();
+  const { isStreaming, handleStopStream } = useChat();
 
-That loop is what makes them powerful. An agent can plan a step, call a tool, inspect the result, update its plan, and continue until it reaches a useful end state. This is why coding agents can read files, edit code, run tests, inspect failures, and try again without needing a human to describe every intermediate action.
-
-The best agents are not magic. They are systems with clear tools, tight feedback loops, and a way to check their work. They work best when humans steer intent and judgement, while the agent handles the slower work of searching, trying, validating, and repeating.
-
-- **Tools give agents reach**: They can query APIs, read files, run commands, search the web, or update other systems instead of only generating text.
-- **Loops give agents persistence**: They can use each result as new context, recover from errors, and make progress over many turns.
-- **Feedback gives agents ground truth**: Tests, logs, evals, screenshots, and human review help the agent know whether its work is correct.
-- **Composability gives agents flexibility**: Small, well-described tools let the agent combine actions in ways the designer did not need to predict upfront.
-
-## Designing agentic interfaces
-
-When I was kid, I used to love the turn-based adventure books. I was never a big reader, and preferred to be on the computer or playing outside. But these adventure books gripped me. Being able to decide your own adventure hooked me in to the story, instead of leaving me feeling like a spectator.
-
-Agent interfaces are much the same. You as the user are constantly involved in shaping what the interface is. Each experience is unqiue to the session itself. The interface constructing itself overon each turn.
-
-The UI acts as a series of patterns the agent can decide to use to help the user make choices, stay informed, or get an answer.
-
-### Conversation
-
-Chatbots are historically one of the worst interfaces in GUI. They offer very little affordances on what a system can do and how it works. Because most systems are designed with a set of capabilities, users need these capabilities clearly displayed.
-
-Agents flip this around. The user can ask a broad question, add a constraint, correct course, or ask what the system can do without learning a new control surface first. Agents also help users discover what it can do that the developers never intended. They are _emergent by design_.
-
-```
-Visual: Chat prompt with a short user request, a concise streaming agent reply, attached file chips, model selector, context meter, and send button.
+  return (
+    <form onSubmit={sendMessage}>
+      <input ref={fileInputRef} type="file" hidden onChange={setFiles} />
+      <Attachments files={files} />
+      <textarea value={message} onChange={setMessage} />
+      <div>
+        <Button icon="paperclip" onUpload={() => fileInputRef.current?.click()} />
+        <ModelSelect model={model} onModelChange={onModelChange} />
+        <SendStopButton
+          disabled={message.length === 0}
+          isStreaming={isStreaming}
+          onStopStream={handleStopStream}
+        />
+      </div>
+    </form>
+  );
+}
 ```
 
-The textbox is the starting point, then the interface can add files, model choice, context controls, and suggested actions around each turn.
+This is a simplified version of the component above
 
-Good agent chat should stay brief, direct, and easy to steer. Long sessions need visible context management because every message, tool result, and system instruction competes for the same window. Give the user a way to see what context is attached, what has been compacted, and when the conversation is getting too full to remain useful.
+As you can see it's essentially a `form` wrapping a `<textarea>` and `<button role="submit">`. Other controls set metadata, such as the model to use, or add extra form data, such as files.
 
-### Disclosure
+That said there a few things going on under the hood that are interesting.
 
-An agent should clearly disclose that it is an agent. The user should never have to infer whether they are talking to a person, a bot, or a delegated system acting on behalf of someone else. Labels, avatars, activity feeds, and assignee states should make that boundary obvious.
+### Autosize textarea
 
-Agents can do work, but a human still owns the outcome. The interface should show who delegated the task, who can approve it, and where responsibility sits if something goes wrong.
+Prompts vary in length and often run over one line. Textareas work well because they let users enter free-form text across multiple lines.
 
-```
-Visual: Activity feed where human users and agent users appear together, with agent badges, a delegated-by label, and a human owner shown as accountable.
-```
+However, we do not want users to resize them manually because that can break the layout. We also cannot keep the input at a fixed height because that makes longer text hard to read.
 
-Disclosure also means the agent should be honest about its agent-ness during the interaction, avoiding fake personality or pretending it is a sentient being.
+```ts title="useAutosizeTextarea.ts"
+export function useAutosizeTextarea(
+  ref: React.RefObject<HTMLTextAreaElement | null>,
+  value: string,
+  options: UseAutosizeTextareaOptions
+) {
+  React.useLayoutEffect(() => {
+    const textarea = ref.current;
+    const { minHeight = 48, maxHeight = 120 } = options;
 
-Some products tend to put `SOUL.md` or `PERSONALITY.md` files in their agents to give them whimsy and human-like qualities. Whilst this can have it's place, it's important to remember the ethical responsibility to not mystify AI agents more than they already are. This risks to a false expectation of what agents can do (at best) and [risk of AI psychosis](https://pmc.ncbi.nlm.nih.gov/articles/PMC12712562/) at worst.
+    if (!textarea) return;
 
-### Transparency
+    textarea.style.height = `${minHeight}px`;
+    const height = clamp(textarea.scrollHeight, [minHeight, maxHeight]);
+    const isOverflowing = textarea.scrollHeight > maxHeight;
 
-Silence makes agents feel broken. When an agent is invoked, it should immediately show that it has received the request, then keep exposing its state as it moves through planning, tool use, waiting, failure, and completion. The user should be able to understand the current state at a glance without reading a wall of logs.
-
-Agent tasks can often take a long time by typical computing standards. Even the fastest of agent tasks can be multiple seconds. Providing constant yet updating feedback helps the experience not feel broken.
-
-```
-Visual: Agent message with a collapsible work log showing states such as Thinking, Reading files, Calling API, Running tests, and Finished, each with loading, success, or failed indicators.
-```
-
-Transparency should be progressive. Most users need a clear status line like “Reading docs” or “Running tests”, while expert users may need to inspect tool calls, prompts, reasoning summaries, logs, and outputs. This is how the interface turns a non-deterministic system into something the user can supervise.
-
-### Tool use
-
-Tools are where agents become useful. They let an agent query a database, read files, call APIs, search the web, run code, or update another product. The interface should show tool calls in plain language, close to the conversation, so the user can see how the agent is gathering ground truth from the environment.
-
-Whilst helpful, tools can inflate context. Whilst a typical computer program can read hundreds of rows and iterate over them until it finds one with no problem - an agent will bloat it's context by doing so. Agent tools should with the smallest surface area possible, on the understanding agents can read their output and choose to run again with tweaked parameters.
-
-```
-Visual: Tool-call stack inside a chat response, with human-readable tool names, input/output previews, approval controls for risky actions, and a warning state for untrusted external content.
+    textarea.style.height = `${height}px`;
+    textarea.style.overflowY = isOverflowing ? "auto" : "hidden";
+  }, [ref, value, options]);
+}
 ```
 
-Tool use also changes the risk profile. External data can carry prompt injection, actions can have side effects, and long-running tasks can drift. Good interfaces make tool output inspectable, ask for approval before sensitive actions, support cancellation, and use guardrails or sandboxes for work that should not touch production directly.
+This hook clamps the textarea between a min and max height, allowing it to expand as needed within those bounds without breaking the layout.
 
-### Human in the loop
+The max height matters as much as the autosizing. Without a limit, a long prompt can push the conversation out of view and make the composer feel like the whole app. With too small a limit, users lose confidence because they cannot review what they wrote. The clamp gives the prompt enough room without letting it take over the layout.
 
-Agents work best when humans steer and agents execute. The user should be able to pause, redirect, approve, reject, or stop work without fighting the system. If the user asks the agent to disengage, it should step back immediately and wait for a clear signal before continuing.
+The important part is the `clamp()` function. The rest is React plumbing. Using `useLayoutEffect` lets us measure the textarea before the DOM paints, which avoids flicker and layout jank.
 
+### Attachments
+
+You can send more than text to an agent. Users should be able to send files such as images or PDFs as context.
+Handling file uploads starts with adding a hidden `<input type="file">` to the `<form>` block.
+
+```tsx title="Attachments.tsx"
+type Attachment = {
+  id: string;
+  file: File;
+  previewUrl: string;
+};
+
+const ATTACHMENT_INITIAL = { opacity: 0, filter: "blur(2px)" };
+const ATTACHMENT_ANIMATE = { opacity: 1, filter: "blur(0px)" };
+const ATTACHMENT_EXIT = { opacity: 0, filter: "blur(2px)" };
+const ATTACHMENT_TRANSITION = { type: "spring", duration: 0.2, bounce: 0 };
+
+function useAttachments() {
+  const [attachments, setAttachments] = React.useState<Attachment[]>([]);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  function addFiles(files: FileList) {
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith("image/"));
+
+    setAttachments(current => [
+      ...current,
+      ...imageFiles.map(file => ({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+      })),
+    ]);
+  }
+
+  function removeAttachment(id: string) {
+    setAttachments(current => {
+      const attachment = current.find(item => item.id === id);
+      if (attachment) URL.revokeObjectURL(attachment.previewUrl);
+      return current.filter(item => item.id !== id);
+    });
+  }
+
+  return { attachments, fileInputRef, addFiles, removeAttachment };
+}
+
+function Attachments({
+  attachments,
+  removeAttachment,
+}: {
+  attachments: Attachment[];
+  removeAttachment: (id: string) => void;
+}) {
+  if (attachments.length === 0) return null;
+
+  return (
+    <div className="flex gap-2 overflow-x-auto">
+      <AnimatePresence mode="popLayout" initial={false}>
+        {attachments.map(attachment => (
+          <motion.div
+            key={attachment.id}
+            initial={ATTACHMENT_INITIAL}
+            animate={ATTACHMENT_ANIMATE}
+            exit={ATTACHMENT_EXIT}
+            transition={ATTACHMENT_TRANSITION}
+            className="relative size-16 overflow-hidden rounded-md"
+          >
+            <img src={attachment.previewUrl} alt={attachment.file.name} loading="lazy" />
+            <Button size="icon" icon="x" onClick={() => removeAttachment(attachment.id)}>
+              Remove
+            </Button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
 ```
-Component: Running tools call with input box. User can hit esc whilst focused and it triggers a interrupted state, like a coding agent.
+
+A common pattern is showing the files in a small gallery above the textarea. Keeping files close to the textarea links them to the text and makes it clear they are part of the same message.
+
+I prefer this over a separate attachment tray because the files are not global state. They belong to the message the user is composing. If they drift too far from the textarea, it becomes less clear whether they will be sent with the current prompt, saved for later, or attached to the whole conversation.
+
+This example is simplified. In reality, we would need to handle upload progress, limits, and error handling.
+
+### Focus
+
+Two focus behaviours matter here.
+
+First, when you hit any printable key and you are not focused somewhere else, we register that as input for the textarea.
+
+I noticed this pattern in ChatGPT and liked it. It makes sense in a single chat view because any typing outside an existing input or shortcut is likely to be a message for the agent. There is nothing more frustrating than starting to type and realising you are not focused in the input.
+
+The hook is simple, but you have to manage key events carefully when using a global listener. The risk with this pattern is stealing focus from other controls. The rule I use is that global typing should only focus the composer when the page has no active editing context. If the user is already interacting with a button, select, input, or shortcut, the composer should stay out of the way.
+
+```ts title="useFocusInputOnType.ts"
+const PRINTABLE_KEY = /^[\p{L}\p{N}]$/u;
+
+function useFocusOnType(ref: React.RefObject<HTMLTextAreaElement | null>) {
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.isComposing || !PRINTABLE_KEY.test(e.key)) return;
+
+      const active = document.activeElement;
+      if (active && active !== document.body && active !== document.documentElement) {
+        return;
+      }
+
+      ref.current?.focus();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [ref]);
+}
 ```
 
-Human-in-the-loop design is not only about approvals. It is also about checkpoints, escalation, and feedback loops. The agent should know when to ask for judgement, when to present options, and when to hand over to a person because accountability, taste, or business context matters more than automation.
+The second part is managing focus on click. Even though the chat input contains several elements, it looks like one control to the user. When they click the container, it should focus the input. That said, there are other clickable and focusable elements there too, which we should not interfere with.
 
-## Good patterns
+We can handle this by adding a focus function to the `onClick` handler of the container, then ignoring clickable descendants such as buttons and selects.
 
-Put a list of cool patterns in agentic interfaces ?
+### Send
 
-Linear do a great job of this by showing who delegated it when assigning an issue to a coding agent. This makes it really clear who 'owns the outcome' of the agent run, as it [can never be the agent itself](https://linear.app/developers/aig#an-agent-cannot-be-held-accountable).
+Chat streams often emit events while they run. Subscribing to stream state with `useChat()` lets us change the button behaviour.
 
-- Linear : agent delegation
-- Pi: /tree context management
-- Claude Code: whimsy verbs
-- n8n: Memories card / something else
+We can also add a speech-to-text option here using the `SpeechRecognition` API.
 
-## Resources
+```tsx title="SendStopButton.tsx"
+function SendStopButton({ isStreaming, onStopStream }: SendStopButtonProps) {
+  return (
+    <Button role={isStreaming ? "button" : "submit"} disabled={disabled} onClick={handleSendStop}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={isStreaming ? "stop" : "arrow"}
+          initial={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+          transition={TRANSITION}
+        >
+          {isStreaming ? <StopIcon /> : <ArrowUpIcon />}
+        </motion.div>
+      </AnimatePresence>
+    </Button>
+  );
+}
+```
 
-List interesting resources that I used to help shape this
+We can switch the send button to a stop button, letting the user abort the stream or steer the agent elsewhere.
 
-https://www.anthropic.com/engineering/building-effective-agents
-https://openai.com/index/harness-engineering/
-https://linear.app/developers/aig#an-agent-cannot-be-held-accountable
-https://every.to/guides/agent-native
-https://mariozechner.at/posts/2025-11-30-pi-coding-agent/#toc_11
+I like reusing the send button for stop because it keeps the primary action in one place. When the agent is idle, the primary action is send. When the agent is running, the primary action becomes stop. Showing both at once adds choice at the exact moment the user needs clarity.
 
-_AI was used to help edit, provide feedback, and structure this article. The points and thoughts in it are from me._
+The trade-off is that the button changes meaning, so the icon transition has to be clear. If the state change feels too subtle, users may miss that they can interrupt the agent.
+
+This is a good place to use `framer-motion` to animate the change. With `AnimatePresence`, we can animate the component mount and unmount lifecycle. Animating `opacity`, `blur`, and `scale` makes the transition feel smooth and covers any janky switches between the two.
+
+## Conversation
+
+Agent messages work best when they are made from parts. A response might start with streamed markdown, then show a tool call, then ask for approval, then continue with the final answer. Treating these as separate parts keeps the interface inspectable without turning every response into a wall of logs.
+
+The message shell should shrink-wrap simple text, but expand gracefully for richer sections like tool output, files, tables, and human-in-the-loop prompts. The user should be able to scan the conversation first, then inspect details only when they need them.
+
+<UIExample component="agent-messages" client:load>
+  Chat conversations should flow naturally mixing together tools, artefacts, and messages
+</UIExample>
+
+### Messages
+
+Text messages look simple, but chat bubbles are a notoriously fiddly CSS problem. The hardest part is the **right edge**: shrink-wrapping a bubble tightly around its text is not something pure CSS can do well. `width: max-content` and `text-wrap: balance` get you close, but they leave a sliver of slack on short lines that looks sloppy.
+
+The fix is a `useLayoutEffect` that measures the text's actual rendered width with a `Range` and locks the bubble to that exact pixel count with `box-sizing: content-box`. The `requestAnimationFrame` defers the measurement one frame to let layout settle after we reset the bubble's width, and the cleanup cancels the rAF if `text` changes.
+
+```tsx title="UserTextMessage.tsx"
+function UserTextMessage({ text }: { text: string }) {
+  const bubbleRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = React.useRef<HTMLParagraphElement>(null);
+
+  React.useLayoutEffect(() => {
+    const bubble = bubbleRef.current;
+    const content = contentRef.current;
+    if (!bubble || !content) return;
+
+    bubble.style.removeProperty("width");
+    bubble.style.boxSizing = "border-box";
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      const range = document.createRange();
+      range.selectNodeContents(content);
+
+      const bbox = range.getBoundingClientRect();
+      bubble.style.width = `${bbox.width}px`;
+      bubble.style.boxSizing = "content-box";
+
+      range.detach();
+    });
+
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [text]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, filter: "blur(4px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      <div
+        ref={bubbleRef}
+        className="prose prose-sm w-max max-w-[90%] box-border rounded-lg p-3 bg-gray-3 text-left ml-auto text-primary text-balance"
+      >
+        <p ref={contentRef}>{text}</p>
+        <span aria-label="sender" className="sr-only">
+          user
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+```
+
+The two-phase approach is the key. First we reset the bubble to its natural max-content size and force `box-sizing: border-box` so the layout is well-defined. On the next frame we measure the rendered text with `range.getBoundingClientRect()` and lock the bubble to that width with `box-sizing: content-box` — so the padding is added to the content width rather than subtracted from it, and the text fits exactly.
+
+`useLayoutEffect` runs synchronously after the DOM updates but before the browser paints, which is what makes this look right. If we used `useEffect` instead, users would see one frame of the loose `w-max` width before it snapped to the measured value.
+
+This is a simplified version of the component above. I kept the entrance animation because it composes with the layout effect — both run before the first paint, so the bubble fades in at its locked width rather than jumping in size.
+
+### Tools
+
+### Custom UI
+
+## HITL
+
+### Permissions

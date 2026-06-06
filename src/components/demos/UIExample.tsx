@@ -13,7 +13,7 @@ import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
 import { Button } from "@/components/Button";
 import { Tooltip } from "@/components/Tooltip";
-import { motion, useAnimation } from "motion/react";
+import { motion, useAnimation, useInView } from "motion/react";
 import { ArtificialInboxTabs } from "@/components/demos/ArtificialInbox/Tabs";
 import { ArtificialInboxFilters } from "@/components/demos/ArtificialInbox/Filters";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
@@ -34,6 +34,8 @@ import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Prompt } from "@/components/demos/Prompt";
 import { AgentLoopDemo } from "@/components/remotion";
+import { AgentChatInputDemo } from "@/components/post/agents/AgentChatInput";
+import { AgentMessages } from "@/components/post/agents/AgentMessages/AgentMessages";
 
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 
@@ -54,6 +56,11 @@ export function UIExample({
   children: React.ReactNode;
 }) {
   const [key, setKey] = React.useState(0);
+  const containerRef = React.useRef<HTMLElement>(null);
+  const shouldMountDemo = useInView(containerRef, {
+    amount: "some",
+    margin: "200px 0px",
+  });
   const controls = useAnimation();
   const resetArtificialInboxStore = useArtificialInboxStore(state => state.reset);
 
@@ -88,11 +95,13 @@ export function UIExample({
   };
 
   return (
-    <figure className="flex flex-col justify-center items-center gap-2 mt-6">
+    <figure ref={containerRef} className="flex flex-col justify-center items-center gap-2 my-12">
       <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-1 rounded-xl ring-[0.5px] ring-border focus overflow-hidden">
-        <React.Fragment key={key}>
-          {COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}
-        </React.Fragment>
+        {shouldMountDemo ? (
+          <React.Fragment key={key}>
+            {COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}
+          </React.Fragment>
+        ) : null}
         <Tooltip content="Reset" side="left" sideOffset={2}>
           <Button
             size="icon"
@@ -177,4 +186,6 @@ const COMPONENT_MAP = {
   "home-agent-feedback": <Thinking />,
   "home-streaming": <Prompt />,
   "agent-loop": <AgentLoopDemo />,
+  "agent-chat-input": <AgentChatInputDemo />,
+  "agent-messages": <AgentMessages />,
 };
