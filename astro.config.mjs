@@ -46,6 +46,10 @@ const shikiConfig = {
 export default defineConfig({
   site: getBaseUrl(),
   output: "static",
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   image: {
     remotePatterns: [{ protocol: "https", hostname: "ucarecdn.com" }],
   },
@@ -59,8 +63,8 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      exclude: ['tegaki'],
-    }
+      exclude: ["tegaki"],
+    },
   },
 });
 
