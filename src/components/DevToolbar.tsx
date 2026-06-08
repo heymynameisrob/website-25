@@ -226,7 +226,7 @@ export function DevToolbar() {
   }
 
   return (
-    <Portal>
+    <Portal asChild>
       <div
         aria-label="Developer toolbar"
         aria-hidden="true"

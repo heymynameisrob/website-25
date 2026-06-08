@@ -51,7 +51,7 @@ export function HomeWorkGrid() {
       >
         Work ({DEMOS.length})
       </Button>
-      <section className="w-full" data-home-work-grid inert={open}>
+      <section className="w-full" inert={open}>
         <HomeWorkGridHoverLayer items={DEMOS}>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {DEMOS.map((item, index) => (
@@ -122,7 +122,7 @@ export function HomeWorkGridOverlay({
   }, [open, triggerRef]);
 
   return (
-    <Portal>
+    <Portal asChild>
       <AnimatePresence>
         {open && (
           <motion.div
