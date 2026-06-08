@@ -230,7 +230,7 @@ export function DevToolbar() {
       <div
         aria-label="Developer toolbar"
         aria-hidden="true"
-        className="dark fixed bottom-0 right-0 z-max flex items-center pl-1.5 rounded-tl-sm bg-black px-px h-8 text-white shadow-xs"
+        className="dark fixed bottom-0 right-0 z-max flex items-center pl-1.5 rounded-tl-sm bg-black px-px h-8 text-white shadow-xs z-[9999999]"
       >
         <FpsReadout {...stats} />
         <Popover>

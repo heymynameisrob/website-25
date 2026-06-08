@@ -6,7 +6,6 @@ export interface DemoItem {
   name: string;
   description: string;
   href: string;
-  preview: React.ReactNode;
 }
 
 type HomeWorkGridHoverLayerProps = {
