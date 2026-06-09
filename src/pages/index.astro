@@ -7,46 +7,7 @@ import Footer from "@/components/Footer.astro";
 
 import { AnimateInUp } from "@/components/Motion";
 import { HomeWorkGrid } from "@/components/home-work-grid";
-import { BallpointHandwritten } from "@/components/Handwritten";
-import { Polaroids } from "@/components/Polaroid";
-import { inferRemoteSize } from "astro:assets";
-
-import meAndHaz from "@/assets/me-and-haz.jpeg";
-import meMilos from "@/assets/me-milos.jpeg";
-
-const polaroidSize1 = await inferRemoteSize(
-  "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/"
-);
-const polaroidSize2 = await inferRemoteSize(
-  "https://ucarecdn.com/7d0a8d78-8315-4c29-82ee-33e8f03ec5de/-/preview/230x230/"
-);
-
-const polaroidImages = [
-  {
-    src: "https://ucarecdn.com/7d0a8d78-8315-4c29-82ee-33e8f03ec5de/-/preview/230x230/",
-    alt: "Me in the garden, '97",
-    width: polaroidSize2.width,
-    height: polaroidSize2.height,
-  },
-  {
-    src: meAndHaz.src,
-    alt: "Me and Haz",
-    width: meAndHaz.width,
-    height: meAndHaz.height,
-  },
-  {
-    src: meMilos.src,
-    alt: "Me by the Senne",
-    width: meMilos.width,
-    height: meMilos.height,
-  },
-  {
-    src: "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/",
-    alt: "Me in the Spanish mountains, 2024",
-    width: polaroidSize1.width,
-    height: polaroidSize1.height,
-  },
-];
+import { ConditionalHeader } from "@/components/ConditionalHeader";
 
 const projects = [
   {
@@ -78,11 +39,9 @@ const projects = [
 ---
 
 <Layout>
-  <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5">
+  <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5 pt-8">
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
-      <Polaroids images={polaroidImages} client:load>
-        <BallpointHandwritten client:load />
-      </Polaroids>
+      <ConditionalHeader client:load />
     </AnimateInUp>
     <HomeHeader />
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>

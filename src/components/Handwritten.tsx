@@ -26,12 +26,7 @@ const InkDistressFilter = (
     <defs>
       <filter id="ink-distress" x="-20%" y="-20%" width="140%" height="140%">
         {/* Roughen stroke edges like paper fibers */}
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.03"
-          numOctaves={3}
-          result="roughness"
-        />
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves={3} result="roughness" />
         <feDisplacementMap
           in="SourceGraphic"
           in2="roughness"
@@ -57,12 +52,7 @@ const InkDistressFilter = (
         />
 
         {/* Mask displaced graphic with fadingMask */}
-        <feComposite
-          in="displaced"
-          in2="fadingMask"
-          operator="in"
-          result="distressed"
-        />
+        <feComposite in="displaced" in2="fadingMask" operator="in" result="distressed" />
 
         {/* Very subtle ink bleed */}
         <feGaussianBlur in="distressed" stdDeviation="0.2" result="final" />
@@ -109,18 +99,8 @@ const BallpointInkFilter = (
         colorInterpolationFilters="sRGB"
       >
         {/* ── 1. Isolate the outer rim of each stroke ── */}
-        <feMorphology
-          in="SourceGraphic"
-          operator="erode"
-          radius="0.5"
-          result="core"
-        />
-        <feComposite
-          in="SourceGraphic"
-          in2="core"
-          operator="out"
-          result="rim"
-        />
+        <feMorphology in="SourceGraphic" operator="erode" radius="0.5" result="core" />
+        <feComposite in="SourceGraphic" in2="core" operator="out" result="rim" />
 
         {/* ── 2. Fine noise: tiny skipping spots everywhere ── */}
         <feTurbulence
@@ -167,27 +147,13 @@ const BallpointInkFilter = (
         </feComponentTransfer>
 
         {/* Restrict coarse holes to the rim only */}
-        <feComposite
-          in="rim"
-          in2="coarseMask"
-          operator="in"
-          result="rimHoles"
-        />
+        <feComposite in="rim" in2="coarseMask" operator="in" result="rimHoles" />
 
         {/* Apply fine holes to the solid core */}
-        <feComposite
-          in="core"
-          in2="fineMask"
-          operator="in"
-          result="coreHoles"
-        />
+        <feComposite in="core" in2="fineMask" operator="in" result="coreHoles" />
 
         {/* ── 4. Stack rim holes over core holes ── */}
-        <feComposite
-          in="rimHoles"
-          in2="coreHoles"
-          operator="over"
-        />
+        <feComposite in="rimHoles" in2="coreHoles" operator="over" />
       </filter>
     </defs>
   </svg>
@@ -197,13 +163,7 @@ const DistortionMap = (
   <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
     <defs>
       <filter id="distortionFilter">
-        <feTurbulence
-          type="turbulence"
-          baseFrequency="0.02"
-          numOctaves="2"
-          seed="1"
-          result="noise"
-        >
+        <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="2" seed="1" result="noise">
           <animate
             attributeName="baseFrequency"
             values="0.018;0.021;0.019;0.022"
@@ -228,7 +188,6 @@ const DistortionMap = (
 
 export function BallpointHandwritten() {
   const reduced = useReducedMotion();
-  const [alreadyPlayed] = useState(() => hasPlayed("tegaki-ballpoint"));
 
   if (reduced) {
     return <h1>Hey, my name is Rob :)</h1>;
@@ -239,18 +198,11 @@ export function BallpointHandwritten() {
       {DistortionMap}
       <TegakiRenderer
         font={bundle as any}
-        time={
-          alreadyPlayed
-            ? { mode: "controlled", value: 1, unit: "progress" }
-            : { mode: "uncontrolled", speed: 2.25, loop: false }
-        }
-        onComplete={
-          alreadyPlayed ? undefined : () => markPlayed("tegaki-ballpoint")
-        }
-        className="text-primary"
+        time={{ mode: "uncontrolled", speed: 2.25, loop: false }}
+        className="text-accent"
         style={{
-          fontSize: "28px",
-          opacity: 0.92,
+          fontSize: "40px",
+          opacity: 0.96,
           transform: "rotate(-3deg)",
         }}
       >
