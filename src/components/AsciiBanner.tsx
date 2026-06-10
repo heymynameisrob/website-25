@@ -1,5 +1,5 @@
-import type { CSSProperties } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import type { CSSProperties, MouseEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const ASCII_LINES = [
@@ -25,6 +25,19 @@ const BODY = BODY_LINES.join("\n");
 const DRIPS = DRIP_LINES.join("\n");
 
 const GIB_CHUNKS = 44;
+const GIB_ANIMATION_MS = 900;
+const RESET_FADE_MS = 400;
+const IMPACT_RADIUS = 18;
+const RESET_DAMAGE_RATIO = 0.82;
+const VISIBLE_CELL_COUNT = BODY_LINES.reduce(
+  (count, line) => count + [...line].filter(char => char.trim()).length,
+  0
+);
+
+type Impact = {
+  x: number;
+  y: number;
+};
 
 type GibPiece = {
   id: number;
@@ -40,7 +53,15 @@ type GibPiece = {
   delay: number;
 };
 
+type GibBurst = {
+  id: number;
+  pieces: GibPiece[];
+  expiresAt: number;
+};
+
 function seededRandom(seed: number) {
+  // Park-Miller PRNG constants: 2147483647 is 2^31 - 1, a prime modulus.
+  // This gives each click a deterministic Math.random()-like sequence from its seed.
   let value = seed % 2147483647;
 
   if (value <= 0) {
@@ -68,12 +89,49 @@ function createGibStyle(piece: GibPiece): CSSProperties {
   } as CSSProperties;
 }
 
-function createGibs(seed: number): GibPiece[] {
+function isInsideImpactRadius(x: number, y: number, impactX: number, impactY: number) {
+  return Math.hypot(x - impactX, y - impactY) <= IMPACT_RADIUS;
+}
+
+function isDamagedCell(x: number, y: number, impacts: Impact[]) {
+  return impacts.some(impact => isInsideImpactRadius(x, y, impact.x, impact.y));
+}
+
+function createDamagedBody(impacts: Impact[]) {
+  return BODY_LINES.map((line, y) =>
+    [...line].map((char, x) => (isDamagedCell(x, y, impacts) ? " " : char)).join("")
+  ).join("\n");
+}
+
+function countDamagedCells(impacts: Impact[]) {
+  return BODY_LINES.reduce(
+    (count, line, y) =>
+      count + [...line].filter((char, x) => char.trim() && isDamagedCell(x, y, impacts)).length,
+    0
+  );
+}
+
+function createGibs(seed: number, impactX: number, impactY: number, existingImpacts: Impact[]): GibPiece[] {
   const random = seededRandom(seed);
   const cells = BODY_LINES.flatMap((line, y) =>
-    [...line].flatMap((char, x) => (char.trim() ? [{ char, x, y }] : []))
+    [...line].flatMap((char, x) =>
+      char.trim() &&
+      !isDamagedCell(x, y, existingImpacts) &&
+      isInsideImpactRadius(x, y, impactX, impactY)
+        ? [{ char, x, y }]
+        : []
+    )
   );
-  const seeds = Array.from({ length: GIB_CHUNKS }, () => cells[Math.floor(random() * cells.length)]);
+
+  if (cells.length === 0) {
+    return [];
+  }
+  // Voronoi decomposition: pick random visible cells as seeds, then assign each
+  // character to its nearest seed so the banner breaks into organic chunks.
+  const seeds = Array.from(
+    { length: GIB_CHUNKS },
+    () => cells[Math.floor(random() * cells.length)]
+  );
   const chunks = seeds.map(() => [] as typeof cells);
 
   for (const cell of cells) {
@@ -93,7 +151,7 @@ function createGibs(seed: number): GibPiece[] {
   }
 
   return chunks
-    .filter((chunk) => chunk.length > 0)
+    .filter(chunk => chunk.length > 0)
     .map((chunk, id) => {
       const minX = Math.min(...chunk.map(({ x }) => x));
       const maxX = Math.max(...chunk.map(({ x }) => x));
@@ -109,7 +167,7 @@ function createGibs(seed: number): GibPiece[] {
 
       const centerX = minX + width / 2;
       const centerY = minY + height / 2;
-      const angle = Math.atan2(centerY - BODY_LINES.length / 2, centerX - BODY_LINES[0].length / 2);
+      const angle = Math.atan2(centerY - impactY, centerX - impactX);
       const force = 34 + random() * 76;
       const dx = Math.cos(angle) * force + (random() - 0.5) * 55;
       const launchY = Math.sin(angle) * 18 - 30 - random() * 48;
@@ -117,7 +175,7 @@ function createGibs(seed: number): GibPiece[] {
 
       return {
         id,
-        text: rows.map((row) => row.join("").trimEnd()).join("\n"),
+        text: rows.map(row => row.join("").trimEnd()).join("\n"),
         left: minX,
         top: minY,
         dx,
@@ -132,10 +190,13 @@ function createGibs(seed: number): GibPiece[] {
 }
 
 export function AsciiBanner({ className }: { className?: string }) {
-  const [gibSeed, setGibSeed] = useState(0);
+  const bodyRef = useRef<HTMLPreElement>(null);
+  const [impacts, setImpacts] = useState<Impact[]>([]);
+  const [bursts, setBursts] = useState<GibBurst[]>([]);
   const [isResetting, setIsResetting] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const gibs = useMemo(() => (gibSeed ? createGibs(gibSeed) : []), [gibSeed]);
+  const body = useMemo(() => (impacts.length > 0 ? createDamagedBody(impacts) : BODY), [impacts]);
+  const damagedRatio = useMemo(() => countDamagedCells(impacts) / VISIBLE_CELL_COUNT, [impacts]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -148,30 +209,67 @@ export function AsciiBanner({ className }: { className?: string }) {
   }, []);
 
   useEffect(() => {
-    if (!gibSeed) {
+    if (bursts.length === 0) {
       return;
     }
 
-    const reset = window.setTimeout(() => {
-      setGibSeed(0);
-      setIsResetting(true);
-    }, 1050);
-    const finishReset = window.setTimeout(() => setIsResetting(false), 1450);
+    const now = Date.now();
+    const nextExpiry = Math.min(...bursts.map(burst => burst.expiresAt));
+    const cleanup = window.setTimeout(
+      () => setBursts(currentBursts => currentBursts.filter(burst => burst.expiresAt > Date.now())),
+      Math.max(0, nextExpiry - now)
+    );
 
-    return () => {
-      window.clearTimeout(reset);
-      window.clearTimeout(finishReset);
-    };
-  }, [gibSeed]);
+    return () => window.clearTimeout(cleanup);
+  }, [bursts]);
 
-  const handleExplode = useCallback(() => {
-    if (prefersReducedMotion) {
+  useEffect(() => {
+    if (damagedRatio < RESET_DAMAGE_RATIO || bursts.length > 0) {
       return;
     }
 
-    setIsResetting(false);
-    setGibSeed(Date.now());
-  }, [prefersReducedMotion]);
+    setImpacts([]);
+    setIsResetting(true);
+    const finishReset = window.setTimeout(() => setIsResetting(false), RESET_FADE_MS);
+
+    return () => window.clearTimeout(finishReset);
+  }, [bursts.length, damagedRatio]);
+
+  const handleExplode = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      if (prefersReducedMotion || !bodyRef.current) {
+        return;
+      }
+
+      const rect = bodyRef.current.getBoundingClientRect();
+      const charWidth = bodyRef.current.scrollWidth / BODY_LINES[0].length;
+      const lineHeight = rect.height / BODY_LINES.length;
+
+      const seed = Date.now();
+      const impact = {
+        x: (event.clientX - rect.left) / charWidth,
+        y: (event.clientY - rect.top) / lineHeight,
+      };
+      const pieces = createGibs(seed, impact.x, impact.y, impacts);
+      const maxDelay = pieces.reduce((maxDelay, piece) => Math.max(maxDelay, piece.delay), 0);
+
+      if (pieces.length === 0) {
+        return;
+      }
+
+      setIsResetting(false);
+      setImpacts(currentImpacts => [...currentImpacts, impact]);
+      setBursts(currentBursts => [
+        ...currentBursts,
+        {
+          id: seed,
+          pieces,
+          expiresAt: Date.now() + GIB_ANIMATION_MS + maxDelay,
+        },
+      ]);
+    },
+    [impacts, prefersReducedMotion]
+  );
 
   return (
     <>
@@ -236,39 +334,43 @@ export function AsciiBanner({ className }: { className?: string }) {
           aria-label="Explode the Heymynameisrob banner"
         />
         <pre
+          ref={bodyRef}
           className={cn(
             "font-mono text-[8.5px] leading-[1.15] text-accent transition-opacity duration-400",
-            gibSeed && "opacity-0",
             isResetting && "animate-in fade-in duration-400"
           )}
           style={{ filter: "url(#bevel-emboss)" }}
           aria-label="Heymynameisrob"
-          aria-hidden={gibSeed ? "true" : undefined}
         >
-          {BODY}
+          {body}
         </pre>
-        {gibs.length > 0 && (
-          <div className="pointer-events-none absolute inset-0 font-mono text-[8.5px] leading-[1.15] text-accent" aria-hidden="true">
-            {gibs.map((piece) => {
-              const pieceStyle = createGibStyle(piece);
+        {bursts.length > 0 && (
+          <div
+            className="pointer-events-none absolute inset-0 font-mono text-[8.5px] leading-[1.15] text-accent"
+            aria-hidden="true"
+          >
+            {bursts.flatMap(burst =>
+              burst.pieces.map(piece => {
+                const pieceStyle = createGibStyle(piece);
 
-              return (
-                <pre
-                  key={`${gibSeed}-${piece.id}`}
-                  className="ascii-gib-piece absolute m-0 whitespace-pre will-change-[opacity,transform]"
-                  style={pieceStyle}
-                >
-                  {piece.text}
-                </pre>
-              );
-            })}
+                return (
+                  <pre
+                    key={`${burst.id}-${piece.id}`}
+                    className="ascii-gib-piece absolute m-0 whitespace-pre will-change-[opacity,transform]"
+                    style={pieceStyle}
+                  >
+                    {piece.text}
+                  </pre>
+                );
+              })
+            )}
           </div>
         )}
         <div
           className={cn(
             "h-[calc(1lh*var(--drip-lines))] overflow-hidden font-mono text-[8.5px] leading-[1.15] text-accent transition-opacity duration-300",
-            gibSeed && "opacity-0",
-            isResetting && "animate-in fade-in duration-400"
+            impacts.length > 0 && "opacity-0",
+            isResetting && "animate-in fade-in duration-200"
           )}
           style={{ "--drip-lines": DRIP_LINES.length } as CSSProperties}
         >
@@ -280,7 +382,6 @@ export function AsciiBanner({ className }: { className?: string }) {
             <pre>{DRIPS}</pre>
           </div>
         </div>
-
       </div>
     </>
   );
