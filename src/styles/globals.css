@@ -635,12 +635,46 @@
     }
   }
 
+  .ascii-gib-piece {
+    animation: ascii-gib-blast 900ms cubic-bezier(0.16, 0.84, 0.31, 1) var(--delay) forwards;
+    left: calc(var(--left) * 1ch);
+    top: calc(var(--top) * 1lh);
+    transform-origin: center;
+  }
+
   @keyframes shimmer {
     0% {
       background-position: 200%;
     }
     100% {
       background-position: -200%;
+    }
+  }
+
+  @keyframes drip-step {
+    0% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(0%);
+    }
+  }
+
+  @keyframes ascii-gib-blast {
+    0% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    36% {
+      opacity: 1;
+      transform: translate3d(var(--apex-x), var(--apex-y), 0) rotate(var(--apex-rotate));
+    }
+    72% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--dx), var(--fall-y), 0) rotate(var(--rotate));
     }
   }
 
