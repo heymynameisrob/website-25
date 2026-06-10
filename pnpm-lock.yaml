@@ -233,6 +233,9 @@ importers:
       use-scramble:
         specifier: ^2.2.15
         version: 2.2.15(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      use-sound:
+        specifier: ^5.0.0
+        version: 5.0.0(react@19.2.6)
       use-stick-to-bottom:
         specifier: ^1.1.6
         version: 1.1.6(react@19.2.6)
@@ -4587,6 +4590,9 @@ packages:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
     engines: {node: ^16.14.0 || >=18.0.0}
 
+  howler@2.2.4:
+    resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
+
   html-entities@2.6.0:
     resolution: {integrity: sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==}
 
@@ -6860,6 +6866,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  use-sound@5.0.0:
+    resolution: {integrity: sha512-MNHT3FFC5HxNCrgZtrnpIMJI2cw/0D2xismcrtyht8BTuF5FhFhb57xO/jlQr2xJaFrc/0btzRQvGyHQwB7PVA==}
+    peerDependencies:
+      react: '>=16.8'
 
   use-stick-to-bottom@1.1.6:
     resolution: {integrity: sha512-z3Up8jYQGTkUCsGBnwg6/wj70KgXoW5Kz1AAc1j8MtQuYMBo6ZsdhrIXoegxa7gaMMilgQYyTohTrt3p94jHog==}
@@ -11967,6 +11978,8 @@ snapshots:
     dependencies:
       lru-cache: 10.4.3
 
+  howler@2.2.4: {}
+
   html-entities@2.6.0: {}
 
   html-escaper@3.0.3: {}
@@ -14638,6 +14651,11 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.2.14
+
+  use-sound@5.0.0(react@19.2.6):
+    dependencies:
+      howler: 2.2.4
+      react: 19.2.6
 
   use-stick-to-bottom@1.1.6(react@19.2.6):
     dependencies:

@@ -194,7 +194,7 @@ export function BallpointHandwritten() {
   }
 
   return (
-    <h1 style={{ filter: "url(#distortionFilter)" }}>
+    <h1 style={{ filter: "url(#distortionFilter)" }} className="select-none">
       {DistortionMap}
       <TegakiRenderer
         font={bundle as any}
