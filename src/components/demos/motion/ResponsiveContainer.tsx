@@ -68,7 +68,7 @@ export function ResponsiveContainer() {
     <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
       <motion.div
         animate={{ height: bounds.height ?? 0 }}
-        className="rounded-xl overflow-hidden bg-background shadow-floating w-96 mx-auto"
+        className="rounded-xl overflow-hidden bg-gray-1 shadow-floating w-96 mx-auto"
       >
         <div ref={ref} className="overflow-hidden">
           <AnimatePresence mode="popLayout" initial={false}>

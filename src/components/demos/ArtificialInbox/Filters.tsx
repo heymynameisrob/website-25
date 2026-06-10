@@ -28,13 +28,7 @@ import {
 } from "@/components/demos/ArtificialInbox/Store";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Input } from "@/components/Input";
-import {
-  List,
-  ListItem,
-  ListItemContainer,
-  ListItemIcon,
-  ListItemTitle,
-} from "@/components/List";
+import { List, ListItem, ListItemContainer, ListItemIcon, ListItemTitle } from "@/components/List";
 import {
   ArtificialInboxKanabanLayoutIcon,
   ArtificialInboxListLayoutIcon,
@@ -54,7 +48,7 @@ const SKELETON_OPTIONS: ArtificialTableOptionsProps = {
 
 export function ArtificialInboxFilters() {
   return (
-    <div className="relative right-10 top-10 origin-top mt-auto rounded-md overflow-hidden bg-background w-full shadow-floating">
+    <div className="relative right-10 top-10 origin-top mt-auto rounded-md overflow-hidden bg-gray-1 w-full shadow-floating">
       <div className="w-full flex flex-col">
         <ArtificialSkeletonTopBar />
         <FiltersMain />
@@ -77,7 +71,7 @@ function FiltersMain() {
         </Tooltip>
       </div>
       <ArtificialSkeletonTable options={SKELETON_OPTIONS} />
-      <div className="bg-background absolute z-50 flex flex-col shadow-lg inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm top-24">
+      <div className="bg-gray-1 absolute z-50 flex flex-col shadow-lg inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm top-24">
         {view === "columns" ? <FiltersSheetColumns /> : <FiltersSheetDefault />}
       </div>
     </>
@@ -304,7 +298,7 @@ function FiltersSheetColumns() {
       </header>
       <div className="flex flex-col py-3 h-full">
         <div className="px-3">
-          <div className="h-9 px-1.5 rounded-md border bg-background flex items-center gap-2 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring focus-within:ring-background">
+          <div className="h-9 px-1.5 rounded-md border bg-gray-1 flex items-center gap-2 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring focus-within:ring-background">
             <MagnifyingGlassIcon className="shrink-0 size-4 opacity-70" />
             <Input
               type="search"

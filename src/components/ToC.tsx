@@ -87,7 +87,7 @@ export function ToC({ headings, title }: ToCProps) {
             <a
               className={cn(
                 "hover:text-primary inline-block h-5 truncate text-sm no-underline transition-colors focus rounded-md",
-                activeIndex === index ? "text-primary font-semibold" : "text-gray-9",
+                activeIndex === index ? "text-primary font-medium" : "text-gray-9",
                 entry.depth === 3 && "pl-4"
               )}
               href={entry.slug === TITLE_SLUG ? "#" : `#${entry.slug}`}

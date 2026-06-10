@@ -35,7 +35,7 @@ const iconClass = "size-3.5 shrink-0";
   target={target}
   rel={rel}
   class={cn(
-    "group inline-flex items-center gap-1 whitespace-nowrap font-medium focus text-primary relative top-px rounded-md",
+    "group inline-flex items-center gap-1 whitespace-nowrap focus text-primary relative top-px rounded-md",
     Astro.props.className
   )}
   )
@@ -51,7 +51,7 @@ const iconClass = "size-3.5 shrink-0";
     {icon === "github" && <GitHubIcon class={iconClass} />}
   </span>
   <span
-    class="underline font-medium decoration-2 underline-offset-2 decoration-gray-7 group-hover:decoration-primary"
+    class="underline decoration-gray-9 decoration-2 underline-offset-2 hover:decoration-primary hover:bg-[repeating-linear-gradient(-60deg,var(--border)_0px,var(--border)_1px,transparent_1px,transparent_2px)] in-[:is(h1,h2,h3,h4)]:no-underline in-[:is(h1,h2,h3,h4)]:bg-none"
   >
     {label}
   </span>

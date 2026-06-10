@@ -127,7 +127,7 @@ export function HomeWorkGridOverlay({
         {open && (
           <motion.div
             key="overlay"
-            className="isolate fixed grid place-items-center inset-0 w-full h-full z-max bg-background/50 backdrop-blur-sm"
+            className="isolate fixed grid place-items-center inset-0 w-full h-full z-max bg-gray-1/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

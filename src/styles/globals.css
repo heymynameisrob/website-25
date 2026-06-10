@@ -5,7 +5,7 @@
 
 @theme {
   /* Colors */
-  --color-background: var(--gray-1);
+  --color-background: var(--background);
   --color-primary: var(--gray-12);
   --color-secondary: var(--gray-11);
   --color-accent: var(--accent);
@@ -41,8 +41,7 @@
   /* Fonts */
   --font-sans: "InterVariable", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-serif: "Cooper", serif;
-  --font-weight-normal: 450;
+  --font-serif: "IBM Plex Serif", serif;
   --font-weight-medium: 500;
 
   /* Animations */
@@ -86,7 +85,7 @@
 
 @layer components {
   .prose {
-    --prose-color: var(--color-gray-11);
+    --prose-color: color-mix(in srgb, var(--color-gray-12) 90%, var(--background));
     --prose-heading-color: var(--color-gray-12);
     --prose-strong-color: var(--color-gray-12);
     --prose-link-color: var(--color-gray-12);
@@ -98,6 +97,7 @@
     --prose-hr-color: var(--color-border);
     --prose-blockquote-border-color: var(--color-gray-7);
     color: var(--prose-color);
+    font-family: var(--font-serif);
     font-size: 1rem;
     line-height: 1.66em;
     letter-spacing: -0.01em;
@@ -389,6 +389,7 @@
       .not-prose .prose,
       .not-prose .prose *
     ) {
+    font-family: var(--font-sans);
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
   }
@@ -487,23 +488,26 @@
 
 @layer base {
   :root {
-    --gray-1: hsl(150, 33%, 99%);
-    --gray-2: hsl(150, 14%, 97%);
-    --gray-3: hsl(160, 10%, 94%);
-    --gray-4: hsl(160, 6%, 91%);
-    --gray-5: hsl(140, 5%, 88%);
-    --gray-6: hsl(160, 4%, 85%);
-    --gray-7: hsl(150, 4%, 80%);
-    --gray-8: hsl(150, 3%, 73%);
-    --gray-9: hsl(157, 3%, 54%);
-    --gray-10: hsl(157, 3%, 50%);
-    --gray-11: hsl(160, 3%, 38%);
-    --gray-12: hsl(154, 12%, 12%);
+    --gray-1: hsl(60, 20%, 99%);
+    --gray-2: hsl(60, 8%, 97%);
+    --gray-3: hsl(30, 7%, 94%);
+    --gray-4: hsl(40, 6%, 91%);
+    --gray-5: hsl(45, 6%, 88%);
+    --gray-6: hsl(45, 5%, 85%);
+    --gray-7: hsl(48, 5%, 80%);
+    --gray-8: hsl(51, 5%, 72%);
+    --gray-9: hsl(60, 3%, 54%);
+    --gray-10: hsl(60, 2%, 50%);
+    --gray-11: hsl(60, 3%, 38%);
+    --gray-12: hsl(48, 8%, 12%);
 
-    --background: var(--gray-1);
+    --background: hsl(48, 38%, 97%);
     --shadow: hsl(154, 12%, 12%);
     --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
     --accent: rgb(0, 0, 255);
+    --accent-10: rgba(0, 0, 255, 0.1);
+    --accent-20: rgba(0, 0, 255, 0.2);
+    --accent-50: rgba(0, 0, 255, 0.5);
 
     font-family: Inter, sans-serif;
     font-feature-settings:
@@ -532,7 +536,12 @@
     --gray-11: hsl(157, 5%, 69%);
     --gray-12: hsl(150, 6%, 93%);
 
+    --background: var(--gray-1);
+
     --accent: rgb(255, 0, 0);
+    --accent-10: rgba(255, 0, 0, 0.1);
+    --accent-20: rgba(255, 0, 0, 0.2);
+    --accent-50: rgba(255, 0, 0, 0.5);
   }
 
   *,
@@ -542,13 +551,14 @@
   ::file-selector-button {
     border-color: var(--border);
     scrollbar-width: thin;
-    scrollbar-color: lightgray transparent;
+    scrollbar-gutter: stable;
+    scrollbar-color: var(--gray-7) transparent;
     min-width: 0;
   }
 
   ::selection {
-    background: rgba(0, 166, 244, 0.08);
-    color: var(--accent);
+    background: var(--accent);
+    color: white;
   }
 
   @font-face {

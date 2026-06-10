@@ -38,7 +38,7 @@ export const Avatar = React.forwardRef<
     <AvatarImage src={src} alt={fallback} className="rounded-full" />
     <AvatarPrimitive.Fallback
       className={cn(
-        "flex h-full w-full items-center justify-center rounded-full bg-background font-medium text-sm uppercase",
+        "flex h-full w-full items-center justify-center rounded-full bg-gray-1 font-medium text-sm uppercase",
         size === AVATAR_SIZES.xs && "text-[10px]",
         getAvatarColour(fallback)
       )}
@@ -60,7 +60,7 @@ const AvatarBadge = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "absolute bottom-0 right-0 text-xs bg-background border-background border-2 rounded-full flex items-center px-1",
+        "absolute bottom-0 right-0 text-xs bg-gray-1 border-background border-2 rounded-full flex items-center px-1",
         className
       )}
       {...props}

@@ -34,7 +34,7 @@ export const LantumBulk = () => {
   );
 
   return (
-    <div className="relative left-10 origin-top rounded-md overflow-hidden bg-background w-full shadow-floating">
+    <div className="relative left-10 origin-top rounded-md overflow-hidden bg-gray-1 w-full shadow-floating">
       <div className="flex flex-row h-full">
         <div className="shrink-0 flex flex-col bg-(--border) gap-y-px border-r h-full">
           {ROW_HEADERS.map(header => (
@@ -48,7 +48,7 @@ export const LantumBulk = () => {
             return (
               <div
                 key={id}
-                className={cn("bg-background p-2")}
+                className={cn("bg-gray-1 p-2")}
                 style={{ height: `${GRID_CONFIG.ROW_HEIGHT}px` }}
               >
                 {session ? (

@@ -83,7 +83,7 @@ export function Polaroid({
       }}
     >
       <figure className="w-64 p-2 rounded-xs shadow-md bg-[#fffdfa] dark:bg-gray-3 dark:ring-[0.5px] dark:ring-border">
-        <div className="aspect-[3.4/2.8] overflow-hidden object-cover bg-background ring-[0.5px] ring-border shadow-[inset_0px_1px_1px_rgba(0,_0,_0,_0.8)] rounded-px">
+        <div className="aspect-[3.4/2.8] overflow-hidden object-cover bg-gray-1 ring-[0.5px] ring-border shadow-[inset_0px_1px_1px_rgba(0,_0,_0,_0.8)] rounded-px">
           <img
             src={imageSrc}
             alt={imageAlt}

@@ -198,7 +198,7 @@ export function AgentChatInput() {
       role="group"
       aria-label="Chat input"
       aria-describedby={isListening ? "dictation-active" : undefined}
-      className="bg-background border shadow-xs rounded-lg flex flex-col w-120 [&:has(textarea:focus)]:ring-2 [&:has(textarea:focus)]:ring-ring [&:has(textarea:focus)]:ring-offset-2 [&:has(textarea:focus)]:ring-offset-background"
+      className="bg-gray-1 border shadow-xs rounded-lg flex flex-col w-120 [&:has(textarea:focus)]:ring-2 [&:has(textarea:focus)]:ring-ring [&:has(textarea:focus)]:ring-offset-2 [&:has(textarea:focus)]:ring-offset-background"
       onClick={handleFocus}
       onPaste={handlePaste}
       onDrop={handleDrop}

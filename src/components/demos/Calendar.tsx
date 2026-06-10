@@ -156,7 +156,7 @@ export function Calendar() {
   return (
     <CalendarContext.Provider value={contextValue}>
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
-        <div className="relative shrink-0 w-[400px] overflow-hidden bg-background rounded-xl border">
+        <div className="relative shrink-0 w-[400px] overflow-hidden bg-gray-1 rounded-xl border">
           <AnimatePresence initial={false}>
             <motion.div animate={{ height: bounds.height ?? 0 }}>
               <div ref={ref} className="py-6">

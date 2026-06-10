@@ -70,7 +70,7 @@ export function DemoRenderer({ post }: DemoRendererProps) {
   if (!component) return null;
 
   return (
-    <figure className="relative grid place-items-center w-full aspect-square overflow-hidden border bg-background rounded-lg lg:aspect-3/2">
+    <figure className="relative grid place-items-center w-full aspect-square overflow-hidden border bg-gray-1 rounded-lg lg:aspect-3/2">
       {post.data.optimizedImageDarkSrc || post.data.imageDark ? (
         <>
           <img
@@ -91,7 +91,7 @@ export function DemoRenderer({ post }: DemoRendererProps) {
           className="absolute inset-0 object-cover pointer-events-none z-0"
         />
       )}
-      <div className="relative rounded-md w-full aspect-square max-w-md bg-background overflow-hidden text-primary shadow-floating z-max">
+      <div className="relative rounded-md w-full aspect-square max-w-md bg-gray-1 overflow-hidden text-primary shadow-floating z-max">
         <React.Fragment key={key}>{component}</React.Fragment>
       </div>
       <Tooltip content="Reset" side="left" sideOffset={2}>
@@ -103,7 +103,7 @@ export function DemoRenderer({ post }: DemoRendererProps) {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onClick={handleRemount}
-          className="absolute bottom-2 right-2 text-primary bg-background shadow-xl"
+          className="absolute bottom-2 right-2 text-primary bg-gray-1 shadow-xl"
         >
           <motion.div animate={controls}>
             <ArrowPathIcon className="w-4 h-4 opacity-70" />

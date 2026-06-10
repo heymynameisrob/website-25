@@ -337,7 +337,9 @@ export function WorkDemos({ compact = false, limit }: WorkDemosProps = {}) {
   return (
     <WorkDemoContext.Provider value={contextValue}>
       <div className={compact ? "w-full" : "px-4 pb-4 lg:px-8 lg:pb-8"}>
-        <div className={compact ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 lg:grid-cols-2 gap-8"}>
+        <div
+          className={compact ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 lg:grid-cols-2 gap-8"}
+        >
           {visibleComponents.map(item => (
             <WorkDemoCard
               key={item.id}
@@ -440,7 +442,7 @@ function WorkDemoFullscreen() {
         <DialogPrimitive.Content
           onCloseAutoFocus={e => e.preventDefault()}
           className={cn(
-            "fixed inset-0 z-50 h-full bg-background outline-none",
+            "fixed inset-0 z-50 h-full bg-gray-1 outline-none",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:blur-in-md",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md"
           )}
@@ -519,7 +521,9 @@ function WorkDemoActions({ componentId, onReset, className }: WorkDemoActionsPro
   );
 
   return (
-    <div className={cn("absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3", className)}>
+    <div
+      className={cn("absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3", className)}
+    >
       <AnimatedAction delay={0.15}>
         <Tooltip content="Reset">
           <Button size="icon" variant="ghost" onClick={onReset}>

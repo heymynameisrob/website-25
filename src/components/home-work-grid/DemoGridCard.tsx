@@ -16,7 +16,7 @@ export function DemoGridCard({ cardId, href, name, description, delay }: DemoGri
       layoutId={cardId}
       aria-describedby={`${cardId}-description`}
       transition={{ type: "spring", bounce: 0, duration: 0.3, delay }}
-      className="group relative block overflow-hidden rounded-lg border bg-gray-2 p-5 hover:bg-gray-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="group relative block overflow-hidden rounded-xs border bg-gray-1 p-5 hover:bg-gray-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:bg-gray-2 dark:hover:bg-gray-3"
     >
       <div className="pointer-events-none grid place-items-center aspect-[4/3]">
         <p className="text-sm font-medium text-primary">{name}</p>

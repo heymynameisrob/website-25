@@ -12,7 +12,7 @@ function Select({ className, ...props }: React.ComponentProps<"select">) {
       <select
         data-slot="select"
         className={cn(
-          "bg-background shadow-container placeholder:text-gray-10 selection:bg-gray-3 selection:text-primary h-9 w-full min-w-0 appearance-none rounded-md px-3 py-2 pr-9 text-sm transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed",
+          "bg-gray-1 shadow-container placeholder:text-gray-10 selection:bg-gray-3 selection:text-primary h-9 w-full min-w-0 appearance-none rounded-md px-3 py-2 pr-9 text-sm transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed",
           "group-hover/select:bg-gray-2",
           "dark:bg-gray-2 dark:group-hover/select:bg-gray-3",
           "focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-2",

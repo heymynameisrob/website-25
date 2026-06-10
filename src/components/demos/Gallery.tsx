@@ -74,7 +74,7 @@ export function Gallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+            className="absolute inset-0 bg-gray-1/50 backdrop-blur-md z-10 pointer-events-none"
           />
         )}
 
@@ -142,7 +142,7 @@ const ExpandedImage = React.forwardRef<HTMLDivElement, { image: Image }>(({ imag
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-background/50 backdrop-blur-md z-10 pointer-events-none"
+          className="absolute inset-0 bg-gray-1/50 backdrop-blur-md z-10 pointer-events-none"
         />
       </AnimatePresence>
       <AnimatePresence>

@@ -96,7 +96,7 @@ export function UIExample({
 
   return (
     <figure ref={containerRef} className="flex flex-col justify-center items-center gap-2 my-12">
-      <div className="group relative w-full not-prose grid place-items-center aspect-3/2 bg-gray-1 rounded-xl ring-[0.5px] ring-border focus overflow-hidden">
+      <div className="group relative w-full not-prose font-sans grid place-items-center aspect-3/2 bg-gray-1 rounded-xs ring-[0.5px] ring-border focus overflow-hidden">
         {shouldMountDemo ? (
           <React.Fragment key={key}>
             {COMPONENT_MAP[component as keyof typeof COMPONENT_MAP] ?? null}

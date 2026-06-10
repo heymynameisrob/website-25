@@ -82,7 +82,7 @@ function PromptInput({
   return (
     <motion.div
       className={cn(
-        "w-full min-w-96 flex items-center justify-between gap-2 bg-background cursor-text rounded-3xl p-3 shadow-container overflow-hidden transition-all focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring focus-within:ring-offset-gray-2",
+        "w-full min-w-96 flex items-center justify-between gap-2 bg-gray-1 cursor-text rounded-3xl p-3 shadow-container overflow-hidden transition-all focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring focus-within:ring-offset-gray-2",
         isSubmitted && "items-end",
         disabled && "cursor-not-allowed opacity-60"
       )}

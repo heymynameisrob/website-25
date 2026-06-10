@@ -36,7 +36,7 @@ export const LantumGrid = () => {
   return (
     <div
       className={cn(
-        "relative left-10 origin-top rounded-md overflow-hidden bg-background w-full shadow-floating"
+        "relative left-10 origin-top rounded-md overflow-hidden bg-gray-1 w-full shadow-floating"
       )}
     >
       <div className="flex flex-row h-full">

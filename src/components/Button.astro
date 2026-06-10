@@ -9,11 +9,10 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-background shadow-xs hover:opacity-90",
-        accent:
-          "bg-accent text-white border border-accent shadow-xs hover:opacity-90",
+        accent: "bg-accent text-white border border-accent shadow-xs hover:opacity-90",
         destructive: "bg-red-600 shadow-xs text-white hover:bg-destructive/90",
         secondary:
-          "bg-background text-primary hover:bg-gray-2 shadow-xs dark:bg-gray-3 dark:hover:bg-gray-4",
+          "bg-gray-1 text-primary hover:bg-gray-2 shadow-xs dark:bg-gray-3 dark:hover:bg-gray-4",
         ghost: "border-transparent hover:bg-gray-4",
         link: "underline-offset-4 hover:underline text-accent",
       },
@@ -28,7 +27,7 @@ const buttonVariants = cva(
       variant: "secondary",
       size: "default",
     },
-  },
+  }
 );
 
 export interface Props extends VariantProps<typeof buttonVariants> {
@@ -45,42 +44,24 @@ const { href, title, variant, size, class: className, ...props } = Astro.props;
   href ? (
     title ? (
       <Tooltip content={title}>
-        <a
-          href={href}
-          class={cn(buttonVariants({ variant, size, className }))}
-          {...props}
-        >
+        <a href={href} class={cn(buttonVariants({ variant, size, className }))} {...props}>
           <slot />
         </a>
       </Tooltip>
     ) : (
-      <a
-        href={href}
-        class={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      >
+      <a href={href} class={cn(buttonVariants({ variant, size, className }))} {...props}>
         <slot />
       </a>
     )
-  ) : (
-    title ? (
-      <Tooltip content={title}>
-        <button
-          type="button"
-          class={cn(buttonVariants({ variant, size, className }))}
-          {...props}
-        >
-          <slot />
-        </button>
-      </Tooltip>
-    ) : (
-      <button
-        type="button"
-        class={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      >
+  ) : title ? (
+    <Tooltip content={title}>
+      <button type="button" class={cn(buttonVariants({ variant, size, className }))} {...props}>
         <slot />
       </button>
-    )
+    </Tooltip>
+  ) : (
+    <button type="button" class={cn(buttonVariants({ variant, size, className }))} {...props}>
+      <slot />
+    </button>
   )
 }

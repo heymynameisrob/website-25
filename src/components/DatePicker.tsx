@@ -214,7 +214,7 @@ function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   return (
     <CalendarContext.Provider value={contextValue}>
       <MotionConfig transition={{ type: "spring", bounce: 0, duration: 0.4 }}>
-        <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-background p-3">
+        <div className="relative shrink-0 w-full max-w-md overflow-hidden bg-gray-1 p-3">
           <div className="flex flex-col justify-center rounded-sm text-center">
             <Resizeable>
               <motion.div
