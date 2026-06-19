@@ -1,10 +1,7 @@
 import * as React from "react";
 import { useSearchParams } from "@/lib/hooks/useSearchParams";
-import { FilterMenuExample } from "@/components/demos/UIExample";
 import { Checkin } from "@/components/demos/Checkin";
 import { Calendar } from "@/components/demos/Calendar";
-import { Gallery } from "@/components/demos/Gallery";
-import { Calculator } from "@/components/demos/Calculator";
 import { Form } from "@/components/demos/Form";
 import { cn } from "@/lib/utils";
 import { Thinking } from "@/components/demos/motion/Thinking";

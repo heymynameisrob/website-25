@@ -9,33 +9,7 @@ import { AnimateInUp } from "@/components/Motion";
 import { HomeWorkGrid } from "@/components/home-work-grid";
 import { ConditionalHeader } from "@/components/ConditionalHeader";
 
-const projects = [
-  {
-    href: "https://github.com/heymynameisrob/reader-mode",
-    label: "EasyReader",
-    description: "Strip slop from websites so you can actually read them",
-  },
-  {
-    href: "#",
-    label: "Travel",
-    description: "Gallery of my travel photos over the years",
-  },
-  {
-    href: "https://cushion.so",
-    label: "Cushion",
-    description: "Modern collaboration platform for remote teams",
-  },
-  {
-    href: "https://github.com/heymynameisrob/milos-zed-theme",
-    label: "Milos",
-    description: "Tangerine and duck-egg flavoured Zed theme",
-  },
-  {
-    href: "https://github.com/heymynameisrob/pi-config",
-    label: "Pi",
-    description: "My setup for agentic coding with pi.dev",
-  },
-];
+import links from "@/lib/more";
 ---
 
 <Layout>
@@ -48,13 +22,9 @@ const projects = [
       <HomeWorkGrid client:load />
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
-      <h3 class="text-sm font-medium text-gray-10 tracking-tight">Projects</h3>
+      <h3 class="text-sm font-medium text-gray-10 tracking-tight">More</h3>
       <ul class="flex flex-col gap-px">
-        {
-          projects.map((project, i) => (
-            <AnimatedListItem {...project} delay={0.4 + i * 0.05} external />
-          ))
-        }
+        {links.map((link, i) => <AnimatedListItem {...link} delay={0.4 + i * 0.05} />)}
       </ul>
     </AnimateInUp>
     <Footer />

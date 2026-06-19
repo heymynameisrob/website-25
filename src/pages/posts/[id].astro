@@ -7,10 +7,8 @@ import PostLayout from "@/components/post/PostLayout.astro";
 import Divider from "@/components/mdx/Divider.astro";
 import CodeBlockWrapper from "@/components/mdx/CodeBlockWrapper.astro";
 import Blockquote from "@/components/mdx/Blockquote.astro";
-import LinkWithIcon from "@/components/LinkWithIcon.astro";
 
 import { Disclosure } from "@/components/mdx/Disclosure";
-import { ToC } from "@/components/ToC";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -65,19 +63,7 @@ const { post } = Astro.props as Props;
 const { Content, headings } = await render(post);
 ---
 
-<PostLayout post={post} layout={post.data.layout}>
-  <div slot="before">
-    <aside class="flex flex-col gap-10 xl:fixed xl:top-24 xl:left-10">
-      <LinkWithIcon
-        href="/"
-        target="_self"
-        icon="back"
-        label="Back"
-        className="text-sm [&_span]:no-underline text-gray-9 hover:text-primary"
-      />
-      <ToC headings={headings} title={post.data.title} client:load />
-    </aside>
-  </div>
+<PostLayout post={post} layout={post.data.layout} showToc={true} headings={headings}>
   <Content
     components={{
       hr: Divider,

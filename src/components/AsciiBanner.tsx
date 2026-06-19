@@ -3,6 +3,7 @@ import * as React from "react";
 import useSound from "use-sound";
 import dpistolSound from "@/assets/dpistol.wav";
 import dsitmbkSound from "@/assets/dsitmbk.wav";
+import poofGif from "@/assets/mono-poof.gif";
 import { cn } from "@/lib/utils";
 import type { GibBurst, GibPiece, ShotImpact } from "./ascii-banner/ascii-banner.types";
 import {
@@ -61,6 +62,12 @@ export function AsciiBanner({ className }: { className?: string }) {
   const [impacts, setImpacts] = React.useState<ShotImpact[]>([]);
   const [bursts, setBursts] = React.useState<GibBurst[]>([]);
   const [isResetting, setIsResetting] = React.useState(false);
+  const [poof, setPoof] = React.useState<{
+    x: number;
+    y: number;
+    key: string;
+  } | null>(null);
+  const poofTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useReducedMotion();
   const [playDpistol] = useSound(dpistolSound);
   const [playDsitmbk] = useSound(dsitmbkSound);
@@ -108,12 +115,19 @@ export function AsciiBanner({ className }: { className?: string }) {
   }, [bursts]);
 
   React.useEffect(() => {
+    return () => {
+      if (poofTimerRef.current) clearTimeout(poofTimerRef.current);
+    };
+  }, []);
+
+  React.useEffect(() => {
     if (damagedRatio < RESET_DAMAGE_RATIO || bursts.length > 0) {
       return;
     }
 
     playDsitmbk();
     setImpacts([]);
+    setPoof(null);
     setIsResetting(true);
     const finishReset = window.setTimeout(() => setIsResetting(false), RESET_FADE_MS);
 
@@ -142,6 +156,15 @@ export function AsciiBanner({ className }: { className?: string }) {
         return;
       }
 
+      if (poofTimerRef.current) clearTimeout(poofTimerRef.current);
+      const containerRect = bodyRef.current.parentElement!.getBoundingClientRect();
+      setPoof({
+        x: event.clientX - containerRect.left,
+        y: event.clientY - containerRect.top,
+        key: `${Date.now()}-${Math.random()}`,
+      });
+      poofTimerRef.current = setTimeout(() => setPoof(null), 750);
+
       playDpistol();
       setIsResetting(false);
       setImpacts(currentImpacts => [...currentImpacts, impact]);
@@ -159,6 +182,21 @@ export function AsciiBanner({ className }: { className?: string }) {
 
   return (
     <>
+      <link rel="preload" as="image" href={poofGif.src} />
+      {poof && (
+        <img
+          key={poof.key}
+          src={poofGif.src}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute size-20"
+          style={{
+            left: poof.x,
+            top: poof.y,
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      )}
       <svg className="absolute size-0" aria-hidden="true">
         <defs>
           <filter

@@ -135,7 +135,7 @@ function UserTextMessage({ text }: { text: string }) {
     >
       <div
         ref={bubbleRef}
-        className="prose prose-sm w-max max-w-[90%] box-border rounded-lg p-3 bg-gray-3 text-left ml-auto text-primary text-balance"
+        className="prose prose-sm font-sans w-max max-w-[90%] box-border rounded-lg p-3 bg-gray-3 text-left ml-auto text-primary text-balance"
       >
         <p ref={contentRef}>{text}</p>
         <span aria-label="sender" className="sr-only">

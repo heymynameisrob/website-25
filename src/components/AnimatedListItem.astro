@@ -12,7 +12,7 @@ interface Props {
   featured?: boolean;
 }
 
-const { href, label, description, delay = 0.3, external = false, featured = false } = Astro.props;
+const { href, label, description, delay = 0.3, external = false } = Astro.props;
 ---
 
 <AnimateInUp delay={delay} as="li" client:load>
@@ -24,7 +24,6 @@ const { href, label, description, delay = 0.3, external = false, featured = fals
   >
     <h3 class="text-base text-primary font-medium">
       {label}
-      {featured && <Badge className="h-5 px-1.5 relative -top-0.5 ml-1">Featured</Badge>}
     </h3>
     <p class="text-base text-secondary leading-normal text-balance font-serif truncate">
       {description}

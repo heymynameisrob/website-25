@@ -96,8 +96,9 @@
     --prose-td-borders: var(--color-border);
     --prose-hr-color: var(--color-border);
     --prose-blockquote-border-color: var(--color-gray-7);
+    --prose-body-font-family: var(--font-serif);
     color: var(--prose-color);
-    font-family: var(--font-serif);
+    font-family: var(--prose-body-font-family);
     font-size: 1rem;
     line-height: 1.66em;
     letter-spacing: -0.01em;
@@ -501,7 +502,7 @@
     --gray-11: hsl(60, 3%, 38%);
     --gray-12: hsl(48, 8%, 12%);
 
-    --background: hsl(48, 38%, 97%);
+    --background: hsl(60, 22%, 97%);
     --shadow: hsl(154, 12%, 12%);
     --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
     --accent: rgb(0, 0, 255);
