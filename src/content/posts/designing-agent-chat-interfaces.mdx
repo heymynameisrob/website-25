@@ -323,6 +323,72 @@ This is a simplified version of the component above. I kept the entrance animati
 
 ### Tools
 
+Tool calls can be used for both read and write actions, such as searching the web for information or editing a text file. Typically the agent will decide to invoke this tool call itself. To do this, tools are explicitly included in the agents context with a name and description, helping the agent know if that particular tool is useful in responding to the users query.
+
+Tool calls should feel like part of the conversation. Although design around agents is still early, a typical pattern we're starting to see is a bullet-like list, often with an optional collapsible section detailing the raw input/output of the tool call itself.
+
+```tsx title="AgentToolCall.tsx"
+// A message can contain multiple parts — text and tool calls live side by side
+const messages: Array<Message> = [...];
+
+// Map known tool keys to display info — icons, labels, etc.
+const toolConfig = {
+  webSearch: { icon: SearchIcon, label: "Search the web" },
+  readUrl: { icon: ReadIcon, label: "Read the page" },
+  loadSkill: { icon: SkillIcon, label: "Load a skill" },
+} satisfies Tool;
+
+function AgentToolCall({ part }: { part: ToolCall }) {
+  const config = toolConfig[part.key];
+  const isFailed = part.state === "error";
+
+  return (
+    <div className={cn(
+      "flex items-center gap-2 text-sm font-medium",
+      part.state === "loading" && "animate-shimmer",
+      isFailed && "text-red-10"
+    )}>
+      <config.icon className={cn("size-4 shrink-0", isFailed && "text-red-9")} />
+      <span>{part.stateLabels[part.state]}</span>
+      {isFailed && part.error && (
+        <span className="text-xs text-gray-9 max-w-48 truncate" title={part.error}>
+          — {part.error}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// Group adjacent tool calls together so they render as a connected chain
+function groupAdjacentTools(parts: Array<MessagePart>) {
+  const blocks = [];
+  let tools = [];
+
+  for (const part of parts) {
+    if (part.type === "tool") {
+      tools.push(part);
+      continue;
+    }
+    if (tools.length > 0) {
+      blocks.push({ type: "tool-group", tools });
+      tools = [];
+    }
+    blocks.push({ type: "part", part });
+  }
+
+  if (tools.length > 0) blocks.push({ type: "tool-group", tools });
+  return blocks;
+}
+```
+
+A benefit of this structure is that tool calls and text parts arrive in the same stream. As each part is processed, it renders in order — the user sees "Let me check" followed immediately by the search indicator, then the results. The message stays inspectable because each part is separate, but it reads naturally because they're rendered in sequence.
+
+Grouping adjacent tool calls into a single visual block (the `groupAdjacentTools` pattern above) prevents each successful tool from consuming a separate line. Without grouping, a web search followed by reading a URL would render as two disconnected items. With grouping, they read as a single workflow step.
+
+The difficulty with this pattern is that we cannot guarantee type-safety at runtime. The `toolConfig` map above works for known tools identified by a static key, but an agent can invoke tools that weren't defined at build time.
+
+Tool calls have a lifecycle: **loading** → **success** or **error**. Each state changes how the line looks — a loading tool gets a subtle shimmer animation, a successful one snaps to static text, and a failed one shifts to a warning color with the error message shown inline.
+
 ### Custom UI
 
 ## HITL

@@ -27,7 +27,7 @@ So I've made an effort to add links all over my website. But for convience sake,
 
 ### Resources
 
-- [MDN](https://developer.mozilla.org/en-US/). Mostly used via AI these days, but this resource in invaluable. Incredible that it's free.
+- [MDN](https://developer.mozilla.org/en-US/) Mostly used via AI these days, but this resource in invaluable. Incredible that it's free.
 - [Bubbles](https://bubbles.town/) Directory of small indie-web blogs. About 60% are crap but you find some great ones now and again.
 - [Base UI](https://base-ui.com/) Great resource for sophisticated component best practices, even if you don't use the library.
 - [Motion](https://motion.dev/) Incredible library. I'd struggle to do decent animation without it.
@@ -40,7 +40,7 @@ So I've made an effort to add links all over my website. But for convience sake,
 
 ### Products I like
 
-- Linear
+- [Linear](https://linear.app/) One of the best designed products I've ever used. Incredible performance and quality right down to the last detail. Once used, you never want to go back.
 - CleanShotX
 - Supercut
 - Zed

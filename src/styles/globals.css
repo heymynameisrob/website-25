@@ -500,9 +500,9 @@
     --gray-9: hsl(60, 3%, 54%);
     --gray-10: hsl(60, 2%, 50%);
     --gray-11: hsl(60, 3%, 38%);
-    --gray-12: hsl(48, 8%, 12%);
+    --gray-12: hsl(48, 8%, 8%);
 
-    --background: hsl(60, 22%, 97%);
+    --background: hsl(60, 50%, 97%);
     --shadow: hsl(154, 12%, 12%);
     --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
     --accent: rgb(0, 0, 255);
