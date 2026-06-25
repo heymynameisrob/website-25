@@ -1,25 +1,11 @@
-import { useEffect, useState } from "react";
 import { BallpointHandwritten } from "@/components/Handwritten";
 import { AsciiBanner } from "@/components/AsciiBanner";
+import { useUserVariant } from "@/lib/hooks/useUserVariant";
 
 export function ConditionalHeader() {
-  const [isDark, setIsDark] = useState(false);
+  const variant = useUserVariant();
 
-  useEffect(() => {
-    const checkDark = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-    checkDark();
-
-    const observer = new MutationObserver(checkDark);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  if (isDark) {
+  if (variant.header === "ascii") {
     return <AsciiBanner />;
   }
 

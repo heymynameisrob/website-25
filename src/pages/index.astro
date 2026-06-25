@@ -15,7 +15,7 @@ import links from "@/lib/more";
 <Layout>
   <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5 pt-8">
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
-      <ConditionalHeader client:load />
+      <ConditionalHeader client:only="react" />
     </AnimateInUp>
     <HomeHeader />
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>

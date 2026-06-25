@@ -52,8 +52,8 @@ function createGibStyle(piece: GibPiece): CSSProperties {
     "--apex-rotate": `${piece.apexRotate}deg`,
     "--rotate": `${piece.rotate}deg`,
     "--delay": `${piece.delay}ms`,
-    boxShadow: "0px 8px 8px rgba(0,0,0,0.8)",
-    color: "#ad0000",
+    boxShadow: "0px 8px 8px light-dark(rgba(0,0,0,0.1), rgba(0,0,0,0.8))",
+    color: "color-mix(in srgb, var(--accent) 68%, black)",
   } as CSSProperties;
 }
 
@@ -213,7 +213,11 @@ export function AsciiBanner({ className }: { className?: string }) {
               surfaceScale="0"
               specularConstant="0.85"
               specularExponent="7"
-              lighting-color="#ad0000"
+              style={
+                {
+                  lightingColor: "color-mix(in srgb, var(--accent) 68%, black)",
+                } as React.CSSProperties
+              }
               result="specular"
             >
               <feDistantLight azimuth="184" elevation="62" />
@@ -223,7 +227,7 @@ export function AsciiBanner({ className }: { className?: string }) {
               in="blur"
               surfaceScale="11.5"
               diffuseConstant="1"
-              lighting-color="#ff0000"
+              style={{ lightingColor: "var(--accent)" } as React.CSSProperties}
               result="diffuse"
             >
               <feDistantLight azimuth="184" elevation="62" />
@@ -231,7 +235,14 @@ export function AsciiBanner({ className }: { className?: string }) {
             <feComposite in="diffuse" in2="SourceAlpha" operator="in" result="diffuse-masked" />
             <feMorphology in="SourceAlpha" operator="dilate" radius="0.5" result="dilated" />
             <feComposite in="dilated" in2="SourceAlpha" operator="out" result="stroke-border" />
-            <feFlood flood-color="#6b0000" result="stroke-color" />
+            <feFlood
+              style={
+                {
+                  floodColor: "color-mix(in srgb, var(--accent) 42%, black)",
+                } as React.CSSProperties
+              }
+              result="stroke-color"
+            />
             <feComposite in="stroke-color" in2="stroke-border" operator="in" result="stroke" />
             <feMerge>
               <feMergeNode in="stroke" />
