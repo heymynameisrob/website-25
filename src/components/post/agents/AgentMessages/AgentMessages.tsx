@@ -10,7 +10,7 @@ import { useSimulatedMessages } from "./AgentMessages.utils";
 import Markdown from "react-markdown";
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, GraduationCap, Search, type LucideIcon } from "lucide-react";
-import { TextShimmer } from "@/components/demos/TextShimmer";
+import { TextShimmer } from "@/components/TextShimmer";
 import { useStickToBottom } from "use-stick-to-bottom";
 
 const toolIcons = {

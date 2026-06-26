@@ -27,7 +27,7 @@ const iconColor: Record<IconKey, string> = {
   back: "",
 };
 
-const iconClass = "size-3.5 shrink-0";
+const iconClass = "size-5 shrink-0 lg:size-6";
 ---
 
 <a
@@ -35,13 +35,13 @@ const iconClass = "size-3.5 shrink-0";
   target={target}
   rel={rel}
   class={cn(
-    "group inline-flex items-center gap-1 whitespace-nowrap focus text-primary relative top-px rounded-md",
+    "group inline-flex items-center gap-1 whitespace-nowrap focus text-primary rounded-md translate-y-1 xl:gap-2",
     Astro.props.className
   )}
   )
 >
   <span
-    class:list={["shrink-0", icon === "github" && "text-[#171515] dark:text-white"]}
+    class:list={["shrink-0 inline-block", icon === "github" && "text-[#171515] dark:text-white"]}
     style={icon === "github" ? undefined : `color: ${iconColor[icon]};`}
   >
     {icon === "back" && <Undo2Icon className={iconClass} />}
@@ -51,8 +51,13 @@ const iconClass = "size-3.5 shrink-0";
     {icon === "github" && <GitHubIcon class={iconClass} />}
   </span>
   <span
-    class="underline decoration-gray-9 decoration-2 underline-offset-2 hover:decoration-primary hover:bg-[repeating-linear-gradient(-60deg,var(--border)_0px,var(--border)_1px,transparent_1px,transparent_2px)] in-[:is(h1,h2,h3,h4)]:no-underline in-[:is(h1,h2,h3,h4)]:bg-none"
+    class="underline decoration-gray-6 decoration-2 underline-offset-2 group-hover:decoration-primary"
   >
     {label}
   </span>
+  <!-- <span
+    class="underline decoration-gray-9 decoration-2 underline-offset-2 hover:decoration-primary hover:bg-[repeating-linear-gradient(-60deg,var(--border)_0px,var(--border)_1px,transparent_1px,transparent_2px)] in-[:is(h1,h2,h3,h4)]:no-underline in-[:is(h1,h2,h3,h4)]:bg-none"
+  >
+    {label}
+  </span> -->
 </a>

@@ -5,32 +5,29 @@ const more = [
   //   description: "Strip slop from websites so you can actually read them",
   // },
   {
-    href: "#",
-    label: "Travel",
-    description: "Gallery of my travel photos over the years",
+    href: "/posts/designing-agent-chat-interfaces",
+    label: "Agentic Chat",
+    description: "Learnings from building agentic chat interfaces",
+  },
+  {
+    href: "/posts/n8n-markdown-editor",
+    label: "Markdown Editor",
+    description: "Building a rich markdown editor for n8n",
+  },
+  {
+    href: "/posts/command-k-cushion",
+    label: "⌘K",
+    description: "Building a rich, paginated command menu",
+  },
+  {
+    href: "/posts/comment-ux-cushion",
+    label: "Cushion",
+    description: "Designing a thread-based collaboration experience",
   },
   {
     href: "/links",
     label: "Links",
     description: "Some of my favourite links from cyberspace",
-  },
-  {
-    href: "https://cushion.so",
-    label: "Cushion",
-    external: true,
-    description: "Modern collaboration platform for remote teams",
-  },
-  {
-    href: "https://github.com/heymynameisrob/milos-zed-theme",
-    external: true,
-    label: "Milos",
-    description: "Tangerine and duck-egg flavoured Zed theme",
-  },
-  {
-    href: "https://github.com/heymynameisrob/pi-config",
-    external: true,
-    label: "Pi",
-    description: "My setup for agentic coding with pi.dev",
   },
 ];
 

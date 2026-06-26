@@ -6,7 +6,7 @@ import { Badge } from "@/components/Badge";
 interface Props {
   href: string;
   label: string;
-  description: string;
+  description?: string;
   delay?: number;
   external?: boolean;
   featured?: boolean;
@@ -20,20 +20,15 @@ const { href, label, description, delay = 0.4, external = false } = Astro.props;
     href={href}
     target={external ? "_blank" : undefined}
     rel={external ? "nofollow noopener" : undefined}
-    class="group flex items-center gap-1.5 -mx-3 bg-transparent px-3 h-10 rounded-lg hover:bg-gray-3 focus focus-visible:bg-gray-3"
+    class="group flex items-center gap-1.5 -mx-4 bg-transparent px-4 min-h-11 py-1.5 rounded-lg focus focus-visible:bg-gray-3"
   >
-    <div class="inline-flex items-baseline gap-1.5">
-      <h3 class="text-base text-primary font-medium">
+    <div class="min-w-0 w-full inline-flex items-baseline gap-1.5 text-lg lg:text-xl">
+      <h3
+        class="shrink-0 text-primary font-medium group-hover:underline decoration-2 decoration-primary underline-offset-2"
+      >
         {label}
       </h3>
-      <p class="text-base text-secondary leading-normal text-balance font-serif truncate">
-        {description}
-      </p>
+      <p class="min-w-0 truncate text-secondary leading-normal">{description}</p>
     </div>
-    {
-      external && (
-        <ArrowUpRightIcon className="opacity-0 group-hover:opacity-100 size-4 -ml-0.5 inline duration-100 text-gray-9" />
-      )
-    }
   </a>
 </AnimateInUp>

@@ -194,20 +194,19 @@ export function BallpointHandwritten() {
   }
 
   return (
-    <h1 style={{ filter: "url(#distortionFilter)" }} className="select-none">
+    <span style={{ filter: "url(#distortionFilter)" }} className="inline-block select-none">
       {DistortionMap}
       <TegakiRenderer
         font={bundle as any}
         time={{ mode: "uncontrolled", speed: 2.25, loop: false }}
-        className="text-accent"
+        className="text-accent text-[2.75rem] mb-8"
         style={{
-          fontSize: "40px",
           opacity: 0.96,
           transform: "rotate(-3deg)",
         }}
       >
         Hey, my name is Rob :)
       </TegakiRenderer>
-    </h1>
+    </span>
   );
 }

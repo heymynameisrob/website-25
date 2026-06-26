@@ -1,30 +1,76 @@
 ---
 import Layout from "@/components/Layout.astro";
 import AnimatedListItem from "@/components/AnimatedListItem.astro";
-import HomeHeader from "@/components/HomeHeader.astro";
 import Footer from "@/components/Footer.astro";
 
 import { AnimateInUp } from "@/components/Motion";
+import { TextShimmer } from "@/components/TextShimmer";
+import { BallpointHandwritten } from "@/components/Handwritten";
 import { HomeWorkGrid } from "@/components/home-work-grid";
-import { ConditionalHeader } from "@/components/ConditionalHeader";
 
+import LinkWithIcon from "@/components/LinkWithIcon.astro";
 import links from "@/lib/more";
+
+const INITIAL_MORE_ITEMS = 4;
+const MORE_ITEMS_PER_LOAD = 4;
+
+const contact = [
+  {
+    href: "mailto:robhough180@gmail.com",
+    label: "Email",
+  },
+  {
+    href: "https://linkedin.com/in/heymynameisrob",
+    label: "LinkedIn",
+  },
+  {
+    href: "https://github.com/heymynameisrob",
+    label: "GitHub",
+  },
+];
 ---
 
 <Layout>
   <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5 pt-8">
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
-      <ConditionalHeader client:only="react" />
+      <BallpointHandwritten client:load />
+      <h1 class="gap-1 text-xl font-medium leading-normal text-balance lg:text-2xl">
+        I'm a design engineer working at
+        <LinkWithIcon href="https://n8n.io" icon="n8n" label="n8n" />, an open-source project
+        building the future of AI automation. I love designing performant, accessible interfaces
+        that are deeply rooted in <span class="font-serif italic">craft</span> and <TextShimmer
+          client:load>quality.</TextShimmer
+        >
+      </h1>
     </AnimateInUp>
-    <HomeHeader />
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
-      <HomeWorkGrid client:load />
-    </AnimateInUp>
-    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
-      <h3 class="text-sm font-medium text-gray-10 tracking-tight">More</h3>
-      <ul class="flex flex-col gap-px">
+      <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Posts</h3>
+      <ul class="flex flex-col gap-px" data-more-list data-load-count={MORE_ITEMS_PER_LOAD}>
         {
           links.map((link, i) => (
+            <li data-more-item hidden={i >= INITIAL_MORE_ITEMS}>
+              <AnimatedListItem {...link} delay={0.3 + (i % MORE_ITEMS_PER_LOAD) * 0.05} />
+            </li>
+          ))
+        }
+      </ul>
+      {
+        links.length > INITIAL_MORE_ITEMS && (
+          <button
+            type="button"
+            class="self-start text-lg font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg focus-visible:bg-gray-3"
+            data-more-button
+          >
+            More
+          </button>
+        )
+      }
+    </AnimateInUp>
+    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
+      <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Contact</h3>
+      <ul class="flex flex-col gap-px">
+        {
+          contact.map((link, i) => (
             <li>
               <AnimatedListItem {...link} delay={0.4 + i * 0.05} />
             </li>
@@ -35,3 +81,45 @@ import links from "@/lib/more";
     <Footer />
   </div>
 </Layout>
+
+<script>
+  const list = document.querySelector<HTMLElement>("[data-more-list]");
+  const moreButton = document.querySelector<HTMLButtonElement>("[data-more-button]");
+
+  const animateItems = (items: HTMLElement[]) => {
+    const shouldReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (shouldReduceMotion) return;
+
+    items.forEach((item, index) => {
+      item.animate(
+        [
+          { opacity: 0, transform: "translateY(10px)", filter: "blur(3px)" },
+          { opacity: 1, transform: "translateY(0)", filter: "blur(0px)" },
+        ],
+        {
+          duration: 400,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          delay: index * 50,
+        }
+      );
+    });
+  };
+
+  moreButton?.addEventListener("click", () => {
+    if (!list) return;
+
+    const loadCount = Number(list.dataset.loadCount) || 4;
+    const hiddenItems = Array.from(list.querySelectorAll<HTMLElement>("[data-more-item][hidden]"));
+    const itemsToShow = hiddenItems.slice(0, loadCount);
+
+    itemsToShow.forEach(item => {
+      item.hidden = false;
+    });
+    animateItems(itemsToShow);
+
+    if (hiddenItems.length <= loadCount) {
+      moreButton.hidden = true;
+    }
+  });
+</script>
