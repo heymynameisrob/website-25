@@ -408,14 +408,15 @@
     :not(pre)
     > code:where(:not(.not-prose, .not-prose *), .not-prose .prose, .not-prose .prose *) {
     font-family: var(--font-mono);
-    font-weight: var(--font-weight-medium);
     background-color: var(--color-gray-3);
+    border: 0.5px solid var(--border);
     text-align: center;
     font-size: var(--text-sm);
     user-select: none;
-    padding: calc(var(--spacing) * 1);
+    padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 1);
     line-height: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
+    text-wrap: nowrap;
   }
 
   .prose

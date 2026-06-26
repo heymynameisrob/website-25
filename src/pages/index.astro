@@ -1,6 +1,5 @@
 ---
 import Layout from "@/components/Layout.astro";
-import ThemeToggle from "@/components/ThemeToggle.astro";
 import AnimatedListItem from "@/components/AnimatedListItem.astro";
 import HomeHeader from "@/components/HomeHeader.astro";
 import Footer from "@/components/Footer.astro";
@@ -24,7 +23,13 @@ import links from "@/lib/more";
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
       <h3 class="text-sm font-medium text-gray-10 tracking-tight">More</h3>
       <ul class="flex flex-col gap-px">
-        {links.map((link, i) => <AnimatedListItem {...link} delay={0.4 + i * 0.05} />)}
+        {
+          links.map((link, i) => (
+            <li>
+              <AnimatedListItem {...link} delay={0.4 + i * 0.05} />
+            </li>
+          ))
+        }
       </ul>
     </AnimateInUp>
     <Footer />

@@ -12,10 +12,10 @@ interface Props {
   featured?: boolean;
 }
 
-const { href, label, description, delay = 0.3, external = false } = Astro.props;
+const { href, label, description, delay = 0.4, external = false } = Astro.props;
 ---
 
-<AnimateInUp delay={delay} as="li" client:load>
+<AnimateInUp delay={delay} client:load>
   <a
     href={href}
     target={external ? "_blank" : undefined}

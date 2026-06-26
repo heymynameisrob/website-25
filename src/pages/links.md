@@ -14,13 +14,13 @@ So I've made an effort to add links all over my website. But for convience sake,
 ### People & Blogs
 
 - [Pawel Grzybek](https://pawelgrzybek.com/) Good friend and amazing full-stack engineer who loves the web even more than I do.
-- [Maggie Appleton](https://maggieappleton.com/) Probably one of the most thoughtful, intelligent designers I've come across. Everything she writes is considered and her writing is delightful to read.
+- [Maggie Appleton](https://maggieappleton.com/) Probably one of the most thoughtful, intelligent designers I've come across. Everything she writes is considered and delightful to read.
 - [Kottke](https://kottke.org/) Absolute classic blog. Learn so much and has such incredible taste.
 - [Clone](https://clone.fyi/) The latest of what's going on. Sometimes very US focused. Don't go much but does have a few gems.
 - [Unsung](https://unsung.aresluna.org/) Lots of really in-depth articles, particularly about design and type.
 - [Simon Willison](https://simonwillison.net/) One of the few pro-AI voices who isn't lost to mass psychosis. How I stay on top with what's going on with frontier models.
 - [Sean Goedecke](https://www.seangoedecke.com/) Quite a few interesting takes on engineering at a large company.
-- [Rauno](https://rauno.me/) Exceptional designer. Constantly in awe of how well crafted his work is. I always look at this site when I want to encourage myself to be be better. Not a big blogger.
+- [Rauno](https://rauno.me/) Exceptional designer. Constantly in awe of how well crafted his work is. I always look at this site when I want to encourage myself to be be better.
 - [Josh Comeau](https://www.joshwcomeau.com/) Incredible treasure trove of 'how-to' lessons for front-end development. I've learnt so much from this guy.
 - [Robin Sloan](https://www.robinsloan.com/lab/) Particularly his 'Lab' blog. Some incredible ideas and writing, although published infrequently.
 - [Alex Chan](https://alexwlchan.net/) UK developer publishes some interesting articles and learnings from projects.
