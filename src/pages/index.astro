@@ -4,12 +4,15 @@ import AnimatedListItem from "@/components/AnimatedListItem.astro";
 import Footer from "@/components/Footer.astro";
 
 import { AnimateInUp } from "@/components/Motion";
-import { TextShimmer } from "@/components/TextShimmer";
+import TextShimmerBurst from "@/components/TextShimmerBurst.astro";
+import CraftGuides from "@/components/CraftGuides.astro";
+import MeltCraft from "@/components/MeltCraft.astro";
 import { BallpointHandwritten } from "@/components/Handwritten";
-import { HomeWorkGrid } from "@/components/home-work-grid";
+import { ScrambleText } from "@/components/ScrambleText";
 
 import LinkWithIcon from "@/components/LinkWithIcon.astro";
-import links from "@/lib/more";
+import { getCollection } from "astro:content";
+import { filterPosts } from "@/lib/utils";
 
 const INITIAL_MORE_ITEMS = 4;
 const MORE_ITEMS_PER_LOAD = 4;
@@ -28,6 +31,13 @@ const contact = [
     label: "GitHub",
   },
 ];
+
+const allPosts = await getCollection("posts");
+const postLinks = filterPosts(allPosts).map(post => ({
+  href: `/posts/${post.id}`,
+  label: post.data.title,
+  description: post.data.description,
+}));
 ---
 
 <Layout>
@@ -38,16 +48,15 @@ const contact = [
         I'm a design engineer working at
         <LinkWithIcon href="https://n8n.io" icon="n8n" label="n8n" />, an open-source project
         building the future of AI automation. I love designing performant, accessible interfaces
-        that are deeply rooted in <span class="font-serif italic">craft</span> and <TextShimmer
-          client:load>quality.</TextShimmer
-        >
+        that are rooted in <MeltCraft /> and
+        <TextShimmerBurst text="quality" />.
       </h1>
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Posts</h3>
       <ul class="flex flex-col gap-px" data-more-list data-load-count={MORE_ITEMS_PER_LOAD}>
         {
-          links.map((link, i) => (
+          postLinks.map((link, i) => (
             <li data-more-item hidden={i >= INITIAL_MORE_ITEMS}>
               <AnimatedListItem {...link} delay={0.3 + (i % MORE_ITEMS_PER_LOAD) * 0.05} />
             </li>
@@ -55,7 +64,7 @@ const contact = [
         }
       </ul>
       {
-        links.length > INITIAL_MORE_ITEMS && (
+        postLinks.length > INITIAL_MORE_ITEMS && (
           <button
             type="button"
             class="self-start text-lg font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg focus-visible:bg-gray-3"

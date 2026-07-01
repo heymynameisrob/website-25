@@ -9,5 +9,6 @@ export function ConditionalHeader() {
     return <AsciiBanner />;
   }
 
+
   return <BallpointHandwritten />;
 }

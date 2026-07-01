@@ -21,8 +21,8 @@ const more = [
   },
   {
     href: "/posts/comment-ux-cushion",
-    label: "Cushion",
-    description: "Designing a thread-based collaboration experience",
+    label: "Designing Discussions",
+    description: "Designing a thread-based collaboration experience for Cushion",
   },
   {
     href: "/links",

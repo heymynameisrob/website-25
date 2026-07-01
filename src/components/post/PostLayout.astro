@@ -87,30 +87,23 @@ const hasHeadings = headings && headings.length > 0;
     >
     </div>
     <div
-      class="mx-auto flex max-w-prose flex-1 flex-col gap-6 px-4 py-12 md:px-6 lg:gap-12 lg:px-8 xl:py-24"
+      class="mx-auto flex max-w-prose flex-1 flex-col gap-6 px-4 py-12 md:px-6 lg:gap-12 lg:px-8 xl:py-20"
     >
       <slot name="before" />
-      {
-        showToc && hasHeadings && (
-          <aside class="flex flex-col gap-10 xl:fixed xl:top-24 xl:left-10">
-            <LinkWithIcon
-              href="/"
-              target="_self"
-              icon="back"
-              label="Back"
-              className="text-sm [&_span]:no-underline [&_svg]:size-4 h-7 text-gray-9 hover:text-primary hover:bg-transparent"
-            />
-            <ToC headings={headings} title={data.title} client:load />
-          </aside>
-        )
-      }
+      <aside class="flex flex-col gap-10 xl:fixed xl:top-20 xl:left-10">
+        <LinkWithIcon
+          href="/"
+          target="_self"
+          icon="back"
+          label="Back"
+          className="text-sm [&_span]:no-underline [&_svg]:size-4 h-7 text-gray-9 hover:text-primary hover:bg-transparent"
+        />
+        {showToc && hasHeadings && <ToC headings={headings} title={data.title} client:load />}
+      </aside>
       <header class="flex flex-col gap-3">
-        <h1 id="page-title" class="text-primary font-medium">
+        <h1 id={data.title} class="font-serif text-primary text-3xl md:text-4x tracking-tight">
           {data.title}
         </h1>
-        <span class="text-gray-9 font-mono uppercase text-sm"
-          >Last updated {formatDate(data.date, FORMAT_DATE)}</span
-        >
       </header>
       <Prose>
         <slot />

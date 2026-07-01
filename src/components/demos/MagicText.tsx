@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
 
-export function MagicText({ children = "Hey My Name is Rob" }: { children?: string }) {
+export function MagicText({ children = "craft" }: { children?: string }) {
   const chunks = children.split("");
   const [showFirst, setShowFirst] = React.useState(true);
 
@@ -15,23 +15,9 @@ export function MagicText({ children = "Hey My Name is Rob" }: { children?: stri
   const animateInDuration = chunks.length * 0.06 + 0.5; // Time for all letters to animate in
   const exitDuration = 0.3; // Approximate exit animation time
 
-  React.useEffect(() => {
-    const timer = setTimeout(
-      () => {
-        setShowFirst(prev => !prev);
-      },
-      (animateInDuration + exitDuration) * 1000
-    );
-
-    return () => clearTimeout(timer);
-  }, [showFirst, animateInDuration, exitDuration]);
-
   return (
-    <div className="w-fit grid-stack" aria-label={children}>
-      <div
-        className="text-xl lg:text-6xl [&>span]:inline-block -tracking-[1px] text-primary font-bold"
-        aria-hidden
-      >
+    <div className="w-fit inline-block grid-stack" aria-label={children}>
+      <div className="[&>span]:inline-block text-primary" aria-hidden>
         <AnimatePresence>
           {showFirst &&
             chunks.map((letter, index) => {

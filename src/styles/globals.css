@@ -41,11 +41,12 @@
   /* Fonts */
   --font-sans: "InterVariable", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-serif: "IBM Plex Serif", serif;
+  --font-serif: "Cooper", serif;
   --font-weight-medium: 500;
 
   /* Animations */
   --animate-blink: blink 1s step-end infinite;
+  --animate-shimmer-burst: shimmer-burst 4.4s linear infinite;
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
@@ -85,7 +86,7 @@
 
 @layer components {
   .prose {
-    --prose-color: color-mix(in srgb, var(--color-gray-12) 90%, var(--background));
+    --prose-color: var(--color-gray-11);
     --prose-heading-color: var(--color-gray-12);
     --prose-strong-color: var(--color-gray-12);
     --prose-link-color: var(--color-gray-12);
@@ -96,7 +97,7 @@
     --prose-td-borders: var(--color-border);
     --prose-hr-color: var(--color-border);
     --prose-blockquote-border-color: var(--color-gray-7);
-    --prose-body-font-family: var(--font-serif);
+    --prose-body-font-family: var(--font-sans);
     color: var(--prose-color);
     font-family: var(--prose-body-font-family);
     font-size: 1rem;
@@ -118,10 +119,11 @@
   }
 
   .prose h2:where(:not(.not-prose, .not-prose *), .not-prose .prose, .not-prose .prose *) {
-    font-family: var(--font-sans);
+    font-family: var(--font-serif);
+    font-size: 1.5em;
     letter-spacing: -0.025em;
     color: var(--prose-heading-color);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-normal);
     margin-top: calc(var(--spacing) * 12);
   }
 
@@ -540,10 +542,10 @@
 
     --background: var(--gray-1);
 
-    --accent: rgb(255, 0, 0);
-    --accent-10: rgba(255, 0, 0, 0.1);
-    --accent-20: rgba(255, 0, 0, 0.2);
-    --accent-50: rgba(255, 0, 0, 0.5);
+    --accent: rgb(0, 166, 244);
+    --accent-10: rgba(0, 166, 244 0.1);
+    --accent-20: rgba(0, 166, 244 0.2);
+    --accent-50: rgba(0, 166, 244 0.5);
   }
 
   *,
@@ -572,7 +574,9 @@
 
   @font-face {
     font-family: "Cooper";
-    src: url("/src/assets/cooper-bt-light.woff2") format("woff2");
+    src: url("/fonts/cooper-bt-light.woff2") format("woff2");
+    font-weight: 300;
+    font-style: normal;
   }
 
   body {
@@ -650,6 +654,88 @@
     }
     100% {
       background-position: -200%;
+    }
+  }
+
+  /*
+   * `--shimmer-color` is registered as an animatable `<color>` so the overlay
+   * gradient (which references it) recomputes each frame as the value changes
+   * across the `shimmer-burst` keyframes — giving each swipe its own colour.
+   */
+  @property --shimmer-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: transparent;
+  }
+
+  /*
+   * shimmer-burst: same gradient sweep as `shimmer`, but each pass runs 5x
+   * faster (0.6s vs the 1.5s default — slowed by half from 0.3s), the sweep
+   * repeats 4 times, then the element holds at rest for 2s before the whole
+   * cycle repeats.
+   *
+   *   pass 1:   0%      -> 13.6364%   (0.6s)
+   *   pass 2:   13.6364% -> 27.2727%
+   *   pass 3:   27.2727% -> 40.9091%
+   *   pass 4:   40.9091% -> 54.5455%
+   *   hold:     54.5455% -> 100%      (2s)
+   *
+   * The +0.0001% keyframes produce an instant reset from -200% back to 200%
+   * between passes (the same discontinuity CSS applies when iterating).
+   */
+  @keyframes shimmer-burst {
+    /* Each sweep segment eases with --ease-in-out; resets and the hold stay
+     * linear so the instant snaps remain instant and the hold stays put.
+     * `--shimmer-color` is the registered custom property (see `@property`
+     * above) that drives the per-pass highlight colour. */
+    0% {
+      background-position: 200%;
+      --shimmer-color: var(--color-blue-500);
+      animation-timing-function: var(--ease-in-out);
+    }
+    13.6364% {
+      background-position: -200%;
+      --shimmer-color: var(--color-blue-500);
+      animation-timing-function: linear;
+    }
+    13.6365% {
+      background-position: 200%;
+      --shimmer-color: var(--color-emerald-500);
+      animation-timing-function: var(--ease-in-out);
+    }
+    27.2727% {
+      background-position: -200%;
+      --shimmer-color: var(--color-emerald-500);
+      animation-timing-function: linear;
+    }
+    27.2728% {
+      background-position: 200%;
+      --shimmer-color: var(--color-amber-500);
+      animation-timing-function: var(--ease-in-out);
+    }
+    40.9091% {
+      background-position: -200%;
+      --shimmer-color: var(--color-amber-500);
+      animation-timing-function: linear;
+    }
+    40.9092% {
+      background-position: 200%;
+      --shimmer-color: var(--color-fuchsia-500);
+      animation-timing-function: var(--ease-in-out);
+    }
+    54.5455% {
+      background-position: -200%;
+      --shimmer-color: var(--color-fuchsia-500);
+      animation-timing-function: linear;
+    }
+    54.5456% {
+      background-position: 200%;
+      --shimmer-color: transparent;
+      animation-timing-function: linear;
+    }
+    100% {
+      background-position: 200%;
+      --shimmer-color: transparent;
     }
   }
 
