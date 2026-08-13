@@ -14,7 +14,7 @@ export function Key({ children, className }: { children: React.ReactNode; classN
   );
 }
 
-export function Keys({ keys }: { keys: string[] }) {
+function Keys({ keys }: { keys: string[] }) {
   return (
     <div className="flex items-center gap-1">
       {keys.map(key => (

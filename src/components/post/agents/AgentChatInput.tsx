@@ -127,7 +127,7 @@ function useFocusOnType(ref: React.RefObject<HTMLTextAreaElement | null>) {
   }, [isInView, ref]);
 }
 
-export function AgentChatInput() {
+function AgentChatInput() {
   const reduced = useReducedMotion();
   const [value, setValue] = React.useState("");
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);

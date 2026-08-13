@@ -11,10 +11,10 @@ const MESSAGE_TRANSITION_DELAY_MS = 300;
 const TOOL_MIN_DELAY_MS = 2_000;
 const TOOL_MAX_DELAY_MS = 5_000;
 
-export const randomBetween = (min: number, max: number) =>
+const randomBetween = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-export function getNextTextChunk(text: string, currentLength: number) {
+function getNextTextChunk(text: string, currentLength: number) {
   const nextLength = Math.min(text.length, currentLength + randomBetween(3, 10));
   const nextWhitespaceIndex = text.indexOf(" ", nextLength);
 
@@ -25,11 +25,11 @@ export function getNextTextChunk(text: string, currentLength: number) {
   return text.slice(0, nextWhitespaceIndex + 1);
 }
 
-export function appendPartToMessage(message: Message, part: MessagePart): Message {
+function appendPartToMessage(message: Message, part: MessagePart): Message {
   return { ...message, parts: [...message.parts, part] } as Message;
 }
 
-export function updateLastMessage(
+function updateLastMessage(
   messages: Array<Message>,
   updater: (message: Message) => Message
 ) {

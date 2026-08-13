@@ -61,7 +61,7 @@ const InkDistressFilter = (
   </svg>
 );
 
-export function Handwritten() {
+function Handwritten() {
   const [alreadyPlayed] = useState(() => hasPlayed("tegaki-handwritten"));
 
   return (

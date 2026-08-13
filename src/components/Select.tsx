@@ -38,4 +38,4 @@ function SelectOptGroup({ className, ...props }: React.ComponentProps<"optgroup"
   return <optgroup data-slot="select-optgroup" className={cn(className)} {...props} />;
 }
 
-export { Select, SelectOptGroup, SelectOption };
+export { Select,  SelectOption };

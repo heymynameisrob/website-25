@@ -30,7 +30,7 @@ const buttonVariants = cva(
   }
 );
 
-export interface Props extends VariantProps<typeof buttonVariants> {
+interface Props extends VariantProps<typeof buttonVariants> {
   href?: string;
   title?: string;
   class?: string;

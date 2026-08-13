@@ -31,11 +31,11 @@ export interface RowHeaderProps {
   role: string;
 }
 
-export interface DragData {
+interface DragData {
   supports: string[];
 }
 
-export interface DropData {
+interface DropData {
   type: string;
 }
 

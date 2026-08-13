@@ -85,22 +85,23 @@ function TrackActivity({ item }: { item: Extract<ActivityItem, { type: "track" }
             </div>
           </HoverCardTrigger>
           {albumArt && (
-            <HoverCardContent className="w-48 overflow-hidden p-0">
+            <HoverCardContent className="w-48 overflow-hidden p-0 bg-transparent overflow-visible">
               <div className="relative grid aspect-square place-items-center">
                 <img
                   src={albumArt}
                   alt=""
                   aria-hidden="true"
-                  className="absolute inset-0 size-full object-cover opacity-35"
+                  className="absolute inset-0 size-full object-cover z-10"
                 />
                 <motion.div
-                  className="relative z-10 aspect-square w-full rounded-full bg-gray-12 shadow-lg"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, ease: "linear", repeat: Infinity }}
+                  className="absolute inset-0 aspect-square w-full rounded-full bg-gray-12 shadow-[inset_0_0_18px_rgba(255,255,255,0.08),inset_0_0_36px_rgba(0,0,0,0.55),0_10px_24px_rgba(0,0,0,0.25)] [background-image:repeating-radial-gradient(circle,rgba(255,255,255,0.12)_0_1px,transparent_1px_10px)]"
+                  initial={{ x: 0 }}
+                  animate={{ x: 80, rotate: 360 }}
+                  transition={{
+                    x: { duration: 0.45, type: "spring", bounce: 0 },
+                    rotate: { duration: 3, ease: "linear", repeat: Infinity },
+                  }}
                 >
-                  <div className="absolute inset-[8%] rounded-full border border-white/10" />
-                  <div className="absolute inset-[18%] rounded-full border border-white/10" />
-                  <div className="absolute inset-[28%] rounded-full border border-white/10" />
                   <img
                     src={albumArt}
                     alt={`${item.track.album} album art`}
@@ -140,7 +141,7 @@ function PullRequestActivity({ item }: { item: Extract<ActivityItem, { type: "pu
             rel="nofollow noopener"
             className="min-w-0 truncate text-primary font-medium hover:underline decoration-2 decoration-primary underline-offset-2 focus rounded-sm"
           >
-            #{item.pullRequest.number} {item.pullRequest.title}
+            {item.pullRequest.title}
           </a>
           <HoverCardContent className="w-80">
             <div className="flex flex-col gap-3">

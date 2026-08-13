@@ -37,7 +37,7 @@ export function AnimateInUp({
   );
 }
 
-export function AnimateIn({
+function AnimateIn({
   children,
   className,
   delay,

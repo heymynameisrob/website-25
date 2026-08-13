@@ -18,7 +18,7 @@ export const TabsList = React.forwardRef<
 ));
 TabsList.displayName = TabsPrimitive.List.displayName;
 
-export const tabsTriggerVariants = cva(
+const tabsTriggerVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium text-secondary rounded-md cursor-default transition-all focus disabled:opacity-50 disabled:cursor-not-allowed",
   {
     variants: {

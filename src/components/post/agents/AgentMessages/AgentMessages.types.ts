@@ -1,50 +1,50 @@
-export type ToolSchema = {
+type ToolSchema = {
   type: "object";
   properties: Record<string, unknown>;
   required?: Array<string>;
 };
 
-export type WebSearchInput = {
+type WebSearchInput = {
   query: string;
 };
 
-export type WebSearchOutput = {
+type WebSearchOutput = {
   results: Array<{ title: string; url: string; snippet: string }>;
 };
 
-export type ReadUrlInput = {
+type ReadUrlInput = {
   url: string;
 };
 
-export type ReadUrlOutput = {
+type ReadUrlOutput = {
   title: string;
   content: string;
 };
 
-export type LoadSkillInput = {
+type LoadSkillInput = {
   skill: string;
 };
 
-export type LoadSkillOutput = {
+type LoadSkillOutput = {
   skill: string;
 };
 
-export type ToolDefinition<Input, Output> = {
+type ToolDefinition<Input, Output> = {
   label: string;
   schema: ToolSchema;
   _input?: Input;
   _output?: Output;
 };
 
-export type ToolRegistry = {
+type ToolRegistry = {
   webSearch: ToolDefinition<WebSearchInput, WebSearchOutput>;
   readUrl: ToolDefinition<ReadUrlInput, ReadUrlOutput>;
   loadSkill: ToolDefinition<LoadSkillInput, LoadSkillOutput>;
 };
 
 export type ToolKey = keyof ToolRegistry;
-export type ToolInput<K extends ToolKey> = NonNullable<ToolRegistry[K]["_input"]>;
-export type ToolOutput<K extends ToolKey> = NonNullable<ToolRegistry[K]["_output"]>;
+type ToolInput<K extends ToolKey> = NonNullable<ToolRegistry[K]["_input"]>;
+type ToolOutput<K extends ToolKey> = NonNullable<ToolRegistry[K]["_output"]>;
 export type ToolState = "loading" | "success" | "error" | "awaiting-input";
 
 export type ToolCall<K extends ToolKey = ToolKey> = {
@@ -57,30 +57,30 @@ export type ToolCall<K extends ToolKey = ToolKey> = {
   output?: ToolOutput<K>;
 };
 
-export type TextPart = {
+type TextPart = {
   id: string;
   type: "text";
   text: string;
 };
 
-export type AttachmentPart = {
+type AttachmentPart = {
   id: string;
   type: "attachment";
   name: string;
 };
 
-export type UserMessagePart = TextPart | AttachmentPart;
-export type AgentMessagePart = TextPart | AttachmentPart | ToolCall;
+type UserMessagePart = TextPart | AttachmentPart;
+type AgentMessagePart = TextPart | AttachmentPart | ToolCall;
 export type MessagePart = UserMessagePart | ToolCall;
 
-export type UserMessage = {
+type UserMessage = {
   id: string;
   type: "user";
   parts: Array<UserMessagePart>;
   createdAt: Date;
 };
 
-export type AgentMessage = {
+type AgentMessage = {
   id: string;
   type: "agent";
   parts: Array<AgentMessagePart>;
