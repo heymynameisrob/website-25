@@ -73,8 +73,8 @@ export type ActivityItem =
         repo: string;
         state: "open" | "closed";
         status: "open" | "closed" | "merged" | "draft";
-        additions: number;
-        deletions: number;
+        additions: number | null;
+        deletions: number | null;
       };
     };
 

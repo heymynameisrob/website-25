@@ -13,6 +13,7 @@
     "lint:fix": "oxlint . --fix --quiet",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
+    "knip": "knip",
     "prepare": "husky"
   },
   "dependencies": {
@@ -100,6 +101,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.10.2",
     "husky": "^9.1.7",
+    "knip": "^6.32.2",
     "oxfmt": "^0.50.0",
     "oxlint": "^1.65.0",
     "prettier": "^3.8.3",

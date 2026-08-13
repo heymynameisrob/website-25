@@ -76,7 +76,7 @@ function TrackActivity({ item }: { item: Extract<ActivityItem, { type: "track" }
   const albumArt = item.track.image.find(image => image.size === "extralarge")?.url;
 
   return (
-    <div className="flex min-h-11 items-center gap-1.5 -mx-4 rounded-lg bg-transparent px-4 py-1.5">
+    <div className="flex min-h-11 items-center gap-1.5 -mx-4 rounded-lg bg-transparent px-4 ">
       <div className="min-w-0 w-full inline-flex items-center gap-2 text-lg lg:text-xl">
         <HoverCard>
           <HoverCardTrigger asChild>
@@ -85,12 +85,30 @@ function TrackActivity({ item }: { item: Extract<ActivityItem, { type: "track" }
             </div>
           </HoverCardTrigger>
           {albumArt && (
-            <HoverCardContent className="w-48 p-2">
-              <img
-                src={albumArt}
-                alt={`${item.track.album} album art`}
-                className="aspect-square w-full rounded object-cover"
-              />
+            <HoverCardContent className="w-48 overflow-hidden p-0">
+              <div className="relative grid aspect-square place-items-center">
+                <img
+                  src={albumArt}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 size-full object-cover opacity-35"
+                />
+                <motion.div
+                  className="relative z-10 aspect-square w-full rounded-full bg-gray-12 shadow-lg"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 3, ease: "linear", repeat: Infinity }}
+                >
+                  <div className="absolute inset-[8%] rounded-full border border-white/10" />
+                  <div className="absolute inset-[18%] rounded-full border border-white/10" />
+                  <div className="absolute inset-[28%] rounded-full border border-white/10" />
+                  <img
+                    src={albumArt}
+                    alt={`${item.track.album} album art`}
+                    className="absolute left-1/2 top-1/2 aspect-square w-[34%] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover"
+                  />
+                  <div className="absolute left-1/2 top-1/2 size-[5%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-1" />
+                </motion.div>
+              </div>
             </HoverCardContent>
           )}
         </HoverCard>
@@ -110,20 +128,20 @@ function TrackActivity({ item }: { item: Extract<ActivityItem, { type: "track" }
 
 function PullRequestActivity({ item }: { item: Extract<ActivityItem, { type: "pullRequest" }> }) {
   return (
-    <div className="flex min-h-11 items-center gap-1.5 -mx-4 rounded-lg bg-transparent px-4 py-1.5">
+    <div className="flex min-h-11 items-center gap-1.5 -mx-4 rounded-lg bg-transparent px-4 ">
       <div className="min-w-0 w-full inline-flex items-baseline gap-1.5 text-lg lg:text-xl">
-        <PullRequestIcon status={item.pullRequest.status} />
         <HoverCard>
-          <HoverCardTrigger asChild>
-            <a
-              href={item.pullRequest.url}
-              target="_blank"
-              rel="nofollow noopener"
-              className="min-w-0 truncate text-primary font-medium hover:underline decoration-2 decoration-primary underline-offset-2 focus rounded-sm"
-            >
-              #{item.pullRequest.number} {item.pullRequest.title}
-            </a>
+          <HoverCardTrigger>
+            <PullRequestIcon status={item.pullRequest.status} />
           </HoverCardTrigger>
+          <a
+            href={item.pullRequest.url}
+            target="_blank"
+            rel="nofollow noopener"
+            className="min-w-0 truncate text-primary font-medium hover:underline decoration-2 decoration-primary underline-offset-2 focus rounded-sm"
+          >
+            #{item.pullRequest.number} {item.pullRequest.title}
+          </a>
           <HoverCardContent className="w-80">
             <div className="flex flex-col gap-3">
               <div className="flex items-start gap-2">
@@ -150,7 +168,9 @@ function PullRequestActivity({ item }: { item: Extract<ActivityItem, { type: "pu
   );
 }
 
-function Diff({ additions, deletions }: { additions: number; deletions: number }) {
+function Diff({ additions, deletions }: { additions: number | null; deletions: number | null }) {
+  if (additions === null || deletions === null) return null;
+
   return (
     <span className="inline-flex shrink-0 items-baseline gap-1 font-mono text-sm">
       <span className="text-green-600 dark:text-green-400">+{additions}</span>

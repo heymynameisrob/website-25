@@ -72,10 +72,7 @@ async function getLatestPullRequest(): Promise<Extract<ActivityItem, { type: "pu
   url.searchParams.set("per_page", "1");
 
   const response = await fetch(url, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
+    headers: githubHeaders(),
   });
 
   if (!response.ok) return null;
@@ -99,8 +96,8 @@ async function getLatestPullRequest(): Promise<Extract<ActivityItem, { type: "pu
       repo: repoNameFromApiUrl(latestPullRequest.repository_url),
       state: latestPullRequest.state,
       status: getPullRequestStatus(pullRequest),
-      additions: pullRequest.additions ?? 0,
-      deletions: pullRequest.deletions ?? 0,
+      additions: pullRequest.additions ?? null,
+      deletions: pullRequest.deletions ?? null,
     },
   };
 }
@@ -126,15 +123,22 @@ async function getPullRequestDetails(url: string | undefined): Promise<GithubPul
   if (!url) return null;
 
   const response = await fetch(url, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
+    headers: githubHeaders(),
   });
 
   if (!response.ok) return null;
 
   return (await response.json()) as GithubPullRequest;
+}
+
+function githubHeaders(): HeadersInit {
+  const token = import.meta.env.GITHUB_TOKEN;
+
+  return {
+    Accept: "application/vnd.github+json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
 }
 
 function getPullRequestStatus(
