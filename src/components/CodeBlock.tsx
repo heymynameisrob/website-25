@@ -83,6 +83,7 @@ export function CodeBlock({
           <Button
             size="icon"
             variant="ghost"
+            aria-label={copied ? "Copied code" : "Copy code"}
             className="absolute top-2 right-2 opacity-0 group-hover/codeblock:opacity-100 transition-opacity size-6"
             onClick={copyToClipboard}
           >
@@ -138,9 +139,10 @@ export function CodeBlock({
               showMore ? "opacity-0" : "opacity-100"
             )}
           />
-          <div className="absolute bottom-0 inset-x-0 grid place-items-center p-2 opacity-0 group-hover/codeblock:opacity-100">
+          <div className="absolute bottom-0 inset-x-0 grid place-items-center p-2 opacity-0 group-hover/codeblock:opacity-100 group-focus-within/codeblock:opacity-100">
             <Button
               size="icon"
+              aria-label={showMore ? "Collapse code" : "Expand code"}
               className="size-6 bg-gray-12 hover:bg-gray-12/80 rounded-full"
               onClick={() => setShowMore(prev => !prev)}
             >
