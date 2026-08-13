@@ -13,7 +13,6 @@ import { LantumGrid } from "@/components/demos/LantumGrid";
 import { LantumBulk } from "@/components/demos/LantumBulk";
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import { UIExample } from "@/components/demos/UIExample";
-import { Key } from "src/components/primitives/Key";
 import Blockquote from "@/components/mdx/Blockquote.astro";
 
 [Lantum](https://lantum.com) is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
@@ -80,7 +79,7 @@ We optimistically update the UI after the drag, but indicate that the UI is savi
 Often times lots of similar actions need to be taken at once. A row of shifts might need to be re-assigned to someone else or even removed. Additionally, powerful bulk actions like 'Delete' or 'Re-assign' can shave lots of repetitive work.
 
 <UIExample component="lantum-bulk" client:load>
-  Hold <Key>⇧</Key> when clicking a session to activate selecting mode
+  Hold ⇧ when clicking a session to activate selecting mode
 </UIExample>
 
 Users are presented with a toolbar containing bulk action options. These are specific actions which we've found users repeat over and over again in one go.
