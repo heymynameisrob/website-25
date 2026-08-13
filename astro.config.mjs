@@ -4,6 +4,7 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
+import netlify from "@astrojs/netlify";
 
 /**
  * Shiki transformer that extracts `title="Foo.tsx"` from a fenced code block's
@@ -46,6 +47,7 @@ const shikiConfig = {
 export default defineConfig({
   site: getBaseUrl(),
   output: "static",
+  adapter: netlify(),
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",

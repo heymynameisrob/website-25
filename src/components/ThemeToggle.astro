@@ -7,10 +7,9 @@ import { SunIcon, MoonIcon } from "@heroicons/react/16/solid";
   role="switch"
   aria-checked="false"
   aria-label="Toggle theme"
-  class="flex items-center justify-center size-6 text-gray-9 bg-transparent transition-all focus hover:bg-gray-4 rounded-lg"
+  class="flex text-xs underline text-nowrap items-center justify-center h-6 text-gray-9 bg-transparent transition-all focus underline-offset-2 hover:decoration-primary hover:text-primary rounded-lg"
 >
-  <SunIcon className="hidden w-4 h-4 opacity-70 dark:block" />
-  <MoonIcon className="visible w-4 h-4 opacity-70 dark:hidden" />
+  Switch theme
 </button>
 <script is:inline>
   const updateAriaChecked = () => {

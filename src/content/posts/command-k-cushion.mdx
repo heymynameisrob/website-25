@@ -1,5 +1,5 @@
 ---
-title: Building ⌘K
+title: ⌘K
 description: A closer look at Cushion's ⌘K menu, including full workspace search, keyboard shortcuts and paginated results for large teams.
 date: 2026-06-01
 type: "demo"
@@ -9,12 +9,182 @@ company: "Personal"
 
 import { UIExample } from "@/components/demos/UIExample";
 
+**Command Palette** (or "⌘K" / "Command Bar") patterns are one of the most versitile, and one of my favourite, patterns on the web.
+
+The pattern allows users to search for single commands using only text and their keyboard. It's particularly userful for "power users", users who prioritise productivity and speed of small, repetitive tasks when using software for long periods.
+
+In this post, I'll show how we built a sophisticated ⌘K in [cushion.so](https://cushion.so) using React, and in particular the fantastic UI package [cmdk](https://github.com/dip/cmdk).
+
 <UIExample component="home-command-k" client:load />
 
-### heading
+As far back as the 70's, Emacs added **Meta-x** which let users type names of the command they wanted rather than remembering the shortcut or finding it in the menu.
 
-asdasdasd
+As software became more powerful, menus exploded with the amount of commands available. New patterns became avaiable to give users options to find commands they were looking for quickly and efficently, such as search, shortcuts, and history.
 
-### heading
+Applications like Spotlight (or more recently Raycast), take this idea further by giving users commands for applications from a single 'launcher' based on a text-based command, just like emacs all those years ago.
 
-asdasds
+This launcher pattern was arguably "standardised" by developer tools such as VSCode or Sublime Text, and spread around popular productivity apps like Linear and Notion.
+
+## How it works
+
+The premise of the component is simple. Users can quickly search for and execute commands, using a keyboard-first approach. Commands can range from performing actions such as deleting records or navigating to resources like a new page.
+
+Whilst being fairly simple, the interaction is non-trival. Luckily the brilliant `cmdk` package does a lot of heavy lifting around performance and the basic interactions. It gives us the primitives for the palette as well as a lovely composable API, whilst allowing us to control styling and layer on more functionality.
+
+The root `Command` component owns selection, keyboard navigation, filtering and ranking. We render the parts we need: an input, a list, groups, empty states, and items.
+
+```tsx title="CommandMenu.tsx"
+<Command>
+  <Command.Input value={query} onValueChange={handleInputChange} />
+  <Command.List>
+    <Command.Empty>No results found</Command.Empty>
+    {view}
+  </Command.List>
+</Command>
+```
+
+Above is a simple, yet perfectly workable implementation. You could also drop the controlled `<Command.Input>` and use the in-built control instead.
+
+### Dialog
+
+In a product, the command menu usually lives in a dialog rather than inline on the page. `cmdk` includes `Command.Dialog`, which composes Radix Dialog and gives us the same command primitives in an accessible modal.
+
+```tsx title="CommandMenu.tsx"
+function CommandMenu(){
+  const [open, setOpen] = React.useState(false);
+  return (
+    <Command.Dialog open={open} onOpenChange={setOpen} label="Global Command Menu">
+      <Command.Input />
+      <Command.List>
+        <Command.Empty>No results found.</Command.Empty>
+
+        <Command.Group heading="Letters">
+          <Command.Item>a</Command.Item>
+          <Command.Item>b</Command.Item>
+          <Command.Separator />
+          <Command.Item>c</Command.Item>
+        </Command.Group>
+
+        <Command.Item>Apple</Command.Item>
+      </Command.List>
+    </Command.Dialog>
+}
+```
+
+The important detail is that `open` and `onOpenChange` stay controlled by the app. That means the menu can close on selection, follow route changes, or reset its page stack when it opens without coupling those behaviours to the command items themselves.
+
+The common pattern is to keep the open state in React, then add a global keyboard listener for `⌘+K` or `Ctrl+K`.
+
+```tsx title="CommandMenu.tsx"
+function CommandMenu(){
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    function onKeyPress(e){
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setOpen(open => !open);
+      }
+    }
+    document.addEventListener("keydown", onKeyPress);
+    return () => document.removeEventListener("keydown", onKeyPress);
+  }, []);
+
+  return (
+    // CommandMenu...
+  )
+};
+```
+
+### Pagination
+
+It's very rare that all the commands that are available in the ⌘K menu are useful for the page you're on. Added some "pagination", allowing for deep nested views tidies up the menu and gives a taxonomical structure to the menu.
+
+The nested views are handled with a small page stack. The current page decides which group of items to render. Selecting a top-level item pushes a new page onto the stack and clears the query.
+
+```tsx title="CommandMenu.tsx"
+const [pages, setPages] = React.useState<string[]>(["home"]);
+const currentPage = pages[pages.length - 1] as Page;
+
+function navigateTo(page: Page) {
+  setPages(prev => [...prev, page]);
+  setQuery("");
+}
+```
+
+This follows the nested items pattern from `cmdk`, where each page is just a different set of rendered items. There is no router involved. The command menu stays open, but the list changes beneath the input.
+
+Escape and Backspace make the stack feel natural. Escape moves back one level instead of immediately closing the menu. Backspace does the same when the search field is empty. That gives users a keyboard-only way to move into a section, search, clear the search, and step back out again.
+
+```tsx title="CommandMenu.tsx"
+function handleKeyDown(e: React.KeyboardEvent) {
+  if (e.key === "Backspace" && !query && pages.length > 1) {
+    e.preventDefault();
+    popPage();
+  }
+
+  if (e.key === "Escape" && pages.length > 1) {
+    e.preventDefault();
+    popPage();
+  }
+}
+```
+
+The page stack can also start from the user's current location. If I open the menu from `/chat`, the first view should probably be Chat rather than Home. I would avoid setting that initial state in an effect because it creates an extra render and briefly starts from the wrong page. Instead, pass the pathname into the command menu and use it as the initial state.
+
+```tsx title="CommandMenu.tsx"
+function getInitialPages(pathname: string): Page[] {
+  if (pathname.startsWith("/chat")) return ["home", "chat"];
+  if (pathname.startsWith("/posts")) return ["home", "posts"];
+  if (pathname.startsWith("/channels")) return ["home", "channels"];
+  // and so on...
+
+  return ["home"];
+}
+
+const [pages, setPages] = React.useState<Page[]>(() => getInitialPages(pathname));
+
+/** If the route can change while the menu stays mounted, then an effect is useful for syncing the state to that external change. */
+React.useEffect(() => {
+  setPages(getInitialPages(pathname));
+  setQuery("");
+}, [pathname]);
+```
+
+### Shortcuts
+
+This pattern is used in cushion.so, where several product primitives, such as Chat, Posts and Channels, cover most of our commands.
+
+Single character shortcuts, such as `#`, `+`, and `@`, act as fast routes into those common areas. Typing `#` opens Channels, `+` opens Posts, and `@` opens Chat. The input is then cleared so the user can start searching inside that section.
+
+To do that, we control the input state and provide a callback to set the correct page when a shortcut is entered.
+
+```tsx title="CommandMenu.tsx"
+function handleInputChange(value: string) {
+  const shortcutPage = checkForShortcuts(value);
+
+  if (shortcutPage) {
+    setPages(["home", shortcutPage]);
+    setQuery("");
+    return;
+  }
+
+  setQuery(value);
+}
+```
+
+Items also include `keywords`. These are aliases used by `cmdk` during filtering, so the visible label does not have to carry every possible search term. For example, “Workspace settings” can match “team”, “preferences”, or “config” without making the row text longer.
+
+```tsx title="CommandMenu.tsx"
+<CommandPrimitive.Item
+  value="Workspace Settings"
+  keywords={["workspace", "team", "settings", "preferences", "config"]}
+>
+  Workspace settings
+</CommandPrimitive.Item>
+```
+
+The final detail is styling. `cmdk` is unstyled, but each part exposes attributes such as `[cmdk-item]`, `[cmdk-group]`, and `[data-selected="true"]`. That lets us keep the component structure semantic while styling selection, groups, and spacing with normal CSS classes.
+
+## Performance
+
+## Future considerations

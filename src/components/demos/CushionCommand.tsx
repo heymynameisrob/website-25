@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Command as CommandPrimitive } from "cmdk";
-import { HomeIcon, PlugZap2Icon } from "lucide-react";
+import { HomeIcon } from "lucide-react";
 import {
   ArrowRightStartOnRectangleIcon,
   BellIcon,
@@ -53,6 +53,9 @@ const PAGE_META: Record<Page, PageMetadata> = {
 };
 
 export function CushionCommand() {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [isVisible, setIsVisible] = React.useState(false);
   const [query, setQuery] = React.useState<string>("");
   const [pages, setPages] = React.useState<string[]>(["home"]);
 
@@ -62,13 +65,6 @@ export function CushionCommand() {
     setPages(prev => [...prev, page]);
     setQuery("");
   }, []);
-
-  const navigateBack = () => {
-    setPages(prev => {
-      return prev.slice(0, -1);
-    });
-    setQuery("");
-  };
 
   const view = React.useMemo(() => {
     switch (currentPage) {
@@ -130,10 +126,52 @@ export function CushionCommand() {
     [checkForShortcuts]
   );
 
+  /**
+   * Demo mounting guard only.
+   *
+   * This command palette is embedded as an always-mounted page demo, so it needs
+   * to release focus when scrolled off page. Product command palette behavior
+   * should be implemented by the consuming shell/dialog instead.
+   */
+  React.useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting;
+        setIsVisible(visible);
+
+        if (!visible) {
+          inputRef.current?.blur();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(root);
+
+    return () => observer.disconnect();
+  }, []);
+
+  /**
+   * Demo mounting guard only.
+   *
+   * Re-focuses the demo input when the user returns to this embedded demo. This
+   * keeps keyboard search/navigation usable in the static showcase and is not
+   * part of the command component's core functionality.
+   */
+  const focusDemoInput = React.useCallback(() => {
+    if (!isVisible) return;
+    inputRef.current?.focus();
+  }, [isVisible]);
+
   return (
     <CommandPrimitive
+      ref={rootRef}
       value=""
-      loop
+      onPointerEnter={focusDemoInput}
+      onFocus={focusDemoInput}
       className={cn(
         "bg-gray-1 text-primary flex w-[480px] flex-col overflow-hidden rounded-lg shadow-container dark:bg-gray-2",
         "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-11 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2"
@@ -142,6 +180,7 @@ export function CushionCommand() {
       <div className="flex h-11 items-center gap-2 border-b px-3 bg-gray-2 dark:bg-gray-3">
         <CommandBreadcrumb currentPage={currentPage} />
         <CommandPrimitive.Input
+          ref={inputRef}
           placeholder="Search... (# for channels, + for posts, @ for chat)"
           value={query}
           onKeyDown={handleKeyDown}
@@ -457,14 +496,6 @@ function CommandGroup({
   );
 }
 
-function CommandSeparator({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Separator>) {
-  return (
-    <CommandPrimitive.Separator className={cn("bg-border -mx-1 h-px", className)} {...props} />
-  );
-}
 function CommandItem({
   className,
   shortcut,

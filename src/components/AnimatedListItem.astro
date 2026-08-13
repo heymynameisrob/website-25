@@ -20,7 +20,7 @@ const { href, label, description, delay = 0.4, external = false } = Astro.props;
     href={href}
     target={external ? "_blank" : undefined}
     rel={external ? "nofollow noopener" : undefined}
-    class="group flex items-center gap-1.5 -mx-4 bg-transparent px-4 min-h-11 py-1.5 rounded-lg focus focus-visible:bg-gray-3"
+    class="group flex items-center gap-1.5 -mx-4 bg-transparent px-4 min-h-11 py-1.5 rounded-lg focus"
   >
     <div class="min-w-0 w-full inline-flex items-baseline gap-1.5 text-lg lg:text-xl">
       <h3

@@ -9,10 +9,12 @@ import CraftGuides from "@/components/CraftGuides.astro";
 import MeltCraft from "@/components/MeltCraft.astro";
 import { BallpointHandwritten } from "@/components/Handwritten";
 import { ScrambleText } from "@/components/ScrambleText";
+import { Activity } from "@/components/Activity";
 
 import LinkWithIcon from "@/components/LinkWithIcon.astro";
 import { getCollection } from "astro:content";
 import { filterPosts } from "@/lib/utils";
+import { ArrowDownIcon } from "lucide-react";
 
 const INITIAL_MORE_ITEMS = 4;
 const MORE_ITEMS_PER_LOAD = 4;
@@ -44,13 +46,18 @@ const postLinks = filterPosts(allPosts).map(post => ({
   <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5 pt-8">
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
       <BallpointHandwritten client:load />
-      <h1 class="gap-1 text-xl font-medium leading-normal text-balance lg:text-2xl">
+      <h2 class="gap-1 text-xl font-medium leading-normal text-balance lg:text-2xl">
         I'm a design engineer working at
         <LinkWithIcon href="https://n8n.io" icon="n8n" label="n8n" />, an open-source project
         building the future of AI automation. I love designing performant, accessible interfaces
         that are rooted in <MeltCraft /> and
         <TextShimmerBurst text="quality" />.
-      </h1>
+      </h2>
+      <!-- <Activity client:load /> -->
+    </AnimateInUp>
+    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.2} client:load>
+      <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Now</h3>
+      <Activity client:load />
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Posts</h3>
@@ -67,10 +74,11 @@ const postLinks = filterPosts(allPosts).map(post => ({
         postLinks.length > INITIAL_MORE_ITEMS && (
           <button
             type="button"
-            class="self-start text-lg font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg focus-visible:bg-gray-3"
+            class="self-start text-lg font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg"
             data-more-button
           >
-            More
+            Load more
+            <ArrowDownIcon className="inline-block size-4 color-inherit" />
           </button>
         )
       }

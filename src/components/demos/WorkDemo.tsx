@@ -8,13 +8,15 @@ import { Thinking } from "@/components/demos/motion/Thinking";
 import { MagicText } from "@/components/demos/MagicText";
 import { Button, buttonVariants } from "@/components/Button";
 import { Tooltip } from "@/components/Tooltip";
-import { ArrowUpRight, Code2Icon, FullscreenIcon, RefreshCcw } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/HoverCard";
+import { ArrowUpRight, Code2Icon, InfoIcon, RefreshCcw } from "lucide-react";
+import { AnimatePresence, motion, useInView } from "motion/react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
+import { ResponseActions } from "@/components/demos/ResponseActions";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -194,53 +196,14 @@ const TECH_ICONS = {
 
 const COMPONENTS: ComponentItem[] = [
   {
-    id: "magic",
-    name: "Magic Text",
+    id: "response-actions",
+    name: "Response Actions",
     description:
-      "Animated text transformation, staggering in each chunk. Perfect for landing page headers.",
+      "Animated AI response toolbar with feedback, copy, share, and overflow actions.",
     tech: ["react", "tailwind", "motion"],
-    fileName: "MagicText.tsx",
+    fileName: "ResponseActions.tsx",
     isFullWidth: false,
-    component: <MagicText />,
-  },
-  {
-    id: "cmdk",
-    name: "Command K",
-    description: "⌘K menu used in cushion.so. Full workspace search with pagniation and shortcuts",
-    tech: ["react", "tailwind"],
-    fileName: "CushionCommand.tsx",
-    isFullWidth: false,
-    component: <CushionCommand />,
-  },
-  {
-    id: "thinking",
-    name: "Agent Feedback",
-    description:
-      "Cushion agent giving status feedback, showing how the model is processing the request and what tools it's using, then replying with the model response to the query.",
-    tech: ["react", "tailwind", "motion"],
-    fileName: "Thinking.tsx",
-    isFullWidth: false,
-    component: <Thinking />,
-  },
-  {
-    id: "ai-stream",
-    name: "Streaming",
-    description:
-      "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API.",
-    tech: ["react", "tailwind", "motion"],
-    fileName: "Prompt.tsx",
-    isFullWidth: false,
-    component: <Prompt />,
-  },
-  {
-    id: "checkin",
-    name: "Checkin",
-    description:
-      "Checkin submission for cushion. Rich-text editor with animated activity feed and transitions.",
-    tech: ["react", "tailwind", "tiptap", "motion"],
-    fileName: "Checkin.tsx",
-    isFullWidth: false,
-    component: <Checkin />,
+    component: <ResponseActions />,
   },
   {
     id: "calendar",
@@ -345,7 +308,7 @@ export function WorkDemos({ compact = false, limit }: WorkDemosProps = {}) {
               title={item.name}
               compact={compact}
               className={compact ? "rounded-2xl" : undefined}
-              openOnCardClick={compact}
+              openOnCardClick={false}
             />
           ))}
         </div>
@@ -366,6 +329,11 @@ function WorkDemoCard({
   const { setActiveComponentId } = useWorkDemoContext();
   const [showActions, setShowActions] = React.useState(false);
   const [resetKey, setResetKey] = React.useState(0);
+  const containerRef = React.useRef<HTMLElement>(null);
+  const shouldMountDemo = useInView(containerRef, {
+    amount: "some",
+    margin: "200px 0px",
+  });
 
   const handleReset = React.useCallback(() => {
     setResetKey(prev => prev + 1);
@@ -373,6 +341,7 @@ function WorkDemoCard({
 
   return (
     <motion.figure
+      ref={containerRef}
       tabIndex={0}
       onFocus={() => setShowActions(true)}
       onBlur={() => setShowActions(false)}
@@ -396,9 +365,9 @@ function WorkDemoCard({
         <div className="px-4 text-center">
           <p className="text-sm font-medium text-primary">{title ?? componentId}</p>
         </div>
-      ) : (
+      ) : shouldMountDemo ? (
         <motion.div key={resetKey}>{component}</motion.div>
-      )}
+      ) : null}
       <AnimatePresence mode="wait" initial={false}>
         {showActions && (
           <WorkDemoActions componentId={componentId} onReset={handleReset} className="z-20" />
@@ -510,8 +479,6 @@ function WorkDemoFullscreen() {
 }
 
 function WorkDemoActions({ componentId, onReset, className }: WorkDemoActionsProps) {
-  const { setActiveComponentId } = useWorkDemoContext();
-
   const thisComponent = React.useMemo(
     () => COMPONENTS.find(c => c.id === componentId),
     [componentId]
@@ -529,11 +496,30 @@ function WorkDemoActions({ componentId, onReset, className }: WorkDemoActionsPro
         </Tooltip>
       </AnimatedAction>
       <AnimatedAction delay={0.05}>
-        <Tooltip content="Fullscreen">
-          <Button size="icon" variant="ghost" onClick={() => setActiveComponentId(componentId)}>
-            <FullscreenIcon className="size-4 opacity-70" />
-          </Button>
-        </Tooltip>
+        <HoverCard openDelay={100} closeDelay={100}>
+          <HoverCardTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`${thisComponent?.name ?? componentId} info`}
+            >
+              <InfoIcon className="size-4 opacity-70" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent align="end" side="top" className="w-72">
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-lg font-medium leading-none text-primary">
+                  {thisComponent?.name}
+                </h3>
+                <p className="text-sm font-medium leading-relaxed tracking-[-0.01em] text-gray-10">
+                  {thisComponent?.description}
+                </p>
+              </div>
+              {thisComponent?.tech && <WorkDemoTech tech={thisComponent.tech} />}
+            </div>
+          </HoverCardContent>
+        </HoverCard>
       </AnimatedAction>
       <AnimatedAction delay={0}>
         <Tooltip content="View on GitHub">

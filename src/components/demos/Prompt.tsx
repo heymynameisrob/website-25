@@ -6,13 +6,8 @@ import {
   AdjustmentsHorizontalIcon,
   ArrowUpIcon,
   ChevronRightIcon,
-  DocumentDuplicateIcon,
-  EllipsisHorizontalIcon,
-  HandThumbDownIcon,
-  HandThumbUpIcon,
   MicrophoneIcon,
   PaperClipIcon,
-  ShareIcon,
 } from "@heroicons/react/16/solid";
 
 import { TextShimmer } from "@/components/TextShimmer";
@@ -177,43 +172,10 @@ function TextStream({ onComplete }: { onComplete: () => void }) {
                   <span className="inline-block align-middle size-3.5 rounded-full bg-gray-7 not-prose ml-1 animate-blink" />
                 )}
               </motion.div>
-              {status === "complete" && <ResponseActions />}
             </AnimatePresence>
           </>
         )}
       </article>
-    </div>
-  );
-}
-
-const actionOptions = [
-  { name: "Copy", icon: DocumentDuplicateIcon },
-  { name: "Good response", icon: HandThumbUpIcon },
-  { name: "Bad response", icon: HandThumbDownIcon },
-  { name: "Share", icon: ShareIcon },
-  { name: "More", icon: EllipsisHorizontalIcon },
-];
-
-function ResponseActions() {
-  return (
-    <div className="p-3 flex items-center justify-start gap-3 -mx-3">
-      {actionOptions.map((option, index) => {
-        const Icon = option.icon;
-        return (
-          <motion.div
-            key={option.name}
-            initial={{ y: 8, opacity: 0, filter: "blur(2px)" }}
-            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-            transition={{ ease: "easeOut", duration: 0.2, delay: index * 0.1 }}
-          >
-            <Tooltip content={option.name} side="bottom">
-              <Button size="icon" variant="ghost">
-                <Icon className="size-4 opacity-60" />
-              </Button>
-            </Tooltip>
-          </motion.div>
-        );
-      })}
     </div>
   );
 }
