@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/HoverCard";
 import { fetcher } from "@/lib/fetch";
 import type { ActivityItem, ActivityResponse } from "@/lib/types";
+import { Skeleton } from "@/components/Skeleton";
 
 const ACTIVITY_INTERVAL = 5_000;
 
@@ -37,10 +38,7 @@ export function Activity() {
     return () => window.clearInterval(interval);
   }, [isPaused, items.length]);
 
-  if (isLoading) return <p className="text-lg text-secondary lg:text-xl">Loading activity…</p>;
-  if (error) return <p className="text-lg text-secondary lg:text-xl">Couldn’t load activity.</p>;
-  if (!items.length)
-    return <p className="text-lg text-secondary lg:text-xl">No recent activity.</p>;
+  if (isLoading) return <Skeleton className="w-64 h-7" />;
 
   const activeItem = items[activeIndex] ?? items[0];
 
