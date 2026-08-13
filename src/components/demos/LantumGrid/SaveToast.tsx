@@ -32,11 +32,7 @@ export const SaveToast = ({ showToast, saving }: SaveToastProps) => {
           >
             {saving ? (
               <>
-                <Loader2
-                  className="animate-spin"
-                  size={14}
-                  color="rgba(255, 255, 255, 0.65)"
-                />
+                <Loader2 className="animate-spin" size={14} color="rgba(255, 255, 255, 0.65)" />
                 <small className="text-xs font-medium">Saving...</small>
               </>
             ) : (

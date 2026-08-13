@@ -11,7 +11,7 @@ export function ClipPathSlider() {
   const clipPath = useTransform(
     x,
     [0, containerWidth],
-    ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
+    ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"]
   );
 
   React.useEffect(() => {
@@ -28,10 +28,7 @@ export function ClipPathSlider() {
       className="relative grid [grid-template-areas:'stack'] aspect-video max-w-xl w-full mx-auto rounded-lg border overflow-hidden bg-gray-3"
     >
       <div className="w-full h-full bg-green-500 [grid-area:stack]" />
-      <motion.div
-        className="w-full h-full bg-red-500 [grid-area:stack]"
-        style={{ clipPath }}
-      />
+      <motion.div className="w-full h-full bg-red-500 [grid-area:stack]" style={{ clipPath }} />
       <motion.div
         drag="x"
         dragConstraints={constraintsRef}

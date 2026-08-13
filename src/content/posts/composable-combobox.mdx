@@ -1,0 +1,221 @@
+---
+title: Combobox
+description: Building a flexible combobox primitive from scratch
+date: 2026-07-02
+type: "post"
+---
+
+import { ComboboxPopoverMenu } from "@/components/examples/ComboboxMenu.tsx";
+import { ComboboxSidebar } from "@/components/examples/ComboboxSidebar.tsx";
+import { ComboboxBasic } from "@/components/examples/ComboboxBasic.tsx";
+import { ComboboxDynamic } from "@/components/examples/ComboboxDynamic.tsx";
+
+import Figure from "@/components/Figure.astro";
+
+# Combobox
+
+An input with a predefined list of items. Render the items and it will sort and filter them automatically. The combobox has a fully composable API<sup><sup>[wtf?](https://kentcdodds.com/blog/compound-components-with-react-hooks)</sup></sup>, so you can combine with other components and overide styles.
+
+<Figure caption="Typical combobox mounted in a popover menu, making a filterable dropdown menu">
+  <ComboboxPopoverMenu client:load />
+</Figure>
+
+While working on the design system at [artificial.io](https://artificial.io), we found we needed a component like this.
+There are some [great packages](https://github.com/drip/cmdk) out there that handle this well.
+However, they all required React 18+ or other deps which we couldn't use.
+
+This encouraged us to work on building a complete version ourselves. The goal was to create something that worked similar to Radix UI (which a lot of components already used as a base) giving the team full control over the composability and styling, but abstracting away the core logic so the component was reliable and easy to integrate.
+
+---
+
+## Approach
+
+Combobox uses the compound component pattern. It mirrors how we're used to writing HTML, such as `<select>` and `<option>`.
+
+State is managed by a minimal Context provider, avoiding prop drilling and callbacks. This makes it easy and natural to write.
+
+The benefits of this approach are:
+
+- Expressive API - Creates intuitive, readable component hierarchies that feel natural to use
+- Implicit State Sharing - State is managed centrally without cluttering components with props. Children access only what they need through context
+- Flexible Structure - Users can arrange child components in any order or combination, giving greater control over layout and behavior while keeping code maintainable
+
+```tsx title="ComboboxUsage.tsx"
+// ❌ No - Over coupling rendering logic, messy props
+<Combobox
+  items={items}
+  onItemRender={({ item }) => {
+    return <div>{item}</div>
+  }}
+  onItemClick={...}
+  // More props
+/>
+
+// ❌ No - Render props add nesting and indirection
+<Combobox items={items}>
+  {(item) => (
+    <div>{item}</div>
+  )}
+</Combobox>
+
+// ✅ Yes - Simple, clean, elegant
+<Combobox>
+  {items.map((item) => <ComboboxItem key={item.id}>{item}</ComboboxItem>)}
+  {/* Can compose with other components */}
+  <AnotherComponentHere />
+</Combobox>
+```
+
+Items register themselves with the parent via the DOM. When an item is filtered out, the component returns `null` so it's removed from the DOM, but remains mounted in React's tree.
+
+This means every item stays in the React tree even when hidden. While this is useful for our purposes, with very large lists (e.g 2,000+), this could become memory intensive.
+
+---
+
+## Sidebar with async search
+
+This example shows how to use the `useCombobox` hook to access internal state. Here we grab the `query` value and use it to fetch results from an API. Combined with debouncing, this gives us a responsive search experience without hammering the server.
+
+<Figure className="py-8" caption="Mount as a filterable list with async search">
+  <ComboboxSidebar client:load />
+</Figure>
+
+The key here is that filtering is handled server-side. We just pass the results straight to `ComboboxItem` and let the component handle the rest.
+
+```tsx title="ComboboxSidebar.tsx"
+function ComboboxSidebarList() {
+  const { query } = useCombobox();
+  const [value] = useDebounce(query, 500);
+  const { data } = useFetch(value.length > 1 ? `/api/users/search?q=${value}` : null);
+
+  return (
+    <ComboboxList>
+      {data?.users.map(user => (
+        <ComboboxItem key={user.id} value={user.name}>
+          {user.name}
+        </ComboboxItem>
+      ))}
+    </ComboboxList>
+  );
+}
+```
+
+---
+
+## Autocomplete input
+
+A more traditional autocomplete pattern. The input shows the selected value and the dropdown appears on focus. We control the `query` and `value` separately, which lets us update the input text when a selection is made.
+
+<Figure className="py-8" caption="Traditional combobox/autocomplete">
+  <ComboboxBasic client:load />
+</Figure>
+
+Notice how `onValueChange` updates both the selected value and syncs the input text. This keeps the input in sync with the selection, which feels natural.
+
+```tsx title="ComboboxBasic.tsx"
+const [selected, setSelected] = useState("");
+const [query, setQuery] = useState("");
+
+const handleValueChange = (value: string) => {
+  setSelected(value);
+  const product = products.find(p => p.id === value);
+  if (product) {
+    setQuery(product.title);
+  }
+};
+
+<ComboboxRoot
+  value={selected}
+  onValueChange={handleValueChange}
+  query={query}
+  onQueryChange={setQuery}
+>
+  <ComboboxInput onFocus={() => setOpen(true)} />
+  <ComboboxList>
+    {products.map(product => (
+      <ComboboxItem key={product.id} value={product.id}>
+        {product.title}
+      </ComboboxItem>
+    ))}
+  </ComboboxList>
+</ComboboxRoot>;
+```
+
+---
+
+## Dynamic items
+
+A combobox that allows users to add new options on the fly. Useful for label inputs or any scenario where the list of options isn't fixed. Users can add new items by typing the missing item label and hitting `Enter` when no results match their query.
+
+<Figure caption="Add new tags dynamically">
+  <ComboboxDynamic client:load />
+</Figure>
+
+The key is managing the item list in state and providing a way to add new items:
+
+```tsx title="ComboboxDynamic.tsx"
+const [tags, setTags] = useState(INITIAL_TAGS);
+const [query, setQuery] = useState("");
+
+const filteredTags = tags.filter(tag => tag.label.toLowerCase().includes(query.toLowerCase()));
+const hasNoResults = query.trim() && filteredTags.length === 0;
+
+const handleAddTag = () => {
+  if (!query.trim()) return;
+  const newValue = query.toLowerCase().replace(/\s+/g, "-");
+  const exists = tags.some(tag => tag.value === newValue);
+
+  if (!exists) {
+    setTags(prev => [...prev, { value: newValue, label: query.trim() }]);
+    setSelected(newValue);
+    setQuery("");
+  }
+};
+
+const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter" && hasNoResults && query.trim()) {
+    e.preventDefault();
+    handleAddTag();
+  }
+};
+
+<ComboboxInput onKeyDown={handleInputKeyDown} />;
+```
+
+---
+
+## Performance
+
+By design this component is built for relatively small, simple lists. This allows us to use an elegant clean pattern. But this approach may struggle for much larger lists or lists with complex items.
+
+Our reliance on the DOM to register items is one thing that allows us to have an elegant, composable and easy-to-use API.
+
+Luckily, you can filter items before rendering. Since `query` can be controlled externally, filtered-out items never mount in the first place:
+
+```tsx title="ComboboxFilteredList.tsx"
+const { query } = useCombobox();
+
+const filtered = items.filter(item => item.label.toLowerCase().includes(query.toLowerCase()));
+
+<ComboboxList>
+  {filtered.map(item => (
+    <ComboboxItem key={item.id} value={item.id}>
+      {item.label}
+    </ComboboxItem>
+  ))}
+</ComboboxList>;
+```
+
+This trades some of the "just render and it works" convenience for better performance with large datasets. For truly huge lists, you'd most likely create a separate primitive better suited for that scenario, or a one-off component for that particular case.
+
+---
+
+## Future considerations
+
+There's a fine line to walk when building re-usable components.
+
+I would categorise components like `<Combobox />` as a primitive. This means it forms the basis of other components used in the application.
+
+This means you need to consider a lot of use cases that you might not currently be running into. For example, we only support single item selection as that was the only use case we had when we used it.
+
+We could preemptively add a `multiple` mode, which would increase complexity. I prefer to separate these components into `<Combobox />` and `<MultiCombobox />` when working with primitives as the components most developers will use will be abstractions on top of these.

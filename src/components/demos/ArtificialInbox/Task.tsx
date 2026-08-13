@@ -3,18 +3,18 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDebouncedCallback } from "use-debounce";
-import { Input } from "@/components/primitives/Input";
-import { TextEditor } from "@/components/primitives/TextEditor";
+import { Input } from "@/components/Input";
+import { TextEditor } from "@/components/TextEditor";
 import { useArtificialInboxStore, type ArtificialTask } from "./Store";
 import { AssigneeField, StatusField, DueDateField } from "./TaskFormFields";
-import { Badge } from "@/components/primitives/Badge";
+import { Badge } from "@/components/Badge";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { ArtificialSkeletonActivity } from "@/components/demos/ArtificialInbox/Skeletons";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
-import { Tooltip } from "@/components/primitives/Tooltip";
+import { Tooltip } from "@/components/Tooltip";
 
 // Define form options
 const ASSIGNEE_OPTIONS = [
@@ -44,7 +44,7 @@ type TaskFormData = z.infer<typeof taskFormSchema>;
 
 export function ArtificialTasks() {
   return (
-    <div className="relative top-10 left-10  max-w-full max-h-full rounded-md overflow-hidden bg-background shadow-floating text-primary">
+    <div className="relative top-10 left-10  max-w-full max-h-full rounded-md overflow-hidden bg-gray-1 shadow-floating text-primary">
       <div className="grid grid-rows-[44px_1fr] h-full">
         <TasksHeader />
         <div className="w-full max-w-prose mx-auto p-6 lg:py-12">
@@ -83,6 +83,10 @@ function TasksForm() {
   });
 
   const watchedData = watch();
+  const watchedDataJson = JSON.stringify(watchedData);
+  const latestWatchedData = React.useRef(watchedData);
+
+  latestWatchedData.current = watchedData;
 
   // Debounced autosave callback
   const debouncedSave = useDebouncedCallback((data: TaskFormData) => {
@@ -102,9 +106,8 @@ function TasksForm() {
       return;
     }
 
-    debouncedSave(watchedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(watchedData)]);
+    debouncedSave(latestWatchedData.current);
+  }, [debouncedSave, watchedDataJson]);
 
   const onSubmit = (data: TaskFormData) => {
     setTask(data as ArtificialTask);
@@ -121,7 +124,7 @@ function TasksForm() {
         onSubmit={handleSubmit(onSubmit)}
         className={cn(
           "flex flex-col gap-4 transition-opacity",
-          isSaving && "pointer-events-none opacity-50",
+          isSaving && "pointer-events-none opacity-50"
         )}
       >
         <Controller
@@ -137,16 +140,8 @@ function TasksForm() {
           )}
         />
         <dl className="grid grid-cols-[120px_1fr] gap-1 px-2">
-          <AssigneeField
-            control={control}
-            name="assignee"
-            options={ASSIGNEE_OPTIONS}
-          />
-          <StatusField
-            control={control}
-            name="status"
-            options={STATUS_OPTIONS}
-          />
+          <AssigneeField control={control} name="assignee" options={ASSIGNEE_OPTIONS} />
+          <StatusField control={control} name="status" options={STATUS_OPTIONS} />
           <DueDateField control={control} name="dueDate" />
         </dl>
         <div className="mt-4 px-2">

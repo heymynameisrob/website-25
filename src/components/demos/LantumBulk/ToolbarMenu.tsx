@@ -1,11 +1,5 @@
 import type { ToolbarMenuProps } from "./types";
-import {
-  CloseIcon,
-  TrashIcon,
-  UserIcon,
-  SwapIcon,
-  UnpublishIcon,
-} from "./icons";
+import { CloseIcon, TrashIcon, UserIcon, SwapIcon, UnpublishIcon } from "./icons";
 
 export const ToolbarMenu = ({ onRemove, onClose }: ToolbarMenuProps) => {
   return (

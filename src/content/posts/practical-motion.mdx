@@ -1,6 +1,6 @@
 ---
-title: Motion  UI
-description: Using motion in web interfaces
+title: Motion for UI
+description: Practical lessons for using motion in web interfaces, from easing and gestures to layout transitions and accessible animation.
 image: /src/assets/bacon-motion.jpg
 imageDark: /src/assets/bacon-motion.jpg
 date: 2025-11-20
@@ -277,9 +277,7 @@ In practice, this doesn't mean removing all motion. Instead, reduce duration sig
 Disable video autoplay for users with `prefers-reduced-motion` enabled. Autoplaying videos can be particularly disorienting:
 
 ```tsx
-const prefersReducedMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)",
-).matches;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 <video autoPlay={!prefersReducedMotion} />;
 ```

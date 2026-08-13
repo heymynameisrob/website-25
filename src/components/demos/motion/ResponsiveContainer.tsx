@@ -2,8 +2,8 @@ import * as React from "react";
 import { useMeasure } from "@uidotdev/usehooks";
 import { AnimatePresence, motion, MotionConfig } from "motion/react";
 
-import { Skeleton } from "@/components/primitives/Skeleton";
-import { Button } from "@/components/primitives/Button";
+import { Skeleton } from "@/components/Skeleton";
+import { Button } from "@/components/Button";
 import { CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDeterministicWidth } from "@/components/demos/ArtificialInbox/Skeletons";
@@ -58,9 +58,7 @@ export function ResponsiveContainer() {
               <CheckIcon className="size-6" />
             </div>
             <span className="text-lg font-semibold">Saved successfully!</span>
-            <p className="text-sm text-gray-11">
-              Your changes have been saved.
-            </p>
+            <p className="text-sm text-gray-11">Your changes have been saved.</p>
           </ViewContainer>
         );
     }
@@ -70,7 +68,7 @@ export function ResponsiveContainer() {
     <MotionConfig transition={{ duration: 0.5, type: "spring", bounce: 0 }}>
       <motion.div
         animate={{ height: bounds.height ?? 0 }}
-        className="rounded-xl overflow-hidden bg-background shadow-floating w-96 mx-auto"
+        className="rounded-xl overflow-hidden bg-gray-1 shadow-floating w-96 mx-auto"
       >
         <div ref={ref} className="overflow-hidden">
           <AnimatePresence mode="popLayout" initial={false}>
@@ -95,18 +93,10 @@ export function ResponsiveContainer() {
                 )}
                 {state === "confirm-discard" && (
                   <>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={handleCancelDiscard}
-                    >
+                    <Button size="sm" variant="ghost" onClick={handleCancelDiscard}>
                       Cancel
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={handleConfirmDiscard}
-                    >
+                    <Button size="sm" variant="destructive" onClick={handleConfirmDiscard}>
                       Discard
                     </Button>
                   </>
@@ -120,24 +110,25 @@ export function ResponsiveContainer() {
   );
 }
 
-function ViewContainer({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function ViewContainer({ children, className }: { children: React.ReactNode; className?: string }) {
   return <div className={cn("flex flex-col gap-3", className)}>{children}</div>;
 }
 
 function ViewSkeleton({ count }: { count: number }) {
+  const rows = React.useMemo(
+    () =>
+      Array.from({ length: count }, (_, idx) => ({
+        key: `row-${idx}`,
+        width: getDeterministicWidth(idx),
+      })),
+    [count]
+  );
   return (
     <div className="flex flex-wrap items-center gap-1.5 w-full">
-      {Array.from({ length: count }).map((_, i) => {
-        const width = getDeterministicWidth(i);
+      {rows.map(row => {
         return (
-          <React.Fragment key={i}>
-            <Skeleton className="w-24 h-3.5" style={{ width }} />
+          <React.Fragment key={row.key}>
+            <Skeleton className="w-24 h-3.5" style={{ width: row.width }} />
             <Skeleton className="w-8 h-3.5" />
             <Skeleton className="w-16 h-3.5" />
             <Skeleton className="w-12 h-3.5" />

@@ -17,12 +17,12 @@ export const Dropzone = (props: DropzoneProps) => {
         "h-[90px] border-l border-r-0 p-2",
         isOver
           ? "bg-cyan-50 border-cyan-500 border-dashed border-2 border-r-2 dark:bg-cyan-500/10"
-          : "bg-background",
+          : "bg-gray-1",
         isOver &&
           active &&
           active.data.current &&
           !active.data.current.supports.includes(props.data) &&
-          "bg-red-50 border-red-500 border-2 border-r-2 dark:bg-red-500/10",
+          "bg-red-50 border-red-500 border-2 border-r-2 dark:bg-red-500/10"
       )}
     >
       {props.children}

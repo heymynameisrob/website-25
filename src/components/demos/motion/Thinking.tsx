@@ -4,8 +4,8 @@ import rehypeRaw from "rehype-raw";
 import dedent from "dedent";
 import { motion, AnimatePresence, type AnimationControls } from "motion/react";
 
-import { Avatar } from "@/components/primitives/Avatar";
-import { Badge } from "@/components/primitives/Badge";
+import { Avatar } from "@/components/Avatar";
+import { Badge } from "@/components/Badge";
 import { cn } from "@/lib/utils";
 import { useMeasure } from "@uidotdev/usehooks";
 
@@ -21,8 +21,7 @@ interface CommentProps {
 }
 
 const author = {
-  avatar:
-    "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/-/preview/100x100/",
+  avatar: "https://ucarecdn.com/75709875-783d-47e9-a60a-6d43e1d5d344/-/preview/100x100/",
   name: "Rob Hough",
   fallback: "RH",
 };
@@ -38,19 +37,13 @@ function Comment({ author, content, isAgent }: CommentProps) {
     <article
       className={cn(
         "group z-10 flex flex-col justify-center gap-2 p-4 transition-colors duration-500 outline-none border-b",
-        isAgent && "border-0",
+        isAgent && "border-0"
       )}
     >
       <div className="flex items-center gap-3">
-        <Avatar
-          src={author.avatar}
-          fallback={author.fallback}
-          className="size-5"
-        />
+        <Avatar src={author.avatar} fallback={author.fallback} className="size-5" />
         <span className="text-sm font-medium">{author.name}</span>
-        {isAgent && (
-          <Badge className="h-5 px-1 text-[11px] text-gray-11">Agent</Badge>
-        )}
+        {isAgent && <Badge className="h-5 px-1 text-[11px] text-gray-11">Agent</Badge>}
       </div>
       <div className="prose [--prose-color:var(--color-gray-12)] text-[15px]">
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
@@ -59,19 +52,14 @@ function Comment({ author, content, isAgent }: CommentProps) {
   );
 }
 
-const STATUSES = [
-  "Thinking",
-  "Searching workspace",
-  "Analyzing results",
-  "Writing response",
-];
+const STATUSES = ["Thinking", "Searching workspace", "Analyzing results", "Writing response"];
 
 function ThinkingIndicator() {
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setIndex((prev) => (prev === STATUSES.length ? prev : prev + 1));
+      setIndex(prev => (prev === STATUSES.length ? prev : prev + 1));
     }, 2_000);
 
     return () => clearTimeout(timer);
@@ -98,9 +86,7 @@ function ThinkingIndicator() {
           <AnimatePresence initial={false}>
             <motion.span
               key={index}
-              className={cn(
-                "absolute inset-0 text-sm font-medium text-gray-12 select-none",
-              )}
+              className={cn("absolute inset-0 text-sm font-medium text-gray-12 select-none")}
               initial={{ y: 8, opacity: 0, filter: "blur(1px)" }}
               animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
               exit={{ y: -8, opacity: 0, filter: "blur(1px)" }}

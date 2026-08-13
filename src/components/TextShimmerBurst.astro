@@ -1,0 +1,38 @@
+---
+/**
+ * TextShimmerBurst.astro
+ *
+ * Two stacked text spans (via the `grid-stack` utility):
+ *   - base layer: normal text color (`text-primary`), always visible
+ *   - overlay:   `text-transparent` text with an animated gradient clipped to
+ *                 the glyph shapes, wired to the `shimmer-burst` keyframes.
+ *
+ * Because the overlay's gradient is transparent at the edges and only opaque
+ * at the moving highlight band, the base text shows through everywhere except
+ * where the shimmer is currently sweeping. During the hold (and under
+ * `prefers-reduced-motion`, where the animation is disabled) the overlay sits
+ * fully transparent, so you just see clean normal-colored text.
+ *
+ * Unlike the React `TextShimmer`, this takes no styling props — colors and
+ * timing are hardcoded. The `text` prop is required because the content must
+ * be rendered in both stacked layers.
+ */
+
+const { text } = Astro.props;
+
+const HIGHLIGHT = "var(--shimmer-color)";
+const SPREAD = 45;
+---
+
+<span class="inline-block" style="--shimmer-color: transparent;">
+  <span class="grid-stack grid-sta font-medium">
+    <span class="text-primary">{text}</span>
+    <span
+      class="bg-size-[200%_auto] bg-clip-text text-transparent animate-shimmer-burst"
+      style={`background-image: linear-gradient(to right, transparent ${50 - SPREAD}%, ${HIGHLIGHT} 50%, transparent ${50 + SPREAD}%);`}
+      aria-hidden="true"
+    >
+      {text}
+    </span>
+  </span>
+</span>

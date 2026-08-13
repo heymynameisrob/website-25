@@ -1,4 +1,4 @@
-import { Avatar } from "@/components/primitives/Avatar";
+import { Avatar } from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { CheckIcon } from "@heroicons/react/16/solid";
 import { Loader2, LoaderIcon } from "lucide-react";
@@ -58,9 +58,7 @@ export function Loader() {
         <div
           className={cn(
             "size-[64px] items-center justify-center rounded-full grid place-items-center border-2",
-            status === "success"
-              ? "bg-green-200 border-green-300"
-              : "bg-gray-3 border-gray-4",
+            status === "success" ? "bg-green-200 border-green-300" : "bg-gray-3 border-gray-4"
           )}
         >
           <AnimatePresence mode="popLayout" initial={false}>

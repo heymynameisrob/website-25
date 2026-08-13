@@ -1,23 +1,9 @@
 import * as React from "react";
 
-export const ArtificialInboxKanabanLayoutIcon = (
-  props: React.SVGProps<SVGSVGElement>,
-) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 208 157"
-    fill="none"
-    {...props}
-  >
+export const ArtificialInboxKanabanLayoutIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 157" fill="none" {...props}>
     <g clipPath="url(#a)">
-      <rect
-        width={204}
-        height={153}
-        x={2}
-        y={2}
-        fill="var(--icon-foreground)"
-        rx={16}
-      />
+      <rect width={204} height={153} x={2} y={2} fill="var(--icon-foreground)" rx={16} />
       <g filter="url(#b)">
         <g clipPath="url(#c)">
           <rect
@@ -31,23 +17,12 @@ export const ArtificialInboxKanabanLayoutIcon = (
           <mask id="d" fill="var(--icon-background)">
             <path d="M10 10h19.394v247.279H10V10Z" />
           </mask>
-          <path
-            fill="var(--icon-foreground)"
-            d="M10 10h19.394v247.279H10V10Z"
-            opacity="0.5"
-          />
-          <path
-            fill="var(--icon-foreground)"
-            d="M29.394 10h-2v247.279h4V10h-2Z"
-            mask="url(#d)"
-          />
+          <path fill="var(--icon-foreground)" d="M10 10h19.394v247.279H10V10Z" opacity="0.5" />
+          <path fill="var(--icon-foreground)" d="M29.394 10h-2v247.279h4V10h-2Z" mask="url(#d)" />
           <mask id="e" fill="var(--icon-background)">
             <path d="M29.394 10h317.1v23.273h-317.1V10Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 10h317.1v23.273h-317.1V10Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 10h317.1v23.273h-317.1V10Z" />
           <path
             fill="var(--icon-foreground)"
             d="M346.494 33.273v-2h-317.1v4h317.1v-2Z"
@@ -114,14 +89,7 @@ export const ArtificialInboxKanabanLayoutIcon = (
     />
     <defs>
       <clipPath id="a">
-        <rect
-          width={204}
-          height={153}
-          x={2}
-          y={2}
-          fill="var(--icon-background)"
-          rx={16}
-        />
+        <rect width={204} height={153} x={2} y={2} fill="var(--icon-background)" rx={16} />
       </clipPath>
       <clipPath id="c">
         <rect
@@ -152,38 +120,17 @@ export const ArtificialInboxKanabanLayoutIcon = (
         <feGaussianBlur stdDeviation={2.424} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
-        <feBlend
-          in2="BackgroundImageFix"
-          result="effect1_dropShadow_2035_5041"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_dropShadow_2035_5041"
-          result="shape"
-        />
+        <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2035_5041" />
+        <feBlend in="SourceGraphic" in2="effect1_dropShadow_2035_5041" result="shape" />
       </filter>
     </defs>
   </svg>
 );
 
-export const ArtificialInboxTableLayoutIcon = (
-  props: React.SVGProps<SVGSVGElement>,
-) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 208 157"
-    fill="none"
-    {...props}
-  >
+export const ArtificialInboxTableLayoutIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 157" fill="none" {...props}>
     <g clipPath="url(#a)">
-      <rect
-        width={204}
-        height={153}
-        x={2}
-        y={2}
-        fill="var(--icon-foreground)"
-        rx={16}
-      />
+      <rect width={204} height={153} x={2} y={2} fill="var(--icon-foreground)" rx={16} />
       <g filter="url(#b)">
         <g clipPath="url(#c)">
           <rect
@@ -197,23 +144,12 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="d" fill="var(--icon-background)">
             <path d="M10 10h19.394v247.279H10V10Z" />
           </mask>
-          <path
-            fill="var(--icon-foreground)"
-            d="M10 10h19.394v247.279H10V10Z"
-            opacity="0.5"
-          />
-          <path
-            fill="var(--icon-foreground)"
-            d="M29.394 10h-2v247.279h4V10h-2Z"
-            mask="url(#d)"
-          />
+          <path fill="var(--icon-foreground)" d="M10 10h19.394v247.279H10V10Z" opacity="0.5" />
+          <path fill="var(--icon-foreground)" d="M29.394 10h-2v247.279h4V10h-2Z" mask="url(#d)" />
           <mask id="e" fill="var(--icon-background)">
             <path d="M29.394 34.243h300.614v21.819H29.394V34.243Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 34.243h300.614v21.819H29.394V34.243Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 34.243h300.614v21.819H29.394V34.243Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 56.062v-2H29.394v4h300.614v-2Z"
@@ -226,10 +162,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="f" fill="var(--icon-background)">
             <path d="M29.394 12.424h300.614v21.82H29.394v-21.82Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 12.424h300.614v21.82H29.394v-21.82Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 12.424h300.614v21.82H29.394v-21.82Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 34.243v-2H29.394v4h300.614v-2Z"
@@ -262,10 +195,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="g" fill="var(--icon-background)">
             <path d="M29.394 56.062h300.614v21.819H29.394V56.062Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 56.062h300.614v21.819H29.394V56.062Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 56.062h300.614v21.819H29.394V56.062Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 77.88v-2H29.394v4h300.614v-2Z"
@@ -278,10 +208,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="h" fill="var(--icon-background)">
             <path d="M29.394 77.88h300.614V99.7H29.394V77.88Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 77.88h300.614V99.7H29.394V77.88Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 77.88h300.614V99.7H29.394V77.88Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 99.7v-2H29.394v4h300.614v-2Z"
@@ -294,10 +221,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="i" fill="var(--icon-background)">
             <path d="M29.394 99.7h300.614v21.818H29.394V99.7Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 99.7h300.614v21.818H29.394V99.7Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 99.7h300.614v21.818H29.394V99.7Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 121.518v-2H29.394v4h300.614v-2Z"
@@ -310,10 +234,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="j" fill="var(--icon-background)">
             <path d="M29.394 121.518h300.614v21.819H29.394v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 121.518h300.614v21.819H29.394v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 121.518h300.614v21.819H29.394v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 143.337v-2H29.394v4h300.614v-2Z"
@@ -326,10 +247,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="k" fill="var(--icon-background)">
             <path d="M29.394 143.337h300.614v21.819H29.394v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 143.337h300.614v21.819H29.394v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 143.337h300.614v21.819H29.394v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 165.156v-2.425H29.394v4.849h300.614v-2.424Z"
@@ -362,10 +280,7 @@ export const ArtificialInboxTableLayoutIcon = (
           <mask id="l" fill="var(--icon-background)">
             <path d="M43.94 143.337h290.917v21.819H43.94v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M43.94 143.337h290.917v21.819H43.94v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M43.94 143.337h290.917v21.819H43.94v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M334.857 165.156v-2H43.94v4h290.917v-2Z"
@@ -410,14 +325,7 @@ export const ArtificialInboxTableLayoutIcon = (
     />
     <defs>
       <clipPath id="a">
-        <rect
-          width={204}
-          height={153}
-          x={2}
-          y={2}
-          fill="var(--icon-background)"
-          rx={16}
-        />
+        <rect width={204} height={153} x={2} y={2} fill="var(--icon-background)" rx={16} />
       </clipPath>
       <clipPath id="c">
         <rect
@@ -448,38 +356,17 @@ export const ArtificialInboxTableLayoutIcon = (
         <feGaussianBlur stdDeviation={2.424} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
-        <feBlend
-          in2="BackgroundImageFix"
-          result="effect1_dropShadow_2035_4952"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_dropShadow_2035_4952"
-          result="shape"
-        />
+        <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2035_4952" />
+        <feBlend in="SourceGraphic" in2="effect1_dropShadow_2035_4952" result="shape" />
       </filter>
     </defs>
   </svg>
 );
 
-export const ArtificialInboxListLayoutIcon = (
-  props: React.SVGProps<SVGSVGElement>,
-) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 208 157"
-    fill="none"
-    {...props}
-  >
+export const ArtificialInboxListLayoutIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 157" fill="none" {...props}>
     <g clipPath="url(#a)">
-      <rect
-        width={204}
-        height={153}
-        x={2}
-        y={2}
-        fill="var(--icon-foreground)"
-        rx={16}
-      />
+      <rect width={204} height={153} x={2} y={2} fill="var(--icon-foreground)" rx={16} />
       <g filter="url(#b)">
         <g clipPath="url(#c)">
           <rect
@@ -493,23 +380,12 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="d" fill="var(--icon-background)">
             <path d="M10 10h19.394v247.279H10V10Z" />
           </mask>
-          <path
-            fill="var(--icon-foreground)"
-            d="M10 10h19.394v247.279H10V10Z"
-            opacity="0.5"
-          />
-          <path
-            fill="var(--icon-foreground)"
-            d="M29.394 10h-2v247.279h4V10h-2Z"
-            mask="url(#d)"
-          />
+          <path fill="var(--icon-foreground)" d="M10 10h19.394v247.279H10V10Z" opacity="0.5" />
+          <path fill="var(--icon-foreground)" d="M29.394 10h-2v247.279h4V10h-2Z" mask="url(#d)" />
           <mask id="e" fill="var(--icon-background)">
             <path d="M29.394 34.243h300.614v21.819H29.394V34.243Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 34.243h300.614v21.819H29.394V34.243Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 34.243h300.614v21.819H29.394V34.243Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 56.062v-2H29.394v4h300.614v-2Z"
@@ -522,10 +398,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="f" fill="var(--icon-background)">
             <path d="M29.394 12.424h300.614v21.82H29.394v-21.82Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 12.424h300.614v21.82H29.394v-21.82Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 12.424h300.614v21.82H29.394v-21.82Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 34.243v-2H29.394v4h300.614v-2Z"
@@ -538,10 +411,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="g" fill="var(--icon-background)">
             <path d="M29.394 56.062h300.614v21.819H29.394V56.062Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 56.062h300.614v21.819H29.394V56.062Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 56.062h300.614v21.819H29.394V56.062Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 77.88v-2H29.394v4h300.614v-2Z"
@@ -554,10 +424,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="h" fill="var(--icon-background)">
             <path d="M29.394 77.88h300.614V99.7H29.394V77.88Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 77.88h300.614V99.7H29.394V77.88Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 77.88h300.614V99.7H29.394V77.88Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 99.7v-2H29.394v4h300.614v-2Z"
@@ -570,10 +437,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="i" fill="var(--icon-background)">
             <path d="M29.394 99.7h300.614v21.818H29.394V99.7Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 99.7h300.614v21.818H29.394V99.7Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 99.7h300.614v21.818H29.394V99.7Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 121.518v-2H29.394v4h300.614v-2Z"
@@ -586,10 +450,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="j" fill="var(--icon-background)">
             <path d="M29.394 121.518h300.614v21.819H29.394v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 121.518h300.614v21.819H29.394v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 121.518h300.614v21.819H29.394v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 143.337v-2H29.394v4h300.614v-2Z"
@@ -602,10 +463,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="k" fill="var(--icon-background)">
             <path d="M29.394 143.337h300.614v21.819H29.394v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M29.394 143.337h300.614v21.819H29.394v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M29.394 143.337h300.614v21.819H29.394v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M330.008 165.156v-2.425H29.394v4.849h300.614v-2.424Z"
@@ -638,10 +496,7 @@ export const ArtificialInboxListLayoutIcon = (
           <mask id="l" fill="var(--icon-background)">
             <path d="M43.94 143.337h290.917v21.819H43.94v-21.819Z" />
           </mask>
-          <path
-            fill="var(--icon-background)"
-            d="M43.94 143.337h290.917v21.819H43.94v-21.819Z"
-          />
+          <path fill="var(--icon-background)" d="M43.94 143.337h290.917v21.819H43.94v-21.819Z" />
           <path
             fill="var(--icon-foreground)"
             d="M334.857 165.156v-2H43.94v4h290.917v-2Z"
@@ -686,14 +541,7 @@ export const ArtificialInboxListLayoutIcon = (
     />
     <defs>
       <clipPath id="a">
-        <rect
-          width={204}
-          height={153}
-          x={2}
-          y={2}
-          fill="var(--icon-background)"
-          rx={16}
-        />
+        <rect width={204} height={153} x={2} y={2} fill="var(--icon-background)" rx={16} />
       </clipPath>
       <clipPath id="c">
         <rect
@@ -724,15 +572,8 @@ export const ArtificialInboxListLayoutIcon = (
         <feGaussianBlur stdDeviation={2.424} />
         <feComposite in2="hardAlpha" operator="out" />
         <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
-        <feBlend
-          in2="BackgroundImageFix"
-          result="effect1_dropShadow_2035_5061"
-        />
-        <feBlend
-          in="SourceGraphic"
-          in2="effect1_dropShadow_2035_5061"
-          result="shape"
-        />
+        <feBlend in2="BackgroundImageFix" result="effect1_dropShadow_2035_5061" />
+        <feBlend in="SourceGraphic" in2="effect1_dropShadow_2035_5061" result="shape" />
       </filter>
     </defs>
   </svg>

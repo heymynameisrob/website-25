@@ -8,17 +8,17 @@ import {
   XCircleIcon,
   ChevronDownIcon,
 } from "lucide-react";
-import { DatePicker } from "@/components/primitives/DatePicker";
-import { Avatar } from "@/components/primitives/Avatar";
+import { DatePicker } from "@/components/DatePicker";
+import { Avatar } from "@/components/Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/components/primitives/DropdownMenu";
+} from "@/components/DropdownMenu";
 import { Controller } from "react-hook-form";
-import type { Control } from "react-hook-form";
+import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
 // Reusable field components
@@ -34,18 +34,12 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function FieldValue({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function FieldValue({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <dd
       className={cn(
         "w-full p-1 -mx-1 rounded-md bg-transparent hover:bg-gray-3 focus-visible:bg-gray-3 focus-within:bg-gray-3 has-[button[data-state=open]]:bg-gray-3",
-        className,
+        className
       )}
     >
       {children}
@@ -53,13 +47,17 @@ function FieldValue({
   );
 }
 
-interface AssigneeFieldProps {
-  control: Control<any>;
-  name: string;
+interface AssigneeFieldProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
   options: Array<{ value: string; label: string }>;
 }
 
-export function AssigneeField({ control, name, options }: AssigneeFieldProps) {
+export function AssigneeField<TFieldValues extends FieldValues>({
+  control,
+  name,
+  options,
+}: AssigneeFieldProps<TFieldValues>) {
   return (
     <FieldRow>
       <FieldLabel>
@@ -71,7 +69,7 @@ export function AssigneeField({ control, name, options }: AssigneeFieldProps) {
           control={control}
           name={name}
           render={({ field }) => {
-            const selectedOption = options.find((o) => o.value === field.value);
+            const selectedOption = options.find(o => o.value === field.value);
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center w-full text-sm font-medium text-primary outline-none focus:outine-none h-7 px-2">
@@ -82,11 +80,8 @@ export function AssigneeField({ control, name, options }: AssigneeFieldProps) {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  <DropdownMenuRadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    {options.map((option) => (
+                  <DropdownMenuRadioGroup value={field.value} onValueChange={field.onChange}>
+                    {options.map(option => (
                       <DropdownMenuRadioItem
                         key={option.value}
                         value={option.value}
@@ -107,9 +102,9 @@ export function AssigneeField({ control, name, options }: AssigneeFieldProps) {
   );
 }
 
-interface StatusFieldProps {
-  control: Control<any>;
-  name: string;
+interface StatusFieldProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
   options: Array<{ value: string; label: string }>;
 }
 
@@ -120,7 +115,11 @@ const STATUS_ICONS: Record<string, React.ReactNode> = {
   cancelled: <XCircleIcon className="size-4" />,
 };
 
-export function StatusField({ control, name, options }: StatusFieldProps) {
+export function StatusField<TFieldValues extends FieldValues>({
+  control,
+  name,
+  options,
+}: StatusFieldProps<TFieldValues>) {
   return (
     <FieldRow>
       <FieldLabel>
@@ -132,7 +131,7 @@ export function StatusField({ control, name, options }: StatusFieldProps) {
           control={control}
           name={name}
           render={({ field }) => {
-            const selectedOption = options.find((o) => o.value === field.value);
+            const selectedOption = options.find(o => o.value === field.value);
             return (
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 w-full text-sm font-medium text-primary outline-none focus:outline-none h-7 px-2">
@@ -143,11 +142,8 @@ export function StatusField({ control, name, options }: StatusFieldProps) {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  <DropdownMenuRadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    {options.map((option) => (
+                  <DropdownMenuRadioGroup value={field.value} onValueChange={field.onChange}>
+                    {options.map(option => (
                       <DropdownMenuRadioItem
                         key={option.value}
                         value={option.value}
@@ -168,12 +164,15 @@ export function StatusField({ control, name, options }: StatusFieldProps) {
   );
 }
 
-interface DueDateFieldProps {
-  control: Control<any>;
-  name: string;
+interface DueDateFieldProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldPath<TFieldValues>;
 }
 
-export function DueDateField({ control, name }: DueDateFieldProps) {
+export function DueDateField<TFieldValues extends FieldValues>({
+  control,
+  name,
+}: DueDateFieldProps<TFieldValues>) {
   return (
     <FieldRow>
       <FieldLabel>

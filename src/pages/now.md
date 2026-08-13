@@ -1,5 +1,5 @@
 ---
-layout: "@/layouts/PostLayout.astro"
+layout: "@/components/post/PostLayout.astro"
 title: Now
 date: 2025-02-12
 ---

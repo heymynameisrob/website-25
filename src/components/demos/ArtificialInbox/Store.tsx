@@ -31,9 +31,7 @@ interface ArtificialInboxState {
   setIsOpen: (isOpen: boolean) => void;
   setName: (name: string | undefined) => void;
   setEmoji: (emoji: string | undefined) => void;
-  setColumns: (
-    columns: Array<{ id: string; label: string; value: boolean }>,
-  ) => void;
+  setColumns: (columns: Array<{ id: string; label: string; value: boolean }>) => void;
   setGroupBy: (groupBy: ArtificialInboxGroupBy) => void;
   setSortBy: (sortBy: ArtificialInboxSortBy) => void;
   setLayout: (layout: ArtificialInboxLayout) => void;
@@ -89,33 +87,28 @@ const checkHasChanges = (state: ArtificialInboxState) => {
 
 export const useArtificialInboxStore = create<ArtificialInboxState>()(
   persist(
-    (set) => ({
+    set => ({
       ...initialState,
-      setView: (view) => set({ view }),
-      setIsOpen: (isOpen) => set({ isOpen }),
-      setName: (name) => set({ name }),
-      setEmoji: (emoji) => set({ emoji }),
-      setColumns: (columns) => set({ columns }),
-      setGroupBy: (groupBy) => set({ groupBy }),
-      setSortBy: (sortBy) => set({ sortBy }),
-      setLayout: (layout) => set({ layout }),
-      setTask: (task) => set({ task }),
-      setTaskTitle: (title) =>
-        set((state) => ({ task: { ...state.task, title } })),
-      setTaskDate: (dueDate) =>
-        set((state) => ({ task: { ...state.task, dueDate } })),
-      setTaskStatus: (status) =>
-        set((state) => ({ task: { ...state.task, status } })),
-      setTaskAssignee: (assignee) =>
-        set((state) => ({ task: { ...state.task, assignee } })),
+      setView: view => set({ view }),
+      setIsOpen: isOpen => set({ isOpen }),
+      setName: name => set({ name }),
+      setEmoji: emoji => set({ emoji }),
+      setColumns: columns => set({ columns }),
+      setGroupBy: groupBy => set({ groupBy }),
+      setSortBy: sortBy => set({ sortBy }),
+      setLayout: layout => set({ layout }),
+      setTask: task => set({ task }),
+      setTaskTitle: title => set(state => ({ task: { ...state.task, title } })),
+      setTaskDate: dueDate => set(state => ({ task: { ...state.task, dueDate } })),
+      setTaskStatus: status => set(state => ({ task: { ...state.task, status } })),
+      setTaskAssignee: assignee => set(state => ({ task: { ...state.task, assignee } })),
       reset: () => set(initialState),
     }),
     {
       name: "artificial-inbox-task",
-      partialize: (state) => ({ task: state.task }),
-    },
-  ),
+      partialize: state => ({ task: state.task }),
+    }
+  )
 );
 
-export const selectHasChanges = (state: ArtificialInboxState) =>
-  checkHasChanges(state);
+export const selectHasChanges = (state: ArtificialInboxState) => checkHasChanges(state);

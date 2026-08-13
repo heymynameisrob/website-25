@@ -1,0 +1,63 @@
+---
+import N8nIcon from "@/assets/n8n.svg";
+import LinkedInIcon from "@/assets/linkedin.svg";
+import GitHubIcon from "@/assets/github.svg";
+import { EnvelopeIcon } from "@heroicons/react/16/solid";
+import { Undo2Icon } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type IconKey = "n8n" | "linkedin" | "email" | "github" | "back";
+
+interface Props {
+  href: string;
+  label: string;
+  icon: IconKey;
+  target?: string;
+  rel?: string;
+  className?: string;
+}
+
+const { href, label, icon, target = "_blank", rel = "noopener noreferrer" } = Astro.props;
+
+const iconColor: Record<IconKey, string> = {
+  n8n: "#FF376F",
+  linkedin: "#0A66C2",
+  email: "var(--color-primary)",
+  github: "#171515",
+  back: "",
+};
+
+const iconClass = "size-5 shrink-0 lg:size-6";
+---
+
+<a
+  href={href}
+  target={target}
+  rel={rel}
+  class={cn(
+    "group inline-flex items-center gap-1 whitespace-nowrap focus text-primary rounded-md translate-y-1 xl:gap-2",
+    Astro.props.className
+  )}
+  )
+>
+  <span
+    class:list={["shrink-0 inline-block", icon === "github" && "text-[#171515] dark:text-white"]}
+    style={icon === "github" ? undefined : `color: ${iconColor[icon]};`}
+  >
+    {icon === "back" && <Undo2Icon className={iconClass} />}
+    {icon === "n8n" && <N8nIcon class={iconClass} />}
+    {icon === "linkedin" && <LinkedInIcon class={iconClass} />}
+    {icon === "email" && <EnvelopeIcon className={iconClass} />}
+    {icon === "github" && <GitHubIcon class={iconClass} />}
+  </span>
+  <span
+    class="underline decoration-gray-6 decoration-2 underline-offset-2 group-hover:decoration-primary"
+  >
+    {label}
+  </span>
+  <!-- <span
+    class="underline decoration-gray-9 decoration-2 underline-offset-2 hover:decoration-primary hover:bg-[repeating-linear-gradient(-60deg,var(--border)_0px,var(--border)_1px,transparent_1px,transparent_2px)] in-[:is(h1,h2,h3,h4)]:no-underline in-[:is(h1,h2,h3,h4)]:bg-none"
+  >
+    {label}
+  </span> -->
+</a>

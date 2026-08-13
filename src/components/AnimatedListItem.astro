@@ -1,32 +1,34 @@
 ---
 import { AnimateInUp } from "@/components/Motion.tsx";
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
-import { Badge } from "@/components/primitives/Badge";
+import { Badge } from "@/components/Badge";
 
 interface Props {
   href: string;
   label: string;
-  description: string;
+  description?: string;
   delay?: number;
   external?: boolean;
   featured?: boolean;
 }
 
-const { href, label, description, delay = 0.3, external = false, featured = false } = Astro.props;
+const { href, label, description, delay = 0.4, external = false } = Astro.props;
 ---
 
-<AnimateInUp delay={delay} as="li" className="flex flex-col gap-1" client:load>
+<AnimateInUp delay={delay} client:load>
   <a
     href={href}
     target={external ? "_blank" : undefined}
     rel={external ? "nofollow noopener" : undefined}
-    class="text-base text-primary underline decoration-gray-7 hover:decoration-gray-12 transition-all outline-none focus rounded-md"
+    class="group flex items-center gap-1.5 -mx-4 bg-transparent px-4 min-h-11 py-1.5 rounded-lg focus"
   >
-    {label}
-    {featured && <Badge className="h-5 px-1.5 relative -top-0.5 ml-1">Featured</Badge>}
-    {external && <ArrowUpRightIcon className="size-4 inline opacity-50" />}
+    <div class="min-w-0 w-full inline-flex items-baseline gap-1.5 text-lg lg:text-xl">
+      <h3
+        class="shrink-0 text-primary font-medium group-hover:underline decoration-2 decoration-primary underline-offset-2"
+      >
+        {label}
+      </h3>
+      <p class="min-w-0 truncate text-secondary leading-normal">{description}</p>
+    </div>
   </a>
-  <p class="text-base text-secondary leading-normal text-balance">
-    {description}
-  </p>
 </AnimateInUp>

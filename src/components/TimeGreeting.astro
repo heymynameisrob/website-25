@@ -1,0 +1,41 @@
+---
+
+---
+
+<small id="timeGreeting" class="text-xs text-gray-9"></small>
+
+<script>
+  import { FORMAT_DATE_TIME } from "@/lib/constants";
+  import { format } from "date-fns";
+
+  function getGreeting(now: Date): string {
+    const month = now.getMonth(); // 0-indexed
+    const day = now.getDate();
+    const hour = now.getHours();
+
+    // Special dates (all day)
+    if (month === 11 && day === 25) return "Merry Christmas! 🎄";
+    if (month === 0 && day === 1) return "Happy New Year! 🎆";
+
+    // Time-based greetings
+    if (hour >= 5 && hour < 12) return "Morning sunshine! ☀️";
+    if (hour >= 12 && hour < 17) return "Good afternoon 🌤️";
+    if (hour >= 17 && hour < 22) return "Good evening 🌙";
+    if (hour >= 2 && hour < 5) return "Why are you still awake? 🦉";
+
+    // 22:00–23:59 or 0:00–1:59
+    return "Night night 🌙";
+  }
+
+  function updateGreeting() {
+    const now = new Date();
+    const time = format(now, FORMAT_DATE_TIME);
+    const greeting = getGreeting(now);
+    const el = document.getElementById("timeGreeting");
+    if (el) el.textContent = `It's ${time}. ${greeting}`;
+  }
+
+  updateGreeting();
+  // Update every minute
+  setInterval(updateGreeting, 60_000);
+</script>

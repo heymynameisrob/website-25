@@ -1,0 +1,152 @@
+---
+/**
+ * CraftGuides.astro
+ *
+ * Wraps a word (default "craft") with dotted guide lines along its bounding
+ * box and `+` registration markers at each corner — a typographer's spec
+ * callout rendered inline within flowing text.
+ *
+ * On mount the horizontal/vertical guide lines "draw" in (grow from one edge)
+ * and the corner `+` markers pop in, staggered — all via pure CSS. Under
+ * `prefers-reduced-motion` the final state is shown immediately.
+ *
+ * Decorative only: markers/guides are `aria-hidden` + `pointer-events-none`.
+ */
+const { text = "craft" } = Astro.props;
+
+// How far the guide lines extend past the text box on each side.
+const EXTEND = "0.6rem";
+// Size of the corner `+` markers.
+const MARKER = 9;
+
+// Stagger schedule (seconds).
+const D = {
+  top: 0,
+  right: 0.12,
+  bottom: 0.24,
+  left: 0.36,
+  tl: 0.5,
+  tr: 0.58,
+  bl: 0.66,
+  br: 0.74,
+};
+---
+
+<span class="craft-guides relative inline-block align-baseline text-[1.1em] font-serif italic">
+  <span class="relative z-10">{text}</span>
+
+  <span
+    class="pointer-events-none absolute -inset-x-1 inset-y-1 bottom-0"
+    aria-hidden="true"
+    style={`--extend:${EXTEND};`}
+  >
+    {/* Horizontal guide lines (draw left → right) */}
+    <span
+      class="cg-line cg-line-h absolute top-0 border-t border-dotted border-accent"
+      style={`left:calc(-1 * var(--extend)); width:calc(100% + 2 * var(--extend)); transform:translateY(-50%); transform-origin:left center; animation-delay:${D.top}s;`}
+    ></span>
+    <span
+      class="cg-line cg-line-h absolute bottom-0 border-t border-dotted border-accent"
+      style={`left:calc(-1 * var(--extend)); width:calc(100% + 2 * var(--extend)); transform:translateY(50%); transform-origin:left center; animation-delay:${D.bottom}s;`}
+    ></span>
+
+    {/* Vertical guide lines (draw top → bottom) */}
+    <span
+      class="cg-line cg-line-v absolute left-0 border-l border-dotted border-accent"
+      style={`top:calc(-1 * var(--extend)); height:calc(100% + 2 * var(--extend)); transform:translateX(-50%); transform-origin:top center; animation-delay:${D.left}s;`}
+    ></span>
+    <span
+      class="cg-line cg-line-v absolute right-0 border-l border-dotted border-accent"
+      style={`top:calc(-1 * var(--extend)); height:calc(100% + 2 * var(--extend)); transform:translateX(50%); transform-origin:top center; animation-delay:${D.right}s;`}
+    ></span>
+
+    {/* Corner `+` registration markers */}
+    {
+      [
+        { pos: "top-0 left-0", tx: "-50%", ty: "-50%", d: D.tl },
+        { pos: "top-0 right-0", tx: "50%", ty: "-50%", d: D.tr },
+        { pos: "bottom-0 left-0", tx: "-50%", ty: "50%", d: D.bl },
+        { pos: "bottom-0 right-0", tx: "50%", ty: "50%", d: D.br },
+      ].map(m => (
+        <span
+          class="cg-marker absolute"
+          style={`width:${MARKER}px;height:${MARKER}px;${m.pos.includes("top") ? "top:0" : "bottom:0"};${m.pos.includes("left") ? "left:0" : "right:0"};transform:translate(${m.tx},${m.ty});animation-delay:${m.d}s;`}
+        >
+          <span class="cg-marker-inner block h-full w-full" style={`animation-delay:${m.d}s;`}>
+            <svg
+              viewBox="0 0 8 8"
+              class="h-full w-full text-accent"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+              stroke-linecap="round"
+            >
+              <path d="M4 0.5 V7.5 M0.5 4 H7.5" />
+            </svg>
+          </span>
+        </span>
+      ))
+    }
+  </span>
+</span>
+
+<style>
+  .craft-guides {
+    /* keep the decorative box tight to the text */
+    padding-inline: 0.05em;
+  }
+
+  /* --- Guide lines: grow from their origin edge --- */
+  .cg-line-h {
+    animation: cg-draw-h 0.42s var(--ease-out) backwards;
+    animation-delay: 0.4s;
+  }
+  .cg-line-v {
+    animation: cg-draw-v 0.42s var(--ease-out) backwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes cg-draw-h {
+    from {
+      width: 0;
+    }
+    to {
+      width: calc(100% + 2 * var(--extend));
+    }
+  }
+  @keyframes cg-draw-v {
+    from {
+      height: 0;
+    }
+    to {
+      height: calc(100% + 2 * var(--extend));
+    }
+  }
+
+  /* --- Corner markers: pop in (opacity + scale) --- */
+  .cg-marker-inner {
+    opacity: 0.7;
+    transform: scale(1);
+    animation: cg-pop 0.3s var(--ease-out) backwards;
+  }
+
+  @keyframes cg-pop {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+  }
+
+  /* Respect reduced motion: skip the draw, show final state */
+  @media (prefers-reduced-motion: reduce) {
+    .cg-line-h,
+    .cg-line-v,
+    .cg-marker-inner {
+      animation: none;
+    }
+  }
+</style>

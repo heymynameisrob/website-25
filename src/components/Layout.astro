@@ -1,0 +1,59 @@
+---
+import { SEO_DESCRIPTION, SEO_TITLE } from "@/lib/constants";
+
+import "@/styles/globals.css";
+import { DevToolbar } from "./DevToolbar";
+
+interface Props {
+  title?: string;
+  description?: string;
+  og?: string;
+  noIndex?: boolean;
+  canonical?: string;
+}
+
+const showDevToolbar = import.meta.env.DEV;
+
+const { title = SEO_TITLE, description = SEO_DESCRIPTION, og, noIndex, canonical } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href="https://heymynameisrob.com" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:site_name" content={title} />
+    <meta property="og:title" content={title} />
+    <meta property="og:url" content="https://heymynameisrob.com" />
+    <meta property="og:type" content="page" />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={og || `https://heymynameisrob.com/og-image.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body class="w-full">
+    <main
+      class="relative text-primary font-sans font-normal overscroll-none min-h-screen tracking-[-0.01em] antialiased"
+    >
+      <slot />
+      {showDevToolbar && <DevToolbar client:only="react" />}
+    </main>
+  </body>
+</html>

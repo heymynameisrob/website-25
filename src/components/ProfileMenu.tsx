@@ -8,14 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/primitives/DropdownMenu";
+} from "@/components/DropdownMenu";
 import { AVAILABLE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
 
 export function ProfileMenu() {
-  const isNotHomePage =
-    typeof window !== undefined && window.location.pathname !== "/";
+  const isNotHomePage = typeof window !== "undefined" && window.location.pathname !== "/";
 
   return (
     <DropdownMenu>
@@ -34,7 +33,7 @@ export function ProfileMenu() {
       </div>
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuGroup>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
             <a
               href="https://calendar.notion.so/meet/robhough180/7xa14o4j"
               className="flex items-center gap-2 justify-between font-medium"
@@ -42,20 +41,17 @@ export function ProfileMenu() {
               Book me
               <div className="size-3.5 grid place-items-center">
                 <div
-                  className={cn(
-                    "size-1.5 rounded-full",
-                    AVAILABLE ? "bg-green-500" : "bg-gray-6",
-                  )}
+                  className={cn("size-1.5 rounded-full", AVAILABLE ? "bg-green-500" : "bg-gray-6")}
                 />
               </div>
             </a>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
             <a href="/posts" className="flex items-center gap-2 font-medium">
               Blog
             </a>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
             <a href="/now" className="flex items-center gap-2 font-medium">
               Now
             </a>
@@ -63,10 +59,8 @@ export function ProfileMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs text-gray-9 px-1">
-            Links
-          </DropdownMenuLabel>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+          <DropdownMenuLabel className="text-xs text-gray-9 px-1">Links</DropdownMenuLabel>
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
             <a
               href="https://github.com/heymynameisrob"
               className="flex items-center justify-between gap-2 font-medium"
@@ -75,7 +69,7 @@ export function ProfileMenu() {
               <SquareArrowOutUpRightIcon className="size-3.5 opacity-40" />
             </a>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
             <a
               href="https://www.linkedin.com/in/heymynameisrob/"
               className="flex items-center justify-between gap-2 font-medium"
@@ -84,11 +78,8 @@ export function ProfileMenu() {
               <SquareArrowOutUpRightIcon className="size-3.5 opacity-40" />
             </a>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
-            <a
-              href="/CV_25.pdf"
-              className="flex items-center justify-between gap-2 font-medium"
-            >
+          <DropdownMenuItem onSelect={e => e.preventDefault()} asChild>
+            <a href="/CV_25.pdf" className="flex items-center justify-between gap-2 font-medium">
               CV
               <SquareArrowOutUpRightIcon className="size-3.5 opacity-40" />
             </a>

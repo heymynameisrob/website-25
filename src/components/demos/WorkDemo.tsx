@@ -1,28 +1,22 @@
 import * as React from "react";
 import { useSearchParams } from "@/lib/hooks/useSearchParams";
-import { FilterMenuExample } from "@/components/demos/UIExample";
 import { Checkin } from "@/components/demos/Checkin";
 import { Calendar } from "@/components/demos/Calendar";
-import { Gallery } from "@/components/demos/Gallery";
-import { Calculator } from "@/components/demos/Calculator";
 import { Form } from "@/components/demos/Form";
 import { cn } from "@/lib/utils";
 import { Thinking } from "@/components/demos/motion/Thinking";
 import { MagicText } from "@/components/demos/MagicText";
-import { Button, buttonVariants } from "@/components/primitives/Button";
-import { Tooltip } from "@/components/primitives/Tooltip";
-import {
-  ArrowUpRight,
-  Code2Icon,
-  FullscreenIcon,
-  RefreshCcw,
-} from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { Button, buttonVariants } from "@/components/Button";
+import { Tooltip } from "@/components/Tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/HoverCard";
+import { ArrowUpRight, Code2Icon, InfoIcon, RefreshCcw } from "lucide-react";
+import { AnimatePresence, motion, useInView } from "motion/react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { CushionCommand } from "@/components/demos/CushionCommand";
 import { Toolbar } from "@/components/demos/Toolbar";
 import { Prompt } from "@/components/demos/Prompt";
+import { ResponseActions } from "@/components/demos/ResponseActions";
 
 type WorkDemoContextProps = {
   activeComponentId: string | null;
@@ -44,12 +38,16 @@ interface ComponentItem {
 interface WorkDemoCardProps {
   component: React.ReactNode;
   componentId: string;
+  title?: string;
+  compact?: boolean;
   className?: string;
+  openOnCardClick?: boolean;
 }
 
 interface WorkDemoActionsProps {
   componentId: string;
   onReset: () => void;
+  className?: string;
 }
 
 interface WorkDemoTechProps {
@@ -89,13 +87,7 @@ const ACTION_TRANSITION = {
 // Tech icons constants
 const TECH_ICONS = {
   react: (
-    <svg
-      height="18"
-      strokeLinejoin="round"
-      viewBox="0 0 16 16"
-      width="18"
-      aria-hidden="true"
-    >
+    <svg height="18" strokeLinejoin="round" viewBox="0 0 16 16" width="18" aria-hidden="true">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -113,12 +105,7 @@ const TECH_ICONS = {
     </svg>
   ),
   tailwind: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      width={18}
-      viewBox="0 0 54 33"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" width={18} viewBox="0 0 54 33">
       <g clipPath="url(#prefix__clip0)">
         <path
           fill="#38bdf8"
@@ -153,13 +140,7 @@ const TECH_ICONS = {
           d="M149.508 157.52L69.142 54H54V125.97H66.1136V69.3836L139.999 164.845C143.333 162.614 146.509 160.165 149.508 157.52Z"
           fill="url(#paint0_linear_408_139)"
         />
-        <rect
-          x="115"
-          y="54"
-          width="12"
-          height="72"
-          fill="url(#paint1_linear_408_139)"
-        />
+        <rect x="115" y="54" width="12" height="72" fill="url(#paint1_linear_408_139)" />
       </g>
       <defs>
         <linearGradient
@@ -188,13 +169,7 @@ const TECH_ICONS = {
     </svg>
   ),
   tiptap: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 22 22"
-      fill="none"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 22 22" fill="none">
       <path
         d="M10.9999 0C8.97378 0 7.07561 0.547792 5.44543 1.50334C5.11704 1.69583 4.97302 2.12364 5.25193 2.38269C5.49733 2.61062 5.82611 2.75 6.18743 2.75H15.8123C16.1737 2.75 16.5024 2.61062 16.7478 2.38269C17.0267 2.12364 16.8827 1.69583 16.5543 1.50334C14.9242 0.547792 13.026 0 10.9999 0Z"
         fill="#000"
@@ -221,54 +196,14 @@ const TECH_ICONS = {
 
 const COMPONENTS: ComponentItem[] = [
   {
-    id: "magic",
-    name: "Magic Text",
+    id: "response-actions",
+    name: "Response Actions",
     description:
-      "Animated text transformation, staggering in each chunk. Perfect for landing page headers.",
+      "Animated AI response toolbar with feedback, copy, share, and overflow actions.",
     tech: ["react", "tailwind", "motion"],
-    fileName: "MagicText.tsx",
+    fileName: "ResponseActions.tsx",
     isFullWidth: false,
-    component: <MagicText />,
-  },
-  {
-    id: "cmdk",
-    name: "Command K",
-    description:
-      "⌘K menu used in cushion.so. Full workspace search with pagniation and shortcuts",
-    tech: ["react", "tailwind"],
-    fileName: "CushionCommand.tsx",
-    isFullWidth: false,
-    component: <CushionCommand />,
-  },
-  {
-    id: "thinking",
-    name: "Agent Feedback",
-    description:
-      "Cushion agent giving status feedback, showing how the model is processing the request and what tools it's using, then replying with the model response to the query.",
-    tech: ["react", "tailwind", "motion"],
-    fileName: "Thinking.tsx",
-    isFullWidth: false,
-    component: <Thinking />,
-  },
-  {
-    id: "ai-stream",
-    name: "Streaming",
-    description:
-      "Prompt and streamdown of text, typical in AI chatbots. Parses markdown and animates in each chunk to simulate a SSE stream from API.",
-    tech: ["react", "tailwind", "motion"],
-    fileName: "Prompt.tsx",
-    isFullWidth: false,
-    component: <Prompt />,
-  },
-  {
-    id: "checkin",
-    name: "Checkin",
-    description:
-      "Checkin submission for cushion. Rich-text editor with animated activity feed and transitions.",
-    tech: ["react", "tailwind", "tiptap", "motion"],
-    fileName: "Checkin.tsx",
-    isFullWidth: false,
-    component: <Checkin />,
+    component: <ResponseActions />,
   },
   {
     id: "calendar",
@@ -293,8 +228,7 @@ const COMPONENTS: ComponentItem[] = [
   {
     id: "form",
     name: "Email login",
-    description:
-      "Animated form with state transitions we use on cushion.so login",
+    description: "Animated form with state transitions we use on cushion.so login",
     tech: ["react", "tailwind", "motion"],
     fileName: "Form.tsx",
     isFullWidth: false,
@@ -307,27 +241,29 @@ const WorkDemoContext = React.createContext<WorkDemoContextProps>(null);
 function useWorkDemoContext() {
   const context = React.useContext(WorkDemoContext);
   if (!context) {
-    throw new Error(
-      "useWorkDemoContext must be used within WorkDemoContext.Provider",
-    );
+    throw new Error("useWorkDemoContext must be used within WorkDemoContext.Provider");
   }
   return context;
 }
 
-export function WorkDemos() {
+interface WorkDemosProps {
+  compact?: boolean;
+  limit?: number;
+}
+
+export function WorkDemos({ compact = false, limit }: WorkDemosProps = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeComponentId, setActiveComponentId] = React.useState<
-    string | null
-  >(null);
+  const [activeComponentId, setActiveComponentId] = React.useState<string | null>(null);
 
   // Initialize from URL on mount
   React.useEffect(() => {
     const demoParam = searchParams.get("demo");
-    if (demoParam && COMPONENTS.find((c) => c.id === demoParam)) {
+    if (demoParam && COMPONENTS.find(c => c.id === demoParam)) {
       setActiveComponentId(demoParam);
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setActiveComponentId(null);
+  }, [searchParams]);
 
   // Update URL when active component changes
   const handleSetActiveComponentId = React.useCallback(
@@ -342,7 +278,7 @@ export function WorkDemos() {
       }
       setSearchParams(newParams);
     },
-    [searchParams, setSearchParams],
+    [searchParams, setSearchParams]
   );
 
   const contextValue = React.useMemo(
@@ -350,18 +286,29 @@ export function WorkDemos() {
       activeComponentId,
       setActiveComponentId: handleSetActiveComponentId,
     }),
-    [activeComponentId, handleSetActiveComponentId],
+    [activeComponentId, handleSetActiveComponentId]
+  );
+
+  const visibleComponents = React.useMemo(
+    () => (typeof limit === "number" ? COMPONENTS.slice(0, limit) : COMPONENTS),
+    [limit]
   );
 
   return (
     <WorkDemoContext.Provider value={contextValue}>
-      <div className="px-4 pb-4 lg:px-8 lg:pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {COMPONENTS.map((item) => (
+      <div className={compact ? "w-full" : "px-4 pb-4 lg:px-8 lg:pb-8"}>
+        <div
+          className={compact ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 lg:grid-cols-2 gap-8"}
+        >
+          {visibleComponents.map(item => (
             <WorkDemoCard
               key={item.id}
               component={item.component}
               componentId={item.id}
+              title={item.name}
+              compact={compact}
+              className={compact ? "rounded-2xl" : undefined}
+              openOnCardClick={false}
             />
           ))}
         </div>
@@ -374,17 +321,27 @@ export function WorkDemos() {
 function WorkDemoCard({
   component,
   componentId,
+  title,
+  compact = false,
   className,
+  openOnCardClick = false,
 }: WorkDemoCardProps) {
+  const { setActiveComponentId } = useWorkDemoContext();
   const [showActions, setShowActions] = React.useState(false);
   const [resetKey, setResetKey] = React.useState(0);
+  const containerRef = React.useRef<HTMLElement>(null);
+  const shouldMountDemo = useInView(containerRef, {
+    amount: "some",
+    margin: "200px 0px",
+  });
 
   const handleReset = React.useCallback(() => {
-    setResetKey((prev) => prev + 1);
+    setResetKey(prev => prev + 1);
   }, []);
 
   return (
     <motion.figure
+      ref={containerRef}
       tabIndex={0}
       onFocus={() => setShowActions(true)}
       onBlur={() => setShowActions(false)}
@@ -392,13 +349,28 @@ function WorkDemoCard({
       onMouseLeave={() => setShowActions(false)}
       className={cn(
         "relative grid place-items-center aspect-square bg-gray-2 rounded-3xl focus transition-all overflow-hidden 2xl:aspect-video",
-        className,
+        openOnCardClick && "cursor-pointer",
+        className
       )}
     >
-      <motion.div key={resetKey}>{component}</motion.div>
+      {openOnCardClick && (
+        <button
+          type="button"
+          aria-label={`Open ${componentId} demo`}
+          onClick={() => setActiveComponentId(componentId)}
+          className="absolute inset-0 z-10"
+        />
+      )}
+      {compact ? (
+        <div className="px-4 text-center">
+          <p className="text-sm font-medium text-primary">{title ?? componentId}</p>
+        </div>
+      ) : shouldMountDemo ? (
+        <motion.div key={resetKey}>{component}</motion.div>
+      ) : null}
       <AnimatePresence mode="wait" initial={false}>
         {showActions && (
-          <WorkDemoActions componentId={componentId} onReset={handleReset} />
+          <WorkDemoActions componentId={componentId} onReset={handleReset} className="z-20" />
         )}
       </AnimatePresence>
     </motion.figure>
@@ -419,29 +391,26 @@ function WorkDemoFullscreen() {
   const [resetKey, setResetKey] = React.useState(0);
 
   const activeComponent = React.useMemo(
-    () => COMPONENTS.find((c) => c.id === activeComponentId),
-    [activeComponentId],
+    () => COMPONENTS.find(c => c.id === activeComponentId),
+    [activeComponentId]
   );
 
   const handleOpenChange = () => setActiveComponentId(null);
 
   const handleReset = React.useCallback(() => {
-    setResetKey((prev) => prev + 1);
+    setResetKey(prev => prev + 1);
   }, []);
 
   return (
-    <DialogPrimitive.Root
-      open={!!activeComponentId}
-      onOpenChange={handleOpenChange}
-    >
+    <DialogPrimitive.Root open={!!activeComponentId} onOpenChange={handleOpenChange}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 backdrop-blur-sm z-40" />
         <DialogPrimitive.Content
-          onCloseAutoFocus={(e) => e.preventDefault()}
+          onCloseAutoFocus={e => e.preventDefault()}
           className={cn(
-            "fixed inset-0 z-50 h-full bg-background outline-none",
+            "fixed inset-0 z-50 h-full bg-gray-1 outline-none",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:blur-in-md",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md",
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:blur-out-md"
           )}
         >
           <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr] h-full p-4">
@@ -461,10 +430,7 @@ function WorkDemoFullscreen() {
                 {activeComponent?.description}
               </motion.p>
               {activeComponent?.tech && (
-                <motion.div
-                  {...FADE_IN_BLUR}
-                  transition={STAGGER_TRANSITIONS.tech}
-                >
+                <motion.div {...FADE_IN_BLUR} transition={STAGGER_TRANSITIONS.tech}>
                   <WorkDemoTech tech={activeComponent.tech} />
                 </motion.div>
               )}
@@ -497,15 +463,11 @@ function WorkDemoFullscreen() {
               </motion.ul>
             </aside>
             <section className="grid place-items-center">
-              <motion.div key={resetKey}>
-                {activeComponent?.component}
-              </motion.div>
+              <motion.div key={resetKey}>{activeComponent?.component}</motion.div>
             </section>
           </div>
           <div className="absolute top-4 right-4">
-            <DialogPrimitive.Close
-              className={buttonVariants({ size: "icon", variant: "ghost" })}
-            >
+            <DialogPrimitive.Close className={buttonVariants({ size: "icon", variant: "ghost" })}>
               <XMarkIcon className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </DialogPrimitive.Close>
@@ -516,16 +478,16 @@ function WorkDemoFullscreen() {
   );
 }
 
-function WorkDemoActions({ componentId, onReset }: WorkDemoActionsProps) {
-  const { setActiveComponentId } = useWorkDemoContext();
-
+function WorkDemoActions({ componentId, onReset, className }: WorkDemoActionsProps) {
   const thisComponent = React.useMemo(
-    () => COMPONENTS.find((c) => c.id === componentId),
-    [componentId],
+    () => COMPONENTS.find(c => c.id === componentId),
+    [componentId]
   );
 
   return (
-    <div className="absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3">
+    <div
+      className={cn("absolute bottom-0 right-0 p-3 flex items-center justify-end gap-3", className)}
+    >
       <AnimatedAction delay={0.15}>
         <Tooltip content="Reset">
           <Button size="icon" variant="ghost" onClick={onReset}>
@@ -534,15 +496,30 @@ function WorkDemoActions({ componentId, onReset }: WorkDemoActionsProps) {
         </Tooltip>
       </AnimatedAction>
       <AnimatedAction delay={0.05}>
-        <Tooltip content="Fullscreen">
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => setActiveComponentId(componentId)}
-          >
-            <FullscreenIcon className="size-4 opacity-70" />
-          </Button>
-        </Tooltip>
+        <HoverCard openDelay={100} closeDelay={100}>
+          <HoverCardTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`${thisComponent?.name ?? componentId} info`}
+            >
+              <InfoIcon className="size-4 opacity-70" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent align="end" side="top" className="w-72">
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-lg font-medium leading-none text-primary">
+                  {thisComponent?.name}
+                </h3>
+                <p className="text-sm font-medium leading-relaxed tracking-[-0.01em] text-gray-10">
+                  {thisComponent?.description}
+                </p>
+              </div>
+              {thisComponent?.tech && <WorkDemoTech tech={thisComponent.tech} />}
+            </div>
+          </HoverCardContent>
+        </HoverCard>
       </AnimatedAction>
       <AnimatedAction delay={0}>
         <Tooltip content="View on GitHub">
@@ -572,13 +549,13 @@ function WorkDemoTech({ tech }: WorkDemoTechProps) {
 
   return (
     <div className="flex items-center gap-2">
-      {tech.map((t) => (
+      {tech.map(t => (
         <Tooltip key={t} content={techLabels[t]}>
           <div
             className={cn(
               "size-6 grid place-items-center p-px rounded-md",
               t === "react" && "hover:bg-gray-3",
-              t === "motion" && "bg-[#FFF312]",
+              t === "motion" && "bg-[#FFF312]"
             )}
           >
             {TECH_ICONS[t]}

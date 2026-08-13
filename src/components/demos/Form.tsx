@@ -1,15 +1,13 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 import { cn, waitFor } from "@/lib/utils";
-import { Input } from "@/components/primitives/Input";
-import { Label } from "@/components/primitives/Label";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 import { Loader2 } from "lucide-react";
 
 export function Form() {
-  const [state, setState] = React.useState<
-    "default" | "submitting" | "success"
-  >("default");
+  const [state, setState] = React.useState<"default" | "submitting" | "success">("default");
 
   const content = React.useMemo(() => {
     switch (state) {
@@ -35,12 +33,7 @@ export function Form() {
     <form onSubmit={onSubmit} className="w-full max-w-[360px] space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input
-          type="email"
-          required
-          name="email"
-          placeholder="Enter email address"
-        />
+        <Input type="email" required name="email" placeholder="Enter email address" />
       </div>
       <Button
         type="submit"
@@ -49,7 +42,7 @@ export function Form() {
           "w-full overflow-hidden",
           state === "success"
             ? "bg-green-700 dark:bg-green-700 disabled:opacity-100 text-white"
-            : null,
+            : null
         )}
       >
         <AnimatePresence mode="popLayout" initial={false}>
@@ -79,7 +72,7 @@ export function Form() {
       <div
         className={cn(
           "text-xs! text-secondary! text-center opacity-0",
-          state === "success" && "opacity-100",
+          state === "success" && "opacity-100"
         )}
       >
         Give it 2 minutes. If no link arrives, then try again

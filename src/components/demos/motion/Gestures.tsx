@@ -1,4 +1,4 @@
-import { Button } from "@/components/primitives/Button";
+import { Button } from "@/components/Button";
 
 export function Gestures() {
   return (

@@ -28,22 +28,17 @@ export function useSearchParams(): [
     return () => window.removeEventListener("popstate", handleLocationChange);
   }, []);
 
-  const setParams = React.useCallback(
-    (newParams: URLSearchParams | Record<string, string>) => {
-      if (typeof window === "undefined") return;
+  const setParams = React.useCallback((newParams: URLSearchParams | Record<string, string>) => {
+    if (typeof window === "undefined") return;
 
-      const searchParams =
-        newParams instanceof URLSearchParams
-          ? newParams
-          : new URLSearchParams(newParams);
+    const searchParams =
+      newParams instanceof URLSearchParams ? newParams : new URLSearchParams(newParams);
 
-      const url = new URL(window.location.href);
-      url.search = searchParams.toString();
-      window.history.pushState({}, "", url.toString());
-      setParamsState(searchParams);
-    },
-    [],
-  );
+    const url = new URL(window.location.href);
+    url.search = searchParams.toString();
+    window.history.pushState({}, "", url.toString());
+    setParamsState(searchParams);
+  }, []);
 
   return [params, setParams];
 }

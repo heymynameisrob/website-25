@@ -16,7 +16,7 @@ export const Draggable = (props: DraggableProps) => {
       ref={setNodeRef}
       className={cn(
         "flex flex-col text-left p-1 rounded-sm h-10 w-full text-sm bg-teal-400 text-teal-950 shadow-none rotate-0 hover:cursor-grab active:cursor-grabbing",
-        props.disabled && "pointer-events-none",
+        props.disabled && "pointer-events-none"
       )}
       layout="position"
       animate={

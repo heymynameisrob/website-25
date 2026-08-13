@@ -31,6 +31,34 @@ export function getAvatarColour(name: string | undefined) {
   return "bg-gray-3 text-primary";
 }
 
+const TAG_COLOURS = [
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-amber-500",
+  "bg-yellow-500",
+  "bg-lime-500",
+  "bg-green-500",
+  "bg-emerald-500",
+  "bg-teal-500",
+  "bg-cyan-500",
+  "bg-sky-500",
+  "bg-blue-500",
+  "bg-indigo-500",
+  "bg-violet-500",
+  "bg-purple-500",
+  "bg-fuchsia-500",
+  "bg-pink-500",
+  "bg-rose-500",
+];
+
+export function getTagColor(label: string): string {
+  let hash = 0;
+  for (let i = 0; i < label.length; i++) {
+    hash = label.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return TAG_COLOURS[Math.abs(hash) % TAG_COLOURS.length];
+}
+
 export function fromNow(date: Date, verbose?: boolean) {
   const distance = formatDistanceToNow(date, { addSuffix: false });
 
@@ -57,15 +85,14 @@ export function fromNow(date: Date, verbose?: boolean) {
 
   // Get the appropriate abbreviation, defaulting to the first character if not found
   const abbreviatedUnit =
-    unitAbbreviations[
-      singularUnit.toLowerCase() as keyof typeof unitAbbreviations
-    ] ?? singularUnit.charAt(0).toLowerCase();
+    unitAbbreviations[singularUnit.toLowerCase() as keyof typeof unitAbbreviations] ??
+    singularUnit.charAt(0).toLowerCase();
 
   return `${value} ${abbreviatedUnit} ago`;
 }
 
 export async function waitFor(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function filterPosts(posts: Post[]) {
@@ -73,12 +100,10 @@ export function filterPosts(posts: Post[]) {
 
   /** If prod, then filter out future posts */
   const validPosts = !isDev
-    ? posts.filter(
-        (post) => isBefore(post.data.date, new Date()) && !post.data.hide,
-      )
-    : posts.filter((post) => !post.data.hide);
+    ? posts.filter(post => isBefore(post.data.date, new Date()) && !post.data.hide)
+    : posts.filter(post => !post.data.hide);
   return validPosts.sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   );
 }
 

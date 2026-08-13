@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useIntersectionObserver(
-  options: IntersectionObserverInit = {},
-) {
+export function useIntersectionObserver(options: IntersectionObserverInit = {}) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -17,7 +15,7 @@ export function useIntersectionObserver(
       {
         threshold: 0.1,
         ...options,
-      },
+      }
     );
 
     observer.observe(element);

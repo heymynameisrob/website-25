@@ -1,0 +1,102 @@
+---
+const filterId = "melt-craft-filter";
+---
+
+<span class="relative inline-block" aria-label="craft" data-melt-craft>
+  <svg class="absolute size-0 overflow-hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <filter
+        id={filterId}
+        x="-150%"
+        y="-150%"
+        width="400%"
+        height="400%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012 0.035"
+          numOctaves="3"
+          seed="4"
+          result="noise"
+          data-melt-turbulence
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="20"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          data-melt-displacement
+        />
+      </filter>
+    </defs>
+  </svg>
+  <span
+    class="inline-block italic underline decoration-[0.08em] underline-offset-[0.12em] motion-reduce:[filter:none]"
+    style={`filter: url(#${filterId})`}
+  >
+    craft
+  </span>
+</span>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-melt-craft]");
+  const turbulence = root?.querySelector<SVGFETurbulenceElement>("[data-melt-turbulence]");
+  const displacement = root?.querySelector<SVGFEDisplacementMapElement>("[data-melt-displacement]");
+  const shouldReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (root && turbulence && displacement && !shouldReduceMotion) {
+    const current = { frequencyX: 0.012, frequencyY: 0.035, scale: 20 };
+    const target = { ...current };
+    let isPointerActive = false;
+
+    const lerp = (start: number, end: number, amount: number) =>
+      start + (end - start) * amount;
+
+    const setFilterValues = () => {
+      turbulence.setAttribute(
+        "baseFrequency",
+        `${current.frequencyX.toFixed(4)} ${current.frequencyY.toFixed(4)}`
+      );
+      displacement.setAttribute("scale", current.scale.toFixed(2));
+    };
+
+    const render = (time: number) => {
+      if (!isPointerActive) {
+        target.frequencyX = 0.0085 + Math.sin(time / 1600) * 0.0035;
+        target.frequencyY = 0.0275 + Math.cos(time / 1900) * 0.0075;
+        target.scale = 20 + Math.sin(time / 1400) * 12;
+      }
+
+      current.frequencyX = lerp(current.frequencyX, target.frequencyX, 0.14);
+      current.frequencyY = lerp(current.frequencyY, target.frequencyY, 0.14);
+      current.scale = lerp(current.scale, target.scale, 0.14);
+
+      setFilterValues();
+      requestAnimationFrame(render);
+    };
+
+    root.addEventListener("pointerenter", () => {
+      isPointerActive = true;
+    });
+
+    root.addEventListener("pointermove", event => {
+      const rect = root.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width;
+      const y = (event.clientY - rect.top) / rect.height;
+      const clampedX = Math.min(Math.max(x, 0), 1);
+      const clampedY = Math.min(Math.max(y, 0), 1);
+
+      target.frequencyX = 0.005 + clampedX * 0.018;
+      target.frequencyY = 0.02 + clampedY * 0.04;
+      target.scale = 8 + clampedY * 34;
+    });
+
+    root.addEventListener("pointerleave", () => {
+      isPointerActive = false;
+    });
+
+    requestAnimationFrame(render);
+  }
+</script>

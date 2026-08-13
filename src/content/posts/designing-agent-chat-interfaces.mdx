@@ -1,0 +1,396 @@
+---
+title: Agentic Interfaces
+description: Practical notes on agent chat inputs, message patterns, tool activity and human-in-the-loop controls for open-ended AI products.
+date: 2026-07-01
+type: "post"
+---
+
+import { UIExample } from "@/components/demos/UIExample";
+import { AgentWhileLoop } from "@/components/mdx/AgentWhileLoop";
+import { Disclosure } from "@/components/mdx/Disclosure";
+
+Chatbots have historically been one of the weakest GUI patterns. They offer few affordances for what a system can do or how it works, and most products were better served by buttons, forms, and direct manipulation.
+
+Agents change that. They are open-ended systems, so open-ended text becomes useful rather than a fallback. Users discover what an agent can do through questioning, iteration, and back-and-forth conversation.
+
+That does not mean the interface is solved by adding a textbox. Agents still need controls that help users choose context, understand activity, and step in when the system goes off course.
+
+The best agent chat interfaces do three things well. They keep the main action lightweight, make agent activity visible without turning the chat into a log, and let users interrupt or steer the system when needed.
+
+This post breaks the interface into three parts: the chat input, messages, and human-in-the-loop patterns.
+
+## Composer
+
+The composer is the main channel of communication with an agent. Because agents respond to open-ended text, the composer has to make writing, reviewing, and sending prompts feel simple.
+
+<UIExample component="agent-chat-input" client:load>
+  The entry point to every app nowadays
+</UIExample>
+
+A composer may look like a textbox, but it has to carry more state than a normal input. It often needs model selection, attachments, upload progress, and send state.
+
+Keeping those controls inside one visual container helps users understand that they belong to the same action: sending a message to the agent. Splitting them across a toolbar or separate panel makes the action feel less direct.
+
+```tsx title="Composer.tsx"
+function Composer() {
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { sendMessage, setMessage, setFiles, message, files, model, onModelChange } =
+    useSendAgentMessage();
+  const { isStreaming, handleStopStream } = useChat();
+
+  return (
+    <form onSubmit={sendMessage}>
+      <input ref={fileInputRef} type="file" hidden onChange={setFiles} />
+      <Attachments files={files} />
+      <textarea value={message} onChange={setMessage} />
+      <div>
+        <Button icon="paperclip" onUpload={() => fileInputRef.current?.click()} />
+        <ModelSelect model={model} onModelChange={onModelChange} />
+        <SendStopButton
+          disabled={message.length === 0}
+          isStreaming={isStreaming}
+          onStopStream={handleStopStream}
+        />
+      </div>
+    </form>
+  );
+}
+```
+
+This is a simplified version of the component above
+
+As you can see it's essentially a `form` wrapping a `<textarea>` and `<button role="submit">`. Other controls set metadata, such as the model to use, or add extra form data, such as files.
+
+That said there a few things going on under the hood that are interesting.
+
+### Autosize textarea
+
+Prompts vary in length and often run over one line. Textareas work well because they let users enter free-form text across multiple lines.
+
+However, we do not want users to resize them manually because that can break the layout. We also cannot keep the input at a fixed height because that makes longer text hard to read.
+
+```ts title="useAutosizeTextarea.ts"
+export function useAutosizeTextarea(
+  ref: React.RefObject<HTMLTextAreaElement | null>,
+  value: string,
+  options: UseAutosizeTextareaOptions
+) {
+  React.useLayoutEffect(() => {
+    const textarea = ref.current;
+    const { minHeight = 48, maxHeight = 120 } = options;
+
+    if (!textarea) return;
+
+    textarea.style.height = `${minHeight}px`;
+    const height = clamp(textarea.scrollHeight, [minHeight, maxHeight]);
+    const isOverflowing = textarea.scrollHeight > maxHeight;
+
+    textarea.style.height = `${height}px`;
+    textarea.style.overflowY = isOverflowing ? "auto" : "hidden";
+  }, [ref, value, options]);
+}
+```
+
+This hook clamps the textarea between a min and max height, allowing it to expand as needed within those bounds without breaking the layout.
+
+The max height matters as much as the autosizing. Without a limit, a long prompt can push the conversation out of view and make the composer feel like the whole app. With too small a limit, users lose confidence because they cannot review what they wrote. The clamp gives the prompt enough room without letting it take over the layout.
+
+The important part is the `clamp()` function. The rest is React plumbing. Using `useLayoutEffect` lets us measure the textarea before the DOM paints, which avoids flicker and layout jank.
+
+### Attachments
+
+You can send more than text to an agent. Users should be able to send files such as images or PDFs as context.
+Handling file uploads starts with adding a hidden `<input type="file">` to the `<form>` block.
+
+```tsx title="Attachments.tsx"
+type Attachment = {
+  id: string;
+  file: File;
+  previewUrl: string;
+};
+
+const ATTACHMENT_INITIAL = { opacity: 0, filter: "blur(2px)" };
+const ATTACHMENT_ANIMATE = { opacity: 1, filter: "blur(0px)" };
+const ATTACHMENT_EXIT = { opacity: 0, filter: "blur(2px)" };
+const ATTACHMENT_TRANSITION = { type: "spring", duration: 0.2, bounce: 0 };
+
+function useAttachments() {
+  const [attachments, setAttachments] = React.useState<Attachment[]>([]);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  function addFiles(files: FileList) {
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith("image/"));
+
+    setAttachments(current => [
+      ...current,
+      ...imageFiles.map(file => ({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl: URL.createObjectURL(file),
+      })),
+    ]);
+  }
+
+  function removeAttachment(id: string) {
+    setAttachments(current => {
+      const attachment = current.find(item => item.id === id);
+      if (attachment) URL.revokeObjectURL(attachment.previewUrl);
+      return current.filter(item => item.id !== id);
+    });
+  }
+
+  return { attachments, fileInputRef, addFiles, removeAttachment };
+}
+
+function Attachments({
+  attachments,
+  removeAttachment,
+}: {
+  attachments: Attachment[];
+  removeAttachment: (id: string) => void;
+}) {
+  if (attachments.length === 0) return null;
+
+  return (
+    <div className="flex gap-2 overflow-x-auto">
+      <AnimatePresence mode="popLayout" initial={false}>
+        {attachments.map(attachment => (
+          <motion.div
+            key={attachment.id}
+            initial={ATTACHMENT_INITIAL}
+            animate={ATTACHMENT_ANIMATE}
+            exit={ATTACHMENT_EXIT}
+            transition={ATTACHMENT_TRANSITION}
+            className="relative size-16 overflow-hidden rounded-md"
+          >
+            <img src={attachment.previewUrl} alt={attachment.file.name} loading="lazy" />
+            <Button size="icon" icon="x" onClick={() => removeAttachment(attachment.id)}>
+              Remove
+            </Button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
+```
+
+A common pattern is showing the files in a small gallery above the textarea. Keeping files close to the textarea links them to the text and makes it clear they are part of the same message.
+
+I prefer this over a separate attachment tray because the files are not global state. They belong to the message the user is composing. If they drift too far from the textarea, it becomes less clear whether they will be sent with the current prompt, saved for later, or attached to the whole conversation.
+
+This example is simplified. In reality, we would need to handle upload progress, limits, and error handling.
+
+### Focus
+
+Two focus behaviours matter here.
+
+First, when you hit any printable key and you are not focused somewhere else, we register that as input for the textarea.
+
+I noticed this pattern in ChatGPT and liked it. It makes sense in a single chat view because any typing outside an existing input or shortcut is likely to be a message for the agent. There is nothing more frustrating than starting to type and realising you are not focused in the input.
+
+The hook is simple, but you have to manage key events carefully when using a global listener. The risk with this pattern is stealing focus from other controls. The rule I use is that global typing should only focus the composer when the page has no active editing context. If the user is already interacting with a button, select, input, or shortcut, the composer should stay out of the way.
+
+```ts title="useFocusInputOnType.ts"
+const PRINTABLE_KEY = /^[\p{L}\p{N}]$/u;
+
+function useFocusOnType(ref: React.RefObject<HTMLTextAreaElement | null>) {
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.isComposing || !PRINTABLE_KEY.test(e.key)) return;
+
+      const active = document.activeElement;
+      if (active && active !== document.body && active !== document.documentElement) {
+        return;
+      }
+
+      ref.current?.focus();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [ref]);
+}
+```
+
+The second part is managing focus on click. Even though the chat input contains several elements, it looks like one control to the user. When they click the container, it should focus the input. That said, there are other clickable and focusable elements there too, which we should not interfere with.
+
+We can handle this by adding a focus function to the `onClick` handler of the container, then ignoring clickable descendants such as buttons and selects.
+
+### Send
+
+Chat streams often emit events while they run. Subscribing to stream state with `useChat()` lets us change the button behaviour.
+
+We can also add a speech-to-text option here using the `SpeechRecognition` API.
+
+```tsx title="SendStopButton.tsx"
+function SendStopButton({ isStreaming, onStopStream }: SendStopButtonProps) {
+  return (
+    <Button role={isStreaming ? "button" : "submit"} disabled={disabled} onClick={handleSendStop}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={isStreaming ? "stop" : "arrow"}
+          initial={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          exit={{ opacity: 0, scale: 0.5, filter: "blur(2px)" }}
+          transition={TRANSITION}
+        >
+          {isStreaming ? <StopIcon /> : <ArrowUpIcon />}
+        </motion.div>
+      </AnimatePresence>
+    </Button>
+  );
+}
+```
+
+We can switch the send button to a stop button, letting the user abort the stream or steer the agent elsewhere.
+
+I like reusing the send button for stop because it keeps the primary action in one place. When the agent is idle, the primary action is send. When the agent is running, the primary action becomes stop. Showing both at once adds choice at the exact moment the user needs clarity.
+
+The trade-off is that the button changes meaning, so the icon transition has to be clear. If the state change feels too subtle, users may miss that they can interrupt the agent.
+
+This is a good place to use `framer-motion` to animate the change. With `AnimatePresence`, we can animate the component mount and unmount lifecycle. Animating `opacity`, `blur`, and `scale` makes the transition feel smooth and covers any janky switches between the two.
+
+## Conversation
+
+Agent messages work best when they are made from parts. A response might start with streamed markdown, then show a tool call, then ask for approval, then continue with the final answer. Treating these as separate parts keeps the interface inspectable without turning every response into a wall of logs.
+
+The message shell should shrink-wrap simple text, but expand gracefully for richer sections like tool output, files, tables, and human-in-the-loop prompts. The user should be able to scan the conversation first, then inspect details only when they need them.
+
+<UIExample component="agent-messages" client:load>
+  Chat conversations should flow naturally mixing together tools, artefacts, and messages
+</UIExample>
+
+### Messages
+
+Text messages look simple, but chat bubbles are a notoriously fiddly CSS problem. The hardest part is the **right edge**: shrink-wrapping a bubble tightly around its text is not something pure CSS can do well. `width: max-content` and `text-wrap: balance` get you close, but they leave a sliver of slack on short lines that looks sloppy.
+
+The fix is a `useLayoutEffect` that measures the text's actual rendered width with a `Range` and locks the bubble to that exact pixel count with `box-sizing: content-box`. The `requestAnimationFrame` defers the measurement one frame to let layout settle after we reset the bubble's width, and the cleanup cancels the rAF if `text` changes.
+
+```tsx title="UserTextMessage.tsx"
+function UserTextMessage({ text }: { text: string }) {
+  const bubbleRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = React.useRef<HTMLParagraphElement>(null);
+
+  React.useLayoutEffect(() => {
+    const bubble = bubbleRef.current;
+    const content = contentRef.current;
+    if (!bubble || !content) return;
+
+    bubble.style.removeProperty("width");
+    bubble.style.boxSizing = "border-box";
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      const range = document.createRange();
+      range.selectNodeContents(content);
+
+      const bbox = range.getBoundingClientRect();
+      bubble.style.width = `${bbox.width}px`;
+      bubble.style.boxSizing = "content-box";
+
+      range.detach();
+    });
+
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [text]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, filter: "blur(4px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      <div
+        ref={bubbleRef}
+        className="prose prose-sm w-max max-w-[90%] box-border rounded-lg p-3 bg-gray-3 text-left ml-auto text-primary text-balance"
+      >
+        <p ref={contentRef}>{text}</p>
+        <span aria-label="sender" className="sr-only">
+          user
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+```
+
+The two-phase approach is the key. First we reset the bubble to its natural max-content size and force `box-sizing: border-box` so the layout is well-defined. On the next frame we measure the rendered text with `range.getBoundingClientRect()` and lock the bubble to that width with `box-sizing: content-box` — so the padding is added to the content width rather than subtracted from it, and the text fits exactly.
+
+`useLayoutEffect` runs synchronously after the DOM updates but before the browser paints, which is what makes this look right. If we used `useEffect` instead, users would see one frame of the loose `w-max` width before it snapped to the measured value.
+
+This is a simplified version of the component above. I kept the entrance animation because it composes with the layout effect — both run before the first paint, so the bubble fades in at its locked width rather than jumping in size.
+
+### Tools
+
+Tool calls can be used for both read and write actions, such as searching the web for information or editing a text file. Typically the agent will decide to invoke this tool call itself. To do this, tools are explicitly included in the agents context with a name and description, helping the agent know if that particular tool is useful in responding to the users query.
+
+Tool calls should feel like part of the conversation. Although design around agents is still early, a typical pattern we're starting to see is a bullet-like list, often with an optional collapsible section detailing the raw input/output of the tool call itself.
+
+```tsx title="AgentToolCall.tsx"
+// A message can contain multiple parts — text and tool calls live side by side
+const messages: Array<Message> = [...];
+
+// Map known tool keys to display info — icons, labels, etc.
+const toolConfig = {
+  webSearch: { icon: SearchIcon, label: "Search the web" },
+  readUrl: { icon: ReadIcon, label: "Read the page" },
+  loadSkill: { icon: SkillIcon, label: "Load a skill" },
+} satisfies Tool;
+
+function AgentToolCall({ part }: { part: ToolCall }) {
+  const config = toolConfig[part.key];
+  const isFailed = part.state === "error";
+
+  return (
+    <div className={cn(
+      "flex items-center gap-2 text-sm font-medium",
+      part.state === "loading" && "animate-shimmer",
+      isFailed && "text-red-10"
+    )}>
+      <config.icon className={cn("size-4 shrink-0", isFailed && "text-red-9")} />
+      <span>{part.stateLabels[part.state]}</span>
+      {isFailed && part.error && (
+        <span className="text-xs text-gray-9 max-w-48 truncate" title={part.error}>
+          — {part.error}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// Group adjacent tool calls together so they render as a connected chain
+function groupAdjacentTools(parts: Array<MessagePart>) {
+  const blocks = [];
+  let tools = [];
+
+  for (const part of parts) {
+    if (part.type === "tool") {
+      tools.push(part);
+      continue;
+    }
+    if (tools.length > 0) {
+      blocks.push({ type: "tool-group", tools });
+      tools = [];
+    }
+    blocks.push({ type: "part", part });
+  }
+
+  if (tools.length > 0) blocks.push({ type: "tool-group", tools });
+  return blocks;
+}
+```
+
+A benefit of this structure is that tool calls and text parts arrive in the same stream. As each part is processed, it renders in order — the user sees "Let me check" followed immediately by the search indicator, then the results. The message stays inspectable because each part is separate, but it reads naturally because they're rendered in sequence.
+
+Grouping adjacent tool calls into a single visual block (the `groupAdjacentTools` pattern above) prevents each successful tool from consuming a separate line. Without grouping, a web search followed by reading a URL would render as two disconnected items. With grouping, they read as a single workflow step.
+
+The difficulty with this pattern is that we cannot guarantee type-safety at runtime. The `toolConfig` map above works for known tools identified by a static key, but an agent can invoke tools that weren't defined at build time.
+
+Tool calls have a lifecycle: **loading** → **success** or **error**. Each state changes how the line looks — a loading tool gets a subtle shimmer animation, a successful one snaps to static text, and a failed one shifts to a warning color with the error message shown inline.
+
+### Custom UI
+
+## HITL
+
+### Permissions

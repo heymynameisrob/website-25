@@ -1,0 +1,115 @@
+---
+import Layout from "@/components/Layout.astro";
+import Divider from "@/components/mdx/Divider.astro";
+import Prose from "@/components/Prose.astro";
+import Footer from "@/components/Footer.astro";
+
+import DefaultHeader from "@/components/post/Header.astro";
+import AgentHeader from "@/components/post/headers/AgentHeader.astro";
+import CommandKHeader from "@/components/post/headers/CommandKHeader.astro";
+import CommentsHeader from "@/components/post/headers/CommentsHeader.astro";
+import MarkdownHeader from "@/components/post/headers/MarkdownHeader.astro";
+
+import { ToC } from "@/components/ToC";
+import LinkWithIcon from "@/components/LinkWithIcon.astro";
+
+import type { Post } from "@/content.config";
+import type { PostFrontmatter } from "@/content.config";
+import type { PostLayouts } from "@/lib/types";
+
+import { cn } from "@/lib/utils";
+import { formatDate } from "date-fns";
+
+import { FORMAT_DATE } from "@/lib/constants";
+export type PostWithImages = Post & {
+  optimizedImageSrc?: string;
+  ogImageSrc?: string;
+  optimizedImageDarkSrc?: string;
+};
+
+const headerComponents: Record<(typeof PostLayouts)[number], typeof AgentHeader> = {
+  agent: AgentHeader,
+  "command-k": CommandKHeader,
+  comments: CommentsHeader,
+  markdown: MarkdownHeader,
+};
+
+type Heading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+type FrontmatterProps = {
+  frontmatter?: PostFrontmatter & { og?: string; showToc?: boolean };
+  className?: string;
+};
+
+type PostProps = {
+  post?: PostWithImages;
+  className?: string;
+  layout?: (typeof PostLayouts)[number];
+};
+
+interface Props extends FrontmatterProps, PostProps {
+  headings?: Heading[];
+  showToc?: boolean;
+}
+
+const {
+  post,
+  frontmatter,
+  className,
+  layout,
+  headings,
+  showToc: showTocProp,
+} = Astro.props as Props;
+const data = (post?.data ?? frontmatter)!;
+const ogImageSrc = post?.ogImageSrc ?? frontmatter?.og;
+const showToc = showTocProp ?? frontmatter?.showToc ?? false;
+const hasHeadings = headings && headings.length > 0;
+---
+
+<Layout
+  title={`${data.title} - @heymynameisrob`}
+  description={data.description}
+  og={ogImageSrc}
+  canonical={data.canonical}
+>
+  <div
+    class={cn(
+      "max-h-screen overflow-y-scroll animate-in fade-in-0 blur-in-md duration-400 ease-out",
+      className
+    )}
+  >
+    <div
+      class="fixed top-0 inset-x-0 pointer-events-none bg-linear-to-b from-background to-transparent h-10 z-10"
+    >
+    </div>
+    <div
+      class="mx-auto flex max-w-prose flex-1 flex-col gap-6 px-4 py-12 md:px-6 lg:gap-12 lg:px-8 xl:py-20"
+    >
+      <slot name="before" />
+      <aside class="flex flex-col gap-10 xl:fixed xl:top-20 xl:left-10">
+        <LinkWithIcon
+          href="/"
+          target="_self"
+          icon="back"
+          label="Back"
+          className="text-sm [&_span]:no-underline [&_svg]:size-4 h-7 text-gray-9 hover:text-primary hover:bg-transparent"
+        />
+        {showToc && hasHeadings && <ToC headings={headings} title={data.title} client:load />}
+      </aside>
+      <header class="flex flex-col gap-3">
+        <h1 id={data.title} class="font-serif text-primary text-3xl md:text-4x tracking-tight">
+          {data.title}
+        </h1>
+      </header>
+      <Prose>
+        <slot />
+      </Prose>
+      <Footer />
+    </div>
+  </div>
+  <slot name="after" />
+</Layout>

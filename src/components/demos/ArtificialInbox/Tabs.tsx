@@ -5,21 +5,16 @@ import {
   ArtificialSkeletonTable,
   type ArtificialTableOptionsProps,
 } from "@/components/demos/ArtificialInbox/Skeletons";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/primitives/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { Sortable, SortableItem } from "@/components/primitives/Sortable";
+import { Sortable, SortableItem } from "@/components/Sortable";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/primitives/ContextMenu";
+} from "@/components/ContextMenu";
 import { GlobeAltIcon, PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { useArtificialInboxStore } from "@/components/demos/ArtificialInbox/Store";
 
@@ -57,10 +52,7 @@ const OPTIONS_TAB_MAP: Record<string, ArtificialTableOptionsProps> = {
 export type ArtificialInboxTypes = "all" | "renewals" | "at_risk";
 
 export function ArtificialInboxTabs() {
-  const [activeTab, setActiveTab] = useLocalStorage<string>(
-    "artificial-inbox-state",
-    "all",
-  );
+  const [activeTab, setActiveTab] = useLocalStorage<string>("artificial-inbox-state", "all");
   const [tabListOrder, setTabListOrder] = React.useState<string[]>([
     "renewals",
     "at_risk",
@@ -68,8 +60,8 @@ export function ArtificialInboxTabs() {
     "custom",
   ]);
 
-  const name = useArtificialInboxStore((state) => state.name);
-  const emoji = useArtificialInboxStore((state) => state.emoji);
+  const name = useArtificialInboxStore(state => state.name);
+  const emoji = useArtificialInboxStore(state => state.emoji);
 
   const tabConfig = {
     renewals: { label: "🔄 Renewals", value: "renewals" },
@@ -79,7 +71,7 @@ export function ArtificialInboxTabs() {
   };
 
   return (
-    <div className="relative left-10 flex rounded-md overflow-hidden bg-background w-full shadow-floating aspect-video">
+    <div className="relative left-10 flex rounded-md overflow-hidden bg-gray-1 w-full shadow-floating aspect-video">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col">
           <ArtificialSkeletonTopBar />
@@ -91,10 +83,10 @@ export function ArtificialInboxTabs() {
               <div className="w-1 h-6 bg-gray-3 rounded-full" />
               <Sortable
                 items={tabListOrder}
-                onSort={(newOrder) => setTabListOrder(newOrder)}
+                onSort={newOrder => setTabListOrder(newOrder)}
                 orientation="horizontal"
               >
-                {tabListOrder.map((tabId) => {
+                {tabListOrder.map(tabId => {
                   const tab = tabConfig[tabId as keyof typeof tabConfig];
                   if (!tab) return null;
                   return (

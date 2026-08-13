@@ -1,0 +1,92 @@
+# Rob Hough — Design Engineer
+
+> Personal website of Rob Hough (@heymynameisrob). Built with Astro and React, deployed to Netlify.
+> https://heymynameisrob.com
+
+## About
+
+I'm a design engineer working at [n8n](https://n8n.io), an open-source project building the future of AI automation. I love designing performant, accessible interfaces that are deeply rooted in craft and quality.
+
+- **Location**: UK
+- **Current role**: Design Engineer at [n8n](https://n8n.io)
+- **Side project**: Co-founder of [cushion.so](https://cushion.so) — a modern collaboration platform for remote teams
+
+## Contact & Social
+
+- **Website**: https://heymynameisrob.com
+- **GitHub**: https://github.com/heymynameisrob
+- **LinkedIn**: https://linkedin.com/in/heymynameisrob
+- **Email**: mailto:robhough180@gmail.com
+- **Bluesky**: https://bsky.app/profile/heymynameisrob.com
+
+## Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| Home | `/` | Bio, work grid, projects |
+| Work | `/work` | Interactive component demos and UI examples |
+| Posts | `/posts` | Blog posts, case studies, and demos |
+| Now | `/now` | What I'm doing now (inspired by Derek Sivers) |
+| Things I Love | `/yep` | A list of things I love |
+| Things I Don't Like | `/nope` | A list of things I don't like |
+
+## Work & Demos
+
+Interactive UI demos and experiments:
+
+- [Command K](/posts/command-k-cushion) — ⌘K menu with workspace search, pagination and shortcuts (used in cushion.so)
+- [Agent Feedback](/posts/comment-ux-cushion) — Cushion agent status feedback with tool usage and model response streaming
+- [Designing Agents](/posts/designing-agent-chat-interfaces) — Prompt and streamdown UI for AI chatbots with markdown parsing and SSE animation
+- [n8n Markdown Editor](/posts/n8n-markdown-editor) — Markdown editor with formatting toolbar and streaming preview text
+
+## Projects
+
+- **[cushion.so](https://cushion.so)** — Modern collaboration platform for remote teams. Posts, notifications you control, checkins, and clear decision-making primitives.
+- **[Travel](#)** — Gallery of travel photos over the years
+- **[Milos](https://github.com/heymynameisrob/milos-zed-theme)** — Tangerine and duck-egg flavoured Zed theme
+- **[Agent Config](https://github.com/heymynameisrob/agent-config)** — My setup for agentic coding
+- **[pilcrow.xyz](https://pilcrow.xyz)** — Notion-style writing app for lab/working notes
+- **[Deal Delivers](/posts/dealdelivers)** — Local directory for lockdown delivery
+
+## Case Studies
+
+- [Artificial](/posts/artificial-io) — Policy inbox for insurance underwriters
+- [Design System](/posts/artificial-primitives) — Library of custom React components for rapid prototyping
+- [Lantum](/posts/lantum-rota-ui) — Scheduling platform for managing NHS clinicians
+- [Checkins](/posts/cushion-checkins) — Async status updates in a collaboration app for distributed teams
+
+## Posts
+
+### Design & Engineering
+- [Building your own toolbox](/posts/building-your-toolbox) — Finding winning solutions through rapid iteration and feedback
+- [Removing Abstractions](/posts/remove-abstractions) — Why designers should write production code
+- [Motion UI](/posts/practical-motion) — Using motion in web interfaces
+- [Design Engineers/Design Researchers](/posts/design-researchers-design-engineers) — Splitting modern design roles into two specialisations
+- [Research at Lantum](/posts/researching-at-lantum) — Design research notes from a workforce management platform for healthcare
+- [Designing agents](/posts/designing-agent-chat-interfaces) — Designing AI chat interfaces
+
+### Demos
+- [Login Link](/posts/motion-form-button) — Animated login form with state communication
+- [Date Picker UI](/posts/demo-calendar) — Date picker with animated pagination and swipe gestures
+- [Gallery](/posts/gallery-demo) — Masonry image gallery with dialog scaling and keyboard navigation
+- [iOS Calculator Menu](/posts/motion-calculator) — Icon-morphing menu with spring animations
+
+### Projects
+- [pilcrow.xyz](/posts/pilcrow) — Notion-style writing app for lab/working notes
+- [Deal Delivers](/posts/dealdelivers) — Local directory for lockdown delivery
+
+## Tech Stack
+
+- **Framework**: [Astro](https://astro.build) (content collections, SSR)
+- **UI**: React, TypeScript, Tailwind CSS
+- **Animation**: Framer Motion
+- **Deployment**: Netlify
+- **Content**: MD/MDX with Astro Content Collections
+
+## Assets
+
+- **CV**: `/CV_25.pdf`
+- **Favicon**: `/favicon.ico`
+- **OG Image**: `/og-image.png`
+- **Manifest**: `/manifest.webmanifest`
+- **Fonts**: Berkeley Mono (Regular & Bold)

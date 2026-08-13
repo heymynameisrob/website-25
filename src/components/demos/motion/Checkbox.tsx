@@ -7,11 +7,7 @@ interface CheckboxProps {
   className?: string;
 }
 
-export function Checkbox({
-  checked,
-  onCheckedChange,
-  className,
-}: CheckboxProps) {
+export function Checkbox({ checked, onCheckedChange, className }: CheckboxProps) {
   return (
     <div
       className={cn(
@@ -19,7 +15,7 @@ export function Checkbox({
         checked
           ? "bg-accent shadow-[inset_0_0_0_2px_var(--accent)] delay-[400ms]"
           : "shadow-[inset_0_0_0_2px_var(--border)]",
-        className,
+        className
       )}
     >
       <svg
@@ -29,7 +25,7 @@ export function Checkbox({
         strokeLinejoin="round"
         className={cn(
           "absolute inset-0 w-full h-full fill-none",
-          checked && "animate-[checkboxFill_600ms_ease_forwards_300ms]",
+          checked && "animate-[checkboxFill_600ms_ease_forwards_300ms]"
         )}
         style={{
           strokeDasharray: checked ? "16 86.12" : "86.12",
