@@ -67,11 +67,29 @@ const CssIcon: FC<CustomSvgProps> = ({ className, ...props }) => (
   </svg>
 );
 
+function VueIcon({ className, ...props }: CustomSvgProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="-0.64 -0.64 33.28 33.28"
+      className={className}
+      {...props}
+    >
+      <path fill="#41b883" d="M2 3.925l14 24.15 14-24.15h-5.6L16 18.415 7.53 3.925z" />
+      <path
+        fill="#35495e"
+        d="M7.53 3.925 16 18.485l8.4-14.56h-5.18L16 9.525l-3.29-5.6z"
+      />
+    </svg>
+  );
+}
+
 const languageIcons: Record<string, ComponentType<CustomSvgProps>> = {
   tsx: TsxIcon,
   ts: TsIcon,
   typescript: TsIcon,
   css: CssIcon,
+  vue: VueIcon,
 };
 
 export function LanguageIcon({ language, className, ...props }: LanguageIconProps) {

@@ -24,6 +24,7 @@ import { ClipPathSlider } from "@/components/demos/motion/ClipPath";
 import { List } from "@/components/demos/motion/List";
 import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
 import { CushionCommand } from "@/components/demos/CushionCommand";
+import { IconPicker } from "@/components/demos/IconPicker";
 import { Prompt } from "@/components/demos/Prompt";
 import { AgentLoopDemo } from "@/components/remotion";
 import { AgentChatInputDemo } from "@/components/post/agents/AgentChatInput";
@@ -127,6 +128,7 @@ const COMPONENT_MAP = {
   "motion-list": <List />,
   "motion-stagger": <StaggerButtons />,
   "home-command-k": <CushionCommand />,
+  "icon-picker": <IconPicker />,
   "home-agent-feedback": <Thinking />,
   "home-streaming": <Prompt />,
   "agent-loop": <AgentLoopDemo />,
