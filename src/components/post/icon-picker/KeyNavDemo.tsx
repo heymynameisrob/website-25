@@ -5,14 +5,15 @@ import {
   type IconOrEmoji,
   type PickerItem,
   useIconPickerItems,
-} from "@/components/demos/IconPicker";
+} from "@/components/demos/IconPicker/IconPickerContent";
+import { iconRegistry } from "@/components/demos/IconPickerRegistry";
 import { PostDemo } from "@/components/post/PostDemo";
 
 const DEMO_COLOR = "#737373";
 
 function DemoGrid() {
   const [value, setValue] = useState<IconOrEmoji>();
-  const { iconItems } = useIconPickerItems();
+  const { iconItems } = useIconPickerItems(iconRegistry, null);
 
   function selectItem(item: PickerItem) {
     setValue({ type: "icon", value: item.value, color: DEMO_COLOR });

@@ -9,7 +9,11 @@ company: artificial
 ---
 
 import MediaWrapper from "@/components/MediaWrapper.astro";
-import { UIExample } from "@/components/demos/UIExample";
+import {
+  ArtificialInboxFiltersDemo,
+  ArtificialInboxTabsDemo,
+  ArtificialInboxTasksDemo,
+} from "@/components/post/artificial/ArtificialInboxDemos";
 import Blockquote from "@/components/mdx/Blockquote.astro";
 
 import featureImageLight from "@/assets/inbox-feature-light.jpg";
@@ -67,9 +71,7 @@ As there are often 100+ columns, each representing a data point, we enabled user
 
 This allows users to create their own views which they can save for later.
 
-<UIExample component="artificial-inbox-filters" client:only="react">
-  Side menu has different levels to store lots of options
-</UIExample>
+<ArtificialInboxFiltersDemo client:only="react" />
 
 ## Views
 
@@ -77,9 +79,7 @@ At the top of the page, users can create and manage custom views. Organisations 
 
 Each view is a collection of filters and display options applied every time they select it. When you select a view and return to the page, you see the last one you were viewing.
 
-<UIExample component="artificial-inbox-tabs" client:only="react">
-  Tip: Drag and drop the tabs to re-order them
-</UIExample>
+<ArtificialInboxTabsDemo client:only="react" />
 
 ## Tasks
 
@@ -87,6 +87,4 @@ Each policy can have tasks associated with it. You can view and create tasks dir
 
 Each policy row shows a badge with the task count. Clicking it opens the task list. If there is only one task, it opens that task directly in edit state. Edits to the task, such as changing the assignee or status, are saved automatically after a short debounce.
 
-<UIExample component="artificial-inbox-tasks" client:only="react">
-  Tip: Tasks auto-save making it fast to make edits
-</UIExample>
+<ArtificialInboxTasksDemo client:only="react" />

@@ -1,6 +1,5 @@
 /** AI port of N8nIconPicker. Code's not great. */
-import data from "@emoji-mart/data";
-import { icons, Search, Shuffle, Smile, X } from "lucide-react";
+import { Search, Shuffle, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import {
   type CSSProperties,
@@ -12,6 +11,7 @@ import {
   type ReactNode,
   useEffect,
   useMemo,
+  useId,
   useRef,
   useState,
 } from "react";
@@ -20,6 +20,7 @@ import { Button } from "@/components/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
 import { Tabs, TabsList, TabsTrigger } from "@/components/Tabs";
 import { Tooltip } from "@/components/Tooltip";
+import type { IconRegistryEntry } from "@/components/demos/IconPickerRegistry";
 import { cn } from "@/lib/utils";
 
 const COLUMNS = 12;
@@ -91,7 +92,7 @@ type EmojiCategory = {
   emojis: string[];
 };
 
-type EmojiData = {
+export type EmojiData = {
   categories: EmojiCategory[];
   emojis: Record<string, EmojiEntry>;
 };
@@ -106,18 +107,18 @@ export type PickerItem = {
   keywords?: string[];
 };
 
+export type IconRegistry = Record<string, IconRegistryEntry>;
+
 export type IconPickerContentProps = {
+  iconRegistry: IconRegistry | null;
+  emojiData: EmojiData | null;
   value?: IconOrEmoji;
   onChange?: (value: IconOrEmoji) => void;
-  iconsOnly?: boolean;
-  showColorPicker?: boolean;
+  onTabChange?: (tab: TabType) => void;
+  mode?: "all" | "icons";
+  colorPicker?: "visible" | "hidden";
   defaultTab?: TabType;
   className?: string;
-};
-
-export type IconPickerProps = IconPickerContentProps & {
-  isReadOnly?: boolean;
-  buttonTooltip?: string;
 };
 
 function humanizeIconName(name: string): string {
@@ -153,10 +154,10 @@ function getStoredSkinTone(): number {
 
 function getDefaultTab(
   value: IconOrEmoji | undefined,
-  iconsOnly: boolean,
+  mode: "all" | "icons",
   fallback: TabType
 ): TabType {
-  if (iconsOnly) return "icons";
+  if (mode === "icons") return "icons";
   if (value) return value.type === "emoji" ? "emojis" : "icons";
   return fallback;
 }
@@ -215,6 +216,7 @@ function IconColorPicker({ color, onChange }: IconColorPickerProps) {
         align="end"
         className="grid w-auto grid-cols-5 gap-1 p-2"
         aria-label="Icon colors"
+        forceMount
       >
         {colors.map(function renderColor(option) {
           return (
@@ -298,6 +300,8 @@ function SkinTonePicker({ tone, onChange }: SkinTonePickerProps) {
 
 type PickerGridItemProps = {
   item: PickerItem;
+  instanceId: string;
+  registerElement: (id: string, element: HTMLButtonElement | null) => void;
   color: string;
   isIcon: boolean;
   isSelected: boolean;
@@ -309,6 +313,8 @@ type PickerGridItemProps = {
 
 function PickerGridItem({
   item,
+  instanceId,
+  registerElement,
   color,
   isIcon,
   isSelected,
@@ -333,9 +339,14 @@ function PickerGridItem({
     onSelect(item);
   }
 
+  function setElement(element: HTMLButtonElement | null) {
+    registerElement(item.id, element);
+  }
+
   return (
     <button
-      id={item.id}
+      ref={setElement}
+      id={`${instanceId}-${item.id}`}
       type="button"
       role="option"
       tabIndex={-1}
@@ -370,31 +381,41 @@ export type IconPickerItems = {
   emojiItems: PickerItem[];
 };
 
-export function useIconPickerItems(skinTone = 0): IconPickerItems {
-  const iconItems = useMemo(function createIconItems() {
-    const iconGroups = Array.from({ length: 26 }, function createLetterGroup(_, index) {
-      const letter = String.fromCharCode(65 + index);
-      return Object.entries(icons).flatMap(function mapIcon([name, Icon]) {
-        const label = humanizeIconName(name);
-        if (label.slice(0, 1).toUpperCase() !== letter) return [];
-        return [
-          {
-            id: `icon-${name}`,
-            label,
-            section: letter,
-            type: "icons" as const,
-            value: name,
-            render: <Icon aria-hidden="true" size={20} strokeWidth={2} />,
-          },
-        ];
+export function useIconPickerItems(
+  iconRegistry: IconRegistry | null,
+  emojiData: EmojiData | null,
+  skinTone = 0
+): IconPickerItems {
+  const iconItems = useMemo(
+    function createIconItems() {
+      const iconEntries = Object.entries(iconRegistry ?? {});
+      const iconGroups = Array.from({ length: 26 }, function createLetterGroup(_, index) {
+        const letter = String.fromCharCode(65 + index);
+        return iconEntries.flatMap(function mapIcon([name, entry]) {
+          const label = humanizeIconName(name);
+          if (label.slice(0, 1).toUpperCase() !== letter) return [];
+          const Icon = entry.icon;
+          return [
+            {
+              id: `icon-${name}`,
+              label,
+              section: letter,
+              type: "icons" as const,
+              value: name,
+              render: <Icon aria-hidden="true" size={20} strokeWidth={2} />,
+              keywords: entry.keywords,
+            },
+          ];
+        });
       });
-    });
-    return selectEvenlyFromGroups(iconGroups, 1_000);
-  }, []);
+      return selectEvenlyFromGroups(iconGroups, iconEntries.length);
+    },
+    [iconRegistry]
+  );
 
   const emojiItems = useMemo(
     function createEmojiItems() {
-      const emojiData = data as EmojiData;
+      if (!emojiData) return [];
       const emojiGroups = emojiData.categories.map(function mapCategory(category) {
         return category.emojis.flatMap(function mapEmoji(id) {
           const emoji = emojiData.emojis[id];
@@ -415,7 +436,7 @@ export function useIconPickerItems(skinTone = 0): IconPickerItems {
       });
       return selectEvenlyFromGroups(emojiGroups, 1_000);
     },
-    [skinTone]
+    [emojiData, skinTone]
   );
 
   return { iconItems, emojiItems };
@@ -465,7 +486,10 @@ export function IconPickerSearchGrid({
 }: IconPickerSearchGridProps) {
   const [query, setQuery] = useState("");
   const [itemTooltip, setItemTooltip] = useState<ItemTooltip | null>(null);
+  const instanceId = useId();
+  const listboxId = `${instanceId}-options`;
   const searchRef = useRef<HTMLInputElement>(null);
+  const itemElementsRef = useRef(new Map<string, HTMLButtonElement>());
   const activeIndexRef = useRef(-1);
   const activeElementRef = useRef<HTMLElement | null>(null);
   const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -515,20 +539,25 @@ export function IconPickerSearchGrid({
   function activateItem(index: number) {
     const item = filteredItems[index];
     if (!item) return;
-    const element = document.getElementById(item.id);
+    const element = itemElementsRef.current.get(item.id);
     if (!element) return;
     activeElementRef.current?.removeAttribute("data-active");
     element.dataset.active = "true";
     activeElementRef.current = element;
     activeIndexRef.current = index;
-    searchRef.current?.setAttribute("aria-activedescendant", item.id);
-    const scrollArea = element.closest<HTMLElement>("#icon-picker-options");
+    searchRef.current?.setAttribute("aria-activedescendant", element.id);
+    const scrollArea = element.closest<HTMLElement>(`#${CSS.escape(listboxId)}`);
     if (!scrollArea) return;
     const itemBounds = element.getBoundingClientRect();
     const scrollBounds = scrollArea.getBoundingClientRect();
     if (itemBounds.top < scrollBounds.top || itemBounds.bottom > scrollBounds.bottom) {
       element.scrollIntoView({ block: "nearest" });
     }
+  }
+
+  function registerItemElement(id: string, element: HTMLButtonElement | null) {
+    if (element) itemElementsRef.current.set(id, element);
+    else itemElementsRef.current.delete(id);
   }
 
   function updateQuery(event: ChangeEvent<HTMLInputElement>) {
@@ -597,7 +626,7 @@ export function IconPickerSearchGrid({
   function handleKeyUp(event: KeyboardEvent<HTMLInputElement>) {
     if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
     const item = filteredItems[activeIndexRef.current];
-    const element = item ? document.getElementById(item.id) : null;
+    const element = item ? itemElementsRef.current.get(item.id) : null;
     if (item && element) showItemTooltip(element, item.label);
   }
 
@@ -634,8 +663,9 @@ export function IconPickerSearchGrid({
             onKeyUp={handleKeyUp}
             onBlur={clearActiveItem}
             role="combobox"
+            autoFocus
             aria-autocomplete="list"
-            aria-controls="icon-picker-options"
+            aria-controls={listboxId}
             aria-expanded="true"
             placeholder="Search icons and emojis"
             className="h-8 w-full rounded-md border bg-gray-1 pr-8 pl-8 text-sm outline-hidden focus:ring-2 focus:ring-gray-7"
@@ -666,7 +696,7 @@ export function IconPickerSearchGrid({
         </Tooltip>
       </div>
       <div
-        id="icon-picker-options"
+        id={listboxId}
         role="listbox"
         aria-label={tab === "icons" ? "Icons" : "Emojis"}
         className="grid h-100 grid-cols-12 content-start overflow-y-auto px-2 pb-2"
@@ -691,6 +721,8 @@ export function IconPickerSearchGrid({
               ) : null}
               <PickerGridItem
                 item={item}
+                instanceId={instanceId}
+                registerElement={registerItemElement}
                 color={color}
                 isIcon={tab === "icons"}
                 isSelected={
@@ -711,24 +743,46 @@ export function IconPickerSearchGrid({
 }
 
 export function IconPickerContent({
+  iconRegistry,
+  emojiData,
   value,
   onChange,
-  iconsOnly = false,
-  showColorPicker = true,
+  onTabChange,
+  mode = "all",
+  colorPicker = "visible",
   defaultTab = "icons",
   className,
 }: IconPickerContentProps) {
   const [internalValue, setInternalValue] = useState<IconOrEmoji | undefined>(value);
-  const selectedValue = value ?? internalValue;
+  const selectedValue = value !== undefined ? value : internalValue;
   const [tab, setTab] = useState<TabType>(function initializeTab() {
-    return getDefaultTab(selectedValue, iconsOnly, defaultTab);
+    return getDefaultTab(selectedValue, mode, defaultTab);
   });
   const [color, setColor] = useState(
     selectedValue?.type === "icon" ? (selectedValue.color ?? colors[9].value) : colors[9].value
   );
   const [skinTone, setSkinTone] = useState(getStoredSkinTone);
 
-  const { iconItems, emojiItems } = useIconPickerItems(skinTone);
+  const { iconItems, emojiItems } = useIconPickerItems(iconRegistry, emojiData, skinTone);
+
+  useEffect(
+    function synchronizeControlledValue() {
+      if (value?.type === "icon") {
+        setTab("icons");
+        setColor(value.color ?? colors[9].value);
+      } else if (value?.type === "emoji" && mode === "all") {
+        setTab("emojis");
+      }
+    },
+    [mode, value]
+  );
+
+  useEffect(
+    function enforceIconMode() {
+      if (mode === "icons") setTab("icons");
+    },
+    [mode]
+  );
 
   useEffect(
     function saveSkinTone() {
@@ -738,7 +792,9 @@ export function IconPickerContent({
   );
 
   function changeTab(nextTab: string) {
-    setTab(nextTab as TabType);
+    const selectedTab = nextTab as TabType;
+    setTab(selectedTab);
+    onTabChange?.(selectedTab);
   }
 
   function selectItem(item: PickerItem) {
@@ -752,15 +808,15 @@ export function IconPickerContent({
 
   const items = tab === "icons" ? iconItems : emojiItems;
   const toolbar =
-    tab === "icons" && showColorPicker ? (
+    tab === "icons" && colorPicker === "visible" ? (
       <IconColorPicker color={color} onChange={setColor} />
-    ) : tab === "emojis" && !iconsOnly ? (
+    ) : tab === "emojis" && mode === "all" ? (
       <SkinTonePicker tone={skinTone} onChange={setSkinTone} />
     ) : null;
 
   return (
     <div className={cn("w-100 overflow-hidden scrollbar-gutter-auto", className)}>
-      {!iconsOnly ? (
+      {mode === "all" ? (
         <Tabs value={tab} onValueChange={changeTab}>
           <TabsList className="items-end h-10 gap-0 border-b px-2">
             <TabsTrigger value="icons" variant="underlined" size="sm" className="h-10 pt-2">
@@ -784,79 +840,4 @@ export function IconPickerContent({
   );
 }
 
-function PickerTriggerValue({ value }: { value?: IconOrEmoji }) {
-  if (value?.type === "emoji") return <span className="text-xl">{value.value}</span>;
-  const SelectedIcon = value?.type === "icon" ? icons[value.value as keyof typeof icons] : Smile;
-  return (
-    <SelectedIcon
-      aria-hidden="true"
-      size={20}
-      style={{ color: value?.type === "icon" ? value.color : undefined }}
-    />
-  );
-}
-
-export function IconPicker({
-  value,
-  onChange,
-  isReadOnly = false,
-  iconsOnly = false,
-  showColorPicker = true,
-  buttonTooltip = "Choose an icon or emoji",
-  defaultTab = "icons",
-  className,
-}: IconPickerProps) {
-  const [internalValue, setInternalValue] = useState<IconOrEmoji | undefined>(value);
-  const [open, setOpen] = useState(false);
-  const selectedValue = value ?? internalValue;
-
-  function handleChange(nextValue: IconOrEmoji) {
-    setInternalValue(nextValue);
-    onChange?.(nextValue);
-    setOpen(false);
-  }
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <Tooltip content={buttonTooltip.trim()}>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            size="icon"
-            variant="secondary"
-            disabled={isReadOnly}
-            aria-label={buttonTooltip}
-            aria-haspopup="dialog"
-            aria-expanded={open}
-            className={cn("size-9", className)}
-          >
-            <PickerTriggerValue value={selectedValue} />
-          </Button>
-        </PopoverTrigger>
-      </Tooltip>
-      <PopoverContent align="start" className="w-100 overflow-hidden p-0 scrollbar-gutter-auto">
-        <IconPickerContent
-          value={selectedValue}
-          onChange={handleChange}
-          iconsOnly={iconsOnly}
-          showColorPicker={showColorPicker}
-          defaultTab={defaultTab}
-        />
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-export default function IconPickerDemo() {
-  const [value, setValue] = useState<IconOrEmoji>({
-    type: "icon",
-    value: "Sparkles",
-    color: colors[3].value,
-  });
-
-  return (
-    <div className="flex min-h-40 items-center justify-center rounded-xl border bg-gray-1">
-      <IconPicker value={value} onChange={setValue} />
-    </div>
-  );
-}
+export default IconPickerContent;

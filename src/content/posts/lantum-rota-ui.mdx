@@ -9,10 +9,8 @@ company: Lantum
 hide: true
 ---
 
-import { LantumGrid } from "@/components/demos/LantumGrid";
-import { LantumBulk } from "@/components/demos/LantumBulk";
 import MediaWrapper from "@/components/MediaWrapper.astro";
-import { UIExample } from "@/components/demos/UIExample";
+import { LantumBulkDemo, LantumGridDemo } from "@/components/post/lantum/LantumDemos";
 import Blockquote from "@/components/mdx/Blockquote.astro";
 
 [Lantum](https://lantum.com) is a workforce management platform for healthcare organisations, in particular the NHS in the UK.
@@ -62,9 +60,7 @@ We watched lots of early customers use both Lantum and their previous methods, t
 
 Even though _everybody_ complained about it, it was comfortable and you could move things around at will. The interface afforded you something that matched the users mental model. In to say, if there are items organised on a plain - the natural thing is to move them around freely across both `X` and `Y` axis.
 
-<UIExample component="lantum-grid" client:load>
-  Drag and drop the shift to re-assign to someone else
-</UIExample>
+<LantumGridDemo client:load />
 
 Having such familiarity with their rota and its software was the gold standard for us to replicate.
 
@@ -78,9 +74,7 @@ We optimistically update the UI after the drag, but indicate that the UI is savi
 
 Often times lots of similar actions need to be taken at once. A row of shifts might need to be re-assigned to someone else or even removed. Additionally, powerful bulk actions like 'Delete' or 'Re-assign' can shave lots of repetitive work.
 
-<UIExample component="lantum-bulk" client:load>
-  Hold ⇧ when clicking a session to activate selecting mode
-</UIExample>
+<LantumBulkDemo client:load />
 
 Users are presented with a toolbar containing bulk action options. These are specific actions which we've found users repeat over and over again in one go.
 

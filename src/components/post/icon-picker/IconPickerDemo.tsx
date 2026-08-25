@@ -1,4 +1,4 @@
-import { IconPicker } from "@/components/demos/IconPicker";
+import { IconPicker } from "@/components/demos/IconPicker/IconPicker";
 import { PostDemo } from "@/components/post/PostDemo";
 
 function renderIconPicker() {

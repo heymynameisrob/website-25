@@ -9,7 +9,7 @@ company: artificial
 hide: true
 ---
 
-import { UIExample } from "@/components/demos/UIExample";
+import { FilterMenuDemo } from "@/components/post/artificial/FilterMenuDemo";
 import MediaWrapper from "@/components/MediaWrapper.astro";
 import Image from "@/components/Image.astro";
 
@@ -76,9 +76,7 @@ Compound components are natural and easy to write. They are closer to the native
 
 Look at this Menu example.
 
-<UIExample component="filter-menu" client:load>
-  Primitive example of a filterable dropdown menu AKA combobox
-</UIExample>
+<FilterMenuDemo client:load />
 
 Each piece (`<FilterMenuTrigger />`, `<FilterMenuContent />`, etc.) handles a specific concern while maintaining a connection to the parent `<FilterMenu />` component through React's context.
 

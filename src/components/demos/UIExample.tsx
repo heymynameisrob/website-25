@@ -24,7 +24,7 @@ import { ClipPathSlider } from "@/components/demos/motion/ClipPath";
 import { List } from "@/components/demos/motion/List";
 import { StaggerButtons } from "@/components/demos/motion/StaggerButtons";
 import { CushionCommand } from "@/components/demos/CushionCommand";
-import { IconPicker } from "@/components/demos/IconPicker";
+import { IconPicker } from "@/components/demos/IconPicker/IconPicker";
 import { Prompt } from "@/components/demos/Prompt";
 import { AgentLoopDemo } from "@/components/remotion";
 import { AgentChatInputDemo } from "@/components/post/agents/AgentChatInput";
