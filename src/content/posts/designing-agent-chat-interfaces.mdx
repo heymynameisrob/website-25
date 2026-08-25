@@ -8,6 +8,8 @@ type: "post"
 import { UIExample } from "@/components/demos/UIExample";
 import { AgentWhileLoop } from "@/components/mdx/AgentWhileLoop";
 import { Disclosure } from "@/components/mdx/Disclosure";
+import { AutosizeTextareaDemo } from "@/components/post/agents/AutosizeTextareaDemo";
+import { SendStopButtonDemo } from "@/components/post/agents/SendStopButtonDemo";
 
 Chatbots have historically been one of the weakest GUI patterns. They offer few affordances for what a system can do or how it works, and most products were better served by buttons, forms, and direct manipulation.
 
@@ -64,6 +66,8 @@ As you can see it's essentially a `form` wrapping a `<textarea>` and `<button ro
 That said there a few things going on under the hood that are interesting.
 
 ### Autosize textarea
+
+<AutosizeTextareaDemo client:visible />
 
 Prompts vary in length and often run over one line. Textareas work well because they let users enter free-form text across multiple lines.
 
@@ -219,6 +223,8 @@ The second part is managing focus on click. Even though the chat input contains 
 We can handle this by adding a focus function to the `onClick` handler of the container, then ignoring clickable descendants such as buttons and selects.
 
 ### Send
+
+<SendStopButtonDemo client:visible />
 
 Chat streams often emit events while they run. Subscribing to stream state with `useChat()` lets us change the button behaviour.
 

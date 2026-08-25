@@ -555,7 +555,7 @@
   ::file-selector-button {
     border-color: var(--border);
     scrollbar-width: thin;
-    scrollbar-gutter: stable;
+    scrollbar-gutter: auto;
     scrollbar-color: var(--gray-7) transparent;
     min-width: 0;
   }

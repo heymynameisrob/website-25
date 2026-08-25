@@ -60,7 +60,7 @@ const categoryLabels: Record<string, string> = {
   flags: "Flags",
 };
 
-type TabType = "icons" | "emojis";
+export type TabType = "icons" | "emojis";
 
 type IconValue = {
   type: "icon";
@@ -86,29 +86,38 @@ type EmojiEntry = {
   skins: EmojiSkin[];
 };
 
+type EmojiCategory = {
+  id: string;
+  emojis: string[];
+};
+
 type EmojiData = {
-  categories: Array<{ id: string; emojis: string[] }>;
+  categories: EmojiCategory[];
   emojis: Record<string, EmojiEntry>;
 };
 
-type PickerItem = {
+export type PickerItem = {
   id: string;
   label: string;
   section: string;
   type: TabType;
   value: string;
   render: ReactNode;
+  keywords?: string[];
 };
 
-type IconPickerProps = {
+export type IconPickerContentProps = {
   value?: IconOrEmoji;
   onChange?: (value: IconOrEmoji) => void;
-  isReadOnly?: boolean;
   iconsOnly?: boolean;
   showColorPicker?: boolean;
-  buttonTooltip?: string;
   defaultTab?: TabType;
   className?: string;
+};
+
+export type IconPickerProps = IconPickerContentProps & {
+  isReadOnly?: boolean;
+  buttonTooltip?: string;
 };
 
 function humanizeIconName(name: string): string {
@@ -152,17 +161,14 @@ function getDefaultTab(
   return fallback;
 }
 
-function ColorOption({
-  color,
-  label,
-  value,
-  onChange,
-}: {
+type ColorOptionProps = {
   color: string;
   label: string;
   value: string;
   onChange: (color: string) => void;
-}) {
+};
+
+function ColorOption({ color, label, value, onChange }: ColorOptionProps) {
   function selectColor() {
     onChange(value);
   }
@@ -185,13 +191,12 @@ function ColorOption({
   );
 }
 
-function IconColorPicker({
-  color,
-  onChange,
-}: {
+type IconColorPickerProps = {
   color: string;
   onChange: (color: string) => void;
-}) {
+};
+
+function IconColorPicker({ color, onChange }: IconColorPickerProps) {
   return (
     <Popover>
       <Tooltip content="Select icon color">
@@ -227,19 +232,15 @@ function IconColorPicker({
   );
 }
 
-function SkinToneOption({
-  index,
-  label,
-  emoji,
-  tone,
-  onChange,
-}: {
+type SkinToneOptionProps = {
   index: number;
   label: string;
   emoji: string;
   tone: number;
   onChange: (tone: number) => void;
-}) {
+};
+
+function SkinToneOption({ index, label, emoji, tone, onChange }: SkinToneOptionProps) {
   function selectTone() {
     onChange(index);
   }
@@ -257,7 +258,12 @@ function SkinToneOption({
   );
 }
 
-function SkinTonePicker({ tone, onChange }: { tone: number; onChange: (tone: number) => void }) {
+type SkinTonePickerProps = {
+  tone: number;
+  onChange: (tone: number) => void;
+};
+
+function SkinTonePicker({ tone, onChange }: SkinTonePickerProps) {
   return (
     <Popover>
       <Tooltip content="Select skin tone">
@@ -290,6 +296,17 @@ function SkinTonePicker({ tone, onChange }: { tone: number; onChange: (tone: num
   );
 }
 
+type PickerGridItemProps = {
+  item: PickerItem;
+  color: string;
+  isIcon: boolean;
+  isSelected: boolean;
+  onSelect: (item: PickerItem) => void;
+  onTooltipHide: () => void;
+  onTooltipSchedule: (event: MouseEvent<HTMLButtonElement>, label: string) => void;
+  onTooltipShow: (event: FocusEvent<HTMLButtonElement>, label: string) => void;
+};
+
 function PickerGridItem({
   item,
   color,
@@ -299,16 +316,7 @@ function PickerGridItem({
   onTooltipHide,
   onTooltipSchedule,
   onTooltipShow,
-}: {
-  item: PickerItem;
-  color: string;
-  isIcon: boolean;
-  isSelected: boolean;
-  onSelect: (item: PickerItem) => void;
-  onTooltipHide: () => void;
-  onTooltipSchedule: (event: MouseEvent<HTMLButtonElement>, label: string) => void;
-  onTooltipShow: (event: FocusEvent<HTMLButtonElement>, label: string) => void;
-}) {
+}: PickerGridItemProps) {
   function handleMouseEnter(event: MouseEvent<HTMLButtonElement>) {
     onTooltipSchedule(event, item.label);
   }
@@ -351,38 +359,18 @@ function PickerGridItem({
   );
 }
 
-export function IconPicker({
-  value,
-  onChange,
-  isReadOnly = false,
-  iconsOnly = false,
-  showColorPicker = true,
-  buttonTooltip = "Choose an icon or emoji",
-  defaultTab = "icons",
-  className,
-}: IconPickerProps) {
-  const [internalValue, setInternalValue] = useState<IconOrEmoji | undefined>(value);
-  const [open, setOpen] = useState(false);
-  const selectedValue = value ?? internalValue;
-  const [tab, setTab] = useState<TabType>(function initializeTab() {
-    return getDefaultTab(selectedValue, iconsOnly, defaultTab);
-  });
-  const [query, setQuery] = useState("");
-  const [color, setColor] = useState(
-    selectedValue?.type === "icon" ? (selectedValue.color ?? colors[9].value) : colors[9].value
-  );
-  const [skinTone, setSkinTone] = useState(getStoredSkinTone);
-  const [visibleRowCount, setVisibleRowCount] = useState(INITIAL_ROWS);
-  const [itemTooltip, setItemTooltip] = useState<{
-    label: string;
-    left: number;
-    top: number;
-  } | null>(null);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const activeIndexRef = useRef(-1);
-  const activeElementRef = useRef<HTMLElement | null>(null);
-  const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+type ItemTooltip = {
+  label: string;
+  left: number;
+  top: number;
+};
 
+export type IconPickerItems = {
+  iconItems: PickerItem[];
+  emojiItems: PickerItem[];
+};
+
+export function useIconPickerItems(skinTone = 0): IconPickerItems {
   const iconItems = useMemo(function createIconItems() {
     const iconGroups = Array.from({ length: 26 }, function createLetterGroup(_, index) {
       const letter = String.fromCharCode(65 + index);
@@ -396,12 +384,11 @@ export function IconPicker({
             section: letter,
             type: "icons" as const,
             value: name,
-            render: <Icon aria-hidden="true" size={20} strokeWidth={1.5} />,
+            render: <Icon aria-hidden="true" size={20} strokeWidth={2} />,
           },
         ];
       });
     });
-
     return selectEvenlyFromGroups(iconGroups, 1_000);
   }, []);
 
@@ -426,52 +413,24 @@ export function IconPicker({
           ];
         });
       });
-
       return selectEvenlyFromGroups(emojiGroups, 1_000);
     },
     [skinTone]
   );
 
-  const filteredItems = useMemo(
-    function filterItems() {
-      const tokens = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
-      const source = tab === "icons" ? iconItems : emojiItems;
-      if (tokens.length === 0) return source;
-      return source.filter(function matchesQuery(item) {
-        const searchable =
-          `${item.label} ${"keywords" in item ? item.keywords.join(" ") : ""}`.toLowerCase();
-        return tokens.every(function includesToken(token) {
-          return searchable.includes(token);
-        });
-      });
-    },
-    [emojiItems, iconItems, query, tab]
-  );
+  return { iconItems, emojiItems };
+}
 
-  const visibleItems = filteredItems.slice(0, visibleRowCount * COLUMNS);
+function useProgressiveItems(items: PickerItem[]): PickerItem[] {
+  const [visibleRowCount, setVisibleRowCount] = useState(INITIAL_ROWS);
 
   useEffect(
-    function saveSkinTone() {
-      window.localStorage.setItem(SKIN_TONE_STORAGE_KEY, String(skinTone));
-    },
-    [skinTone]
-  );
-
-  useEffect(function clearTooltipTimerOnUnmount() {
-    return function clearTooltipTimer() {
-      if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current);
-    };
-  }, []);
-
-  useEffect(
-    function resetProgressiveRender() {
+    function renderItemsProgressively() {
       setVisibleRowCount(INITIAL_ROWS);
-      clearActiveItem();
-      if (!open) return;
       let frame = 0;
       function renderNextBatch() {
         setVisibleRowCount(function increaseRows(count) {
-          if (count * COLUMNS >= filteredItems.length) return count;
+          if (count * COLUMNS >= items.length) return count;
           frame = window.requestAnimationFrame(renderNextBatch);
           return count + ROW_BATCH_SIZE;
         });
@@ -481,8 +440,69 @@ export function IconPicker({
         window.cancelAnimationFrame(frame);
       };
     },
-    [filteredItems.length, open, query, tab]
+    [items]
   );
+
+  return items.slice(0, visibleRowCount * COLUMNS);
+}
+
+export type IconPickerSearchGridProps = {
+  items: PickerItem[];
+  tab: TabType;
+  color: string;
+  selectedValue?: IconOrEmoji;
+  toolbar?: ReactNode;
+  onSelect: (item: PickerItem) => void;
+};
+
+export function IconPickerSearchGrid({
+  items,
+  tab,
+  color,
+  selectedValue,
+  toolbar,
+  onSelect,
+}: IconPickerSearchGridProps) {
+  const [query, setQuery] = useState("");
+  const [itemTooltip, setItemTooltip] = useState<ItemTooltip | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const activeIndexRef = useRef(-1);
+  const activeElementRef = useRef<HTMLElement | null>(null);
+  const tooltipTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const filteredItems = useMemo(
+    function filterItems() {
+      const tokens = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      if (tokens.length === 0) return items;
+      return items.filter(function matchesQuery(item) {
+        const searchable = `${item.label} ${item.keywords?.join(" ") ?? ""}`.toLowerCase();
+        return tokens.every(function includesToken(token) {
+          return searchable.includes(token);
+        });
+      });
+    },
+    [items, query]
+  );
+  const visibleItems = useProgressiveItems(filteredItems);
+
+  useEffect(function clearTooltipTimerOnUnmount() {
+    return function clearTooltipTimer() {
+      if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current);
+    };
+  }, []);
+
+  useEffect(
+    function clearActiveItemWhenResultsChange() {
+      clearActiveItem();
+    },
+    [filteredItems]
+  );
+
+  function hideItemTooltip() {
+    if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current);
+    tooltipTimerRef.current = undefined;
+    setItemTooltip(null);
+  }
 
   function clearActiveItem() {
     activeElementRef.current?.removeAttribute("data-active");
@@ -497,13 +517,11 @@ export function IconPicker({
     if (!item) return;
     const element = document.getElementById(item.id);
     if (!element) return;
-
     activeElementRef.current?.removeAttribute("data-active");
     element.dataset.active = "true";
     activeElementRef.current = element;
     activeIndexRef.current = index;
     searchRef.current?.setAttribute("aria-activedescendant", item.id);
-
     const scrollArea = element.closest<HTMLElement>("#icon-picker-options");
     if (!scrollArea) return;
     const itemBounds = element.getBoundingClientRect();
@@ -511,25 +529,6 @@ export function IconPicker({
     if (itemBounds.top < scrollBounds.top || itemBounds.bottom > scrollBounds.bottom) {
       element.scrollIntoView({ block: "nearest" });
     }
-  }
-
-  function handleOpenChange(nextOpen: boolean) {
-    setOpen(nextOpen);
-    if (!nextOpen) clearActiveItem();
-    if (nextOpen) {
-      setTab(getDefaultTab(selectedValue, iconsOnly, defaultTab));
-      setQuery("");
-      window.requestAnimationFrame(function focusSearch() {
-        searchRef.current?.focus();
-      });
-    }
-  }
-
-  function changeTab(nextTab: string) {
-    setTab(nextTab as TabType);
-    window.requestAnimationFrame(function focusSearchAfterTabChange() {
-      searchRef.current?.focus();
-    });
   }
 
   function updateQuery(event: ChangeEvent<HTMLInputElement>) {
@@ -541,26 +540,10 @@ export function IconPicker({
     searchRef.current?.focus();
   }
 
-  function selectItem(item: PickerItem) {
-    const nextValue: IconOrEmoji =
-      item.type === "icons"
-        ? { type: "icon", value: item.value, color }
-        : { type: "emoji", value: item.value };
-    setInternalValue(nextValue);
-    onChange?.(nextValue);
-    setOpen(false);
-  }
-
   function selectRandom() {
     if (filteredItems.length === 0) return;
     const item = filteredItems[Math.floor(Math.random() * filteredItems.length)];
-    if (item) selectItem(item);
-  }
-
-  function hideItemTooltip() {
-    if (tooltipTimerRef.current) clearTimeout(tooltipTimerRef.current);
-    tooltipTimerRef.current = undefined;
-    setItemTooltip(null);
+    if (item) onSelect(item);
   }
 
   function showItemTooltip(target: HTMLElement, label: string) {
@@ -587,11 +570,10 @@ export function IconPicker({
       const item = filteredItems[activeIndexRef.current];
       if (item) {
         event.preventDefault();
-        selectItem(item);
+        onSelect(item);
       }
       return;
     }
-
     event.preventDefault();
     hideItemTooltip();
     const current = activeIndexRef.current;
@@ -599,7 +581,6 @@ export function IconPicker({
       activateItem(0);
       return;
     }
-
     const offset =
       event.key === "ArrowLeft"
         ? -1
@@ -615,31 +596,228 @@ export function IconPicker({
 
   function handleKeyUp(event: KeyboardEvent<HTMLInputElement>) {
     if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) return;
-    const activeIndex = activeIndexRef.current;
-    if (activeIndex < 0) return;
-    const item = filteredItems[activeIndex];
+    const item = filteredItems[activeIndexRef.current];
     const element = item ? document.getElementById(item.id) : null;
     if (item && element) showItemTooltip(element, item.label);
-  }
-
-  function renderTrigger() {
-    if (selectedValue?.type === "emoji")
-      return <span className="text-xl">{selectedValue.value}</span>;
-    const SelectedIcon =
-      selectedValue?.type === "icon" ? icons[selectedValue.value as keyof typeof icons] : Smile;
-    return (
-      <SelectedIcon
-        aria-hidden="true"
-        size={20}
-        style={{ color: selectedValue?.type === "icon" ? selectedValue.color : undefined }}
-      />
-    );
   }
 
   let previousSection = "";
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
+    <>
+      {itemTooltip && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              role="tooltip"
+              className="pointer-events-none fixed z-50 size-0 overflow-visible"
+              style={{ left: itemTooltip.left, top: itemTooltip.top }}
+            >
+              <span className="inline-flex min-h-7 w-max max-w-40 -translate-x-1/2 -translate-y-[calc(100%+8px)] items-center justify-center rounded-lg bg-black px-1.5 py-1 text-center text-xs font-medium tracking-tight whitespace-normal text-white shadow-md break-words">
+                {itemTooltip.label.trim()}
+              </span>
+            </div>,
+            document.body
+          )
+        : null}
+      <div className="flex items-center gap-2 p-2">
+        <div className="relative min-w-0 flex-1">
+          <Search
+            aria-hidden="true"
+            className="absolute top-1/2 left-2.5 -translate-y-1/2 text-secondary"
+            size={15}
+          />
+          <input
+            ref={searchRef}
+            value={query}
+            onChange={updateQuery}
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
+            onBlur={clearActiveItem}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-controls="icon-picker-options"
+            aria-expanded="true"
+            placeholder="Search icons and emojis"
+            className="h-8 w-full rounded-md border bg-gray-1 pr-8 pl-8 text-sm outline-hidden focus:ring-2 focus:ring-gray-7"
+          />
+          {query ? (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={clearSearch}
+              className="absolute top-1/2 right-2 -translate-y-1/2 text-secondary hover:text-primary"
+            >
+              <X aria-hidden="true" size={14} />
+            </button>
+          ) : null}
+        </div>
+        {toolbar}
+        <Tooltip content={tab === "icons" ? "Select a random icon" : "Select a random emoji"}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="size-8 px-0"
+            aria-label={tab === "icons" ? "Select a random icon" : "Select a random emoji"}
+            onClick={selectRandom}
+          >
+            <Shuffle aria-hidden="true" size={16} />
+          </Button>
+        </Tooltip>
+      </div>
+      <div
+        id="icon-picker-options"
+        role="listbox"
+        aria-label={tab === "icons" ? "Icons" : "Emojis"}
+        className="grid h-100 grid-cols-12 content-start overflow-y-auto px-2 pb-2"
+      >
+        {visibleItems.length === 0 ? (
+          <p className="col-span-12 h-80 overflow-hidden flex w-full items-center justify-center text-sm text-secondary">
+            No results found
+          </p>
+        ) : null}
+        {visibleItems.map(function renderItem(item) {
+          const showHeading = item.section !== previousSection && !query;
+          previousSection = item.section;
+          return (
+            <Fragment key={item.id}>
+              {showHeading ? (
+                <div
+                  role="presentation"
+                  className="col-span-12 py-2 text-xs font-semibold text-secondary"
+                >
+                  {item.section}
+                </div>
+              ) : null}
+              <PickerGridItem
+                item={item}
+                color={color}
+                isIcon={tab === "icons"}
+                isSelected={
+                  selectedValue?.type === (item.type === "icons" ? "icon" : "emoji") &&
+                  selectedValue.value === item.value
+                }
+                onSelect={onSelect}
+                onTooltipHide={hideItemTooltip}
+                onTooltipSchedule={scheduleItemTooltip}
+                onTooltipShow={handleItemFocus}
+              />
+            </Fragment>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+export function IconPickerContent({
+  value,
+  onChange,
+  iconsOnly = false,
+  showColorPicker = true,
+  defaultTab = "icons",
+  className,
+}: IconPickerContentProps) {
+  const [internalValue, setInternalValue] = useState<IconOrEmoji | undefined>(value);
+  const selectedValue = value ?? internalValue;
+  const [tab, setTab] = useState<TabType>(function initializeTab() {
+    return getDefaultTab(selectedValue, iconsOnly, defaultTab);
+  });
+  const [color, setColor] = useState(
+    selectedValue?.type === "icon" ? (selectedValue.color ?? colors[9].value) : colors[9].value
+  );
+  const [skinTone, setSkinTone] = useState(getStoredSkinTone);
+
+  const { iconItems, emojiItems } = useIconPickerItems(skinTone);
+
+  useEffect(
+    function saveSkinTone() {
+      window.localStorage.setItem(SKIN_TONE_STORAGE_KEY, String(skinTone));
+    },
+    [skinTone]
+  );
+
+  function changeTab(nextTab: string) {
+    setTab(nextTab as TabType);
+  }
+
+  function selectItem(item: PickerItem) {
+    const nextValue: IconOrEmoji =
+      item.type === "icons"
+        ? { type: "icon", value: item.value, color }
+        : { type: "emoji", value: item.value };
+    setInternalValue(nextValue);
+    onChange?.(nextValue);
+  }
+
+  const items = tab === "icons" ? iconItems : emojiItems;
+  const toolbar =
+    tab === "icons" && showColorPicker ? (
+      <IconColorPicker color={color} onChange={setColor} />
+    ) : tab === "emojis" && !iconsOnly ? (
+      <SkinTonePicker tone={skinTone} onChange={setSkinTone} />
+    ) : null;
+
+  return (
+    <div className={cn("w-100 overflow-hidden scrollbar-gutter-auto", className)}>
+      {!iconsOnly ? (
+        <Tabs value={tab} onValueChange={changeTab}>
+          <TabsList className="items-end h-10 gap-0 border-b px-2">
+            <TabsTrigger value="icons" variant="underlined" size="sm" className="h-10 pt-2">
+              Icons
+            </TabsTrigger>
+            <TabsTrigger value="emojis" variant="underlined" size="sm" className="h-10 pt-2">
+              Emojis
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      ) : null}
+      <IconPickerSearchGrid
+        items={items}
+        tab={tab}
+        color={color}
+        selectedValue={selectedValue}
+        toolbar={toolbar}
+        onSelect={selectItem}
+      />
+    </div>
+  );
+}
+
+function PickerTriggerValue({ value }: { value?: IconOrEmoji }) {
+  if (value?.type === "emoji") return <span className="text-xl">{value.value}</span>;
+  const SelectedIcon = value?.type === "icon" ? icons[value.value as keyof typeof icons] : Smile;
+  return (
+    <SelectedIcon
+      aria-hidden="true"
+      size={20}
+      style={{ color: value?.type === "icon" ? value.color : undefined }}
+    />
+  );
+}
+
+export function IconPicker({
+  value,
+  onChange,
+  isReadOnly = false,
+  iconsOnly = false,
+  showColorPicker = true,
+  buttonTooltip = "Choose an icon or emoji",
+  defaultTab = "icons",
+  className,
+}: IconPickerProps) {
+  const [internalValue, setInternalValue] = useState<IconOrEmoji | undefined>(value);
+  const [open, setOpen] = useState(false);
+  const selectedValue = value ?? internalValue;
+
+  function handleChange(nextValue: IconOrEmoji) {
+    setInternalValue(nextValue);
+    onChange?.(nextValue);
+    setOpen(false);
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
       <Tooltip content={buttonTooltip.trim()}>
         <PopoverTrigger asChild>
           <Button
@@ -652,131 +830,18 @@ export function IconPicker({
             aria-expanded={open}
             className={cn("size-9", className)}
           >
-            {renderTrigger()}
+            <PickerTriggerValue value={selectedValue} />
           </Button>
         </PopoverTrigger>
       </Tooltip>
       <PopoverContent align="start" className="w-100 overflow-hidden p-0 scrollbar-gutter-auto">
-        {itemTooltip && typeof document !== "undefined"
-          ? createPortal(
-              <div
-                role="tooltip"
-                className="pointer-events-none fixed z-50 size-0 overflow-visible"
-                style={{ left: itemTooltip.left, top: itemTooltip.top }}
-              >
-                <span className="inline-flex min-h-7 w-max max-w-40 -translate-x-1/2 -translate-y-[calc(100%+8px)] items-center justify-center rounded-lg bg-black px-1.5 py-1 text-center text-xs font-medium tracking-tight whitespace-normal text-white shadow-md break-words">
-                  {itemTooltip.label.trim()}
-                </span>
-              </div>,
-              document.body
-            )
-          : null}
-        {!iconsOnly ? (
-          <Tabs value={tab} onValueChange={changeTab}>
-            <TabsList className="items-end h-10 gap-0 border-b px-2">
-              <TabsTrigger value="icons" variant="underlined" size="sm" className="h-10 pt-2">
-                Icons
-              </TabsTrigger>
-              <TabsTrigger value="emojis" variant="underlined" size="sm" className="h-10 pt-2">
-                Emojis
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        ) : null}
-
-        <div className="flex items-center gap-2 p-2">
-          <div className="relative min-w-0 flex-1">
-            <Search
-              aria-hidden="true"
-              className="absolute top-1/2 left-2.5 -translate-y-1/2 text-secondary"
-              size={15}
-            />
-            <input
-              ref={searchRef}
-              value={query}
-              onChange={updateQuery}
-              onKeyDown={handleKeyDown}
-              onKeyUp={handleKeyUp}
-              onBlur={clearActiveItem}
-              role="combobox"
-              aria-autocomplete="list"
-              aria-controls="icon-picker-options"
-              aria-expanded={open}
-              placeholder="Search icons and emojis"
-              className="h-8 w-full rounded-md border bg-gray-1 pr-8 pl-8 text-sm outline-hidden focus:ring-2 focus:ring-gray-7"
-            />
-            {query ? (
-              <button
-                type="button"
-                aria-label="Clear search"
-                onClick={clearSearch}
-                className="absolute top-1/2 right-2 -translate-y-1/2 text-secondary hover:text-primary"
-              >
-                <X aria-hidden="true" size={14} />
-              </button>
-            ) : null}
-          </div>
-          {tab === "icons" && showColorPicker ? (
-            <IconColorPicker color={color} onChange={setColor} />
-          ) : null}
-          {tab === "emojis" && !iconsOnly ? (
-            <SkinTonePicker tone={skinTone} onChange={setSkinTone} />
-          ) : null}
-          <Tooltip content={tab === "icons" ? "Select a random icon" : "Select a random emoji"}>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="size-8 px-0"
-              aria-label={tab === "icons" ? "Select a random icon" : "Select a random emoji"}
-              onClick={selectRandom}
-            >
-              <Shuffle aria-hidden="true" size={16} />
-            </Button>
-          </Tooltip>
-        </div>
-
-        <div
-          id="icon-picker-options"
-          role="listbox"
-          aria-label={tab === "icons" ? "Icons" : "Emojis"}
-          className="grid h-100 grid-cols-12 content-start overflow-y-auto px-2 pb-2"
-        >
-          {visibleItems.length === 0 ? (
-            <p className="col-span-12 h-80 overflow-hidden flex w-full items-center justify-center text-sm text-secondary">
-              No results found
-            </p>
-          ) : null}
-          {visibleItems.map(function renderItem(item) {
-            const showHeading = item.section !== previousSection && !query;
-            previousSection = item.section;
-            return (
-              <Fragment key={item.id}>
-                {showHeading ? (
-                  <div
-                    role="presentation"
-                    className="col-span-12 py-2 text-xs font-semibold text-secondary"
-                  >
-                    {item.section}
-                  </div>
-                ) : null}
-                <PickerGridItem
-                  item={item}
-                  color={color}
-                  isIcon={tab === "icons"}
-                  isSelected={
-                    selectedValue?.type === (item.type === "icons" ? "icon" : "emoji") &&
-                    selectedValue.value === item.value
-                  }
-                  onSelect={selectItem}
-                  onTooltipHide={hideItemTooltip}
-                  onTooltipSchedule={scheduleItemTooltip}
-                  onTooltipShow={handleItemFocus}
-                />
-              </Fragment>
-            );
-          })}
-        </div>
+        <IconPickerContent
+          value={selectedValue}
+          onChange={handleChange}
+          iconsOnly={iconsOnly}
+          showColorPicker={showColorPicker}
+          defaultTab={defaultTab}
+        />
       </PopoverContent>
     </Popover>
   );
