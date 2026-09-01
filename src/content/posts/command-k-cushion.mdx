@@ -1,13 +1,14 @@
 ---
 title: ⌘K
 description: A closer look at Cushion's ⌘K menu, including full workspace search, keyboard shortcuts and paginated results for large teams.
-date: 2026-06-01
+date: 2026-01-04
 type: "demo"
 component: "home-command-k"
 company: "Personal"
+hide: true
 ---
 
-import { UIExample } from "@/components/demos/UIExample";
+import { CommandPaletteDemo } from "@/components/post/cushion/CushionDemos";
 
 **Command Palette** (or "⌘K" / "Command Bar") patterns are one of the most versitile, and one of my favourite, patterns on the web.
 
@@ -15,7 +16,7 @@ The pattern allows users to search for single commands using only text and their
 
 In this post, I'll show how we built a sophisticated ⌘K in [cushion.so](https://cushion.so) using React, and in particular the fantastic UI package [cmdk](https://github.com/dip/cmdk).
 
-<UIExample component="home-command-k" client:load />
+<CommandPaletteDemo client:load />
 
 As far back as the 70's, Emacs added **Meta-x** which let users type names of the command they wanted rather than remembering the shortcut or finding it in the menu.
 

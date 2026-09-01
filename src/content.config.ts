@@ -8,7 +8,10 @@ export const postSchema = z.object({
   title: z.string(),
   description: z.string(),
   date: z.date(),
-  type: z.enum([...PostTypes]),
+  type: z
+    .enum([...PostTypes])
+    .optional()
+    .default("post"),
   layout: z.enum(PostLayouts).optional(),
   company: z.string().optional(),
   isExternal: z.boolean().default(false).optional(),

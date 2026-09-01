@@ -14,7 +14,6 @@ Personal website built with Astro and React, deployed to Netlify. The site featu
 ## Rules
 
 - Always check we're using node version thats in `.nvmrc` before installing packages
-- Always run `pnpm prep` before committing changes or when working on multi-step tasks
 - When working on `.tsx` files, always load `vercel-react-best-practices` skill
 - When working on animations, always load `animation-best-practices` skill
 - Astro and React components should always be in PascalCase

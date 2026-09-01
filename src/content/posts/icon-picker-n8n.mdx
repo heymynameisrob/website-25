@@ -1,0 +1,203 @@
+---
+title: Icon Picker
+description: Refactoring to be more performant and accessible
+date: 2026-08-21
+---
+
+import { IconPickerDemo } from "@/components/post/icon-picker/IconPickerDemo";
+import { KeyNavDemo } from "@/components/post/icon-picker/KeyNavDemo";
+import { ProgressiveRenderDemo } from "@/components/post/icon-picker/ProgressiveRenderDemo";
+
+n8n uses icons and emojis to help people identify projects, workflows and AI agents. The `N8nIconPicker` component provides one place to search, preview and select them.
+
+The picker already supported Lucide icons, emojis, colour choices and skin tones. However, after using it a lot, a few problems surfaced. The popover was cramped. It didn't support any key events, so navigating quickly was impossible. It was also over-complex and hard to maintain.
+
+I worked on improving its layout, performance and keyboard support. This post covers three parts of that work: replacing broken virtualisation with progressive rendering, adding X/Y key navigation, and managing performance for thousands of DOM nodes.
+
+You can see the code that shipped for this refactor [here](https://github.com/n8n-io/n8n/pull/35878)
+
+<IconPickerDemo client:load />
+
+## How it works
+
+The picker is a controlled Vue component. It accepts either an `icon` or `emoji` via `v-model`. The selected value is shown in the trigger button.
+
+When the popover opens, the selected value decides which tab to show. If there is no value, consumers can choose a default tab. This makes the component fit different contexts without adding separate icon-only and emoji-only pickers.
+
+```ts title="IconPicker.vue"
+type IconOrEmoji =
+  | { type: "icon"; value: string; color?: string }
+  | { type: "emoji"; value: string };
+
+function getDefaultTab() {
+  if (model.value) return model.value.type === "emoji" ? "emojis" : "icons";
+  return props.defaultTab;
+}
+```
+
+The wider popover gives the search field and its related actions one clear row. Colour, skin tone and random selection controls appear only when they apply to the current tab. This pattern is common in Notion, Linear and many other web apps.
+
+{/* TODO: Add a labelled screenshot of the picker anatomy. */}
+
+## Progressive rendering
+
+The picker can contain more than 1,000 options.
+
+In the previous version, the component loaded all these items when the component mounted and rendered the visible items through a virtualised list.
+
+Virtualisation reduces the number of elements in the DOM. It is useful for large or complex lists, especially when people scroll through them for long periods.
+
+This is a valid approach, but it has trade-offs. Because only the visible rows are mounted, keyboard navigation and focus management cannot rely on the DOM alone. Search and selection must operate by keeping the entire list in memory and reconciling with the DOM.
+
+For example, if you search for 😂 and that emoji isn't mounted, we must locate it in the data and then either scroll to that element or mount it.
+
+But the biggest trade-off with virutalisation is managing it. It includes managing external dependencies, guessing row heights and a bunch of other stuff which can be a pain.
+
+<ProgressiveRenderDemo client:visible />
+
+I felt simple progressive render was a better fit. Additionally, I moved loading the data to a `hover` event on the trigger so that we only loaded the items when there was clear intent (more below).
+
+Rendering was contained in a composable so the component decides which rows to display. The composable resets when the active rows change and cancels its pending frame when it is no longer needed.
+
+```ts title="useProgressiveRender.ts"
+const INITIAL_ROW_COUNT = 10;
+const ROW_BATCH_SIZE = 10;
+
+export function useProgressiveRender(rows: Ref<IconPickerRow[]>) {
+  const renderedRowCount = ref(INITIAL_ROW_COUNT);
+  let renderFrame: number | undefined;
+
+  const visibleRows = computed(function getVisibleRows() {
+    return rows.value.slice(0, renderedRowCount.value);
+  });
+
+  watch(rows, function restartProgressiveRender() {
+    renderedRowCount.value = INITIAL_ROW_COUNT;
+    scheduleNextBatch();
+  });
+
+  function scheduleNextBatch() {
+    renderFrame = requestAnimationFrame(function renderNextBatch() {
+      renderedRowCount.value = Math.min(renderedRowCount.value + ROW_BATCH_SIZE, rows.value.length);
+
+      if (renderedRowCount.value < rows.value.length) scheduleNextBatch();
+    });
+  }
+
+  onBeforeUnmount(function cancelPendingRender() {
+    if (renderFrame !== undefined) cancelAnimationFrame(renderFrame);
+  });
+
+  return { visibleRows };
+}
+```
+
+When the popover begins to mount, the picker adds 10 rows. It then adds 10 more during each animation frame until the list is complete. This often looks instant.
+
+This approach keeps the first render small without changing the structure of the grid. Once rendering finishes, every option is present. Search, browser find, scrolling and keyboard movement can then use the same rows and coordinates.
+
+Any work gets cancelled when the component unmounts, preventing queued frames from continuing after the picker closes or its parent is removed.
+
+## Keyboard navigation
+
+The main method of finding the icon/emoji you want is search. Naturally we auto-focus the user when the popover mounts.
+
+Often you may search for `smile` and have multiple options to choose from. Using keys to navigate to the item you like is much faster and natural than jumping back to your mouse. The existing version didn't support any key events.
+
+<KeyNavDemo client:visible />
+
+Whilst keeping the search input focused, the picker tracks an active grid coordinate in Vue state. Arrow keys change that coordinate. `Enter` selects the active option.
+
+Because we want to move across X and Y, we should work with coordinates rather than a flat item index like you might for a vertical-only list. Each movement needs to also skip headings and clamp the column to the number of items in the next row.
+
+```ts title="IconPicker.vue"
+function handlePickerKeydown(event: KeyboardEvent) {
+  if (event.key === "Enter" && activeCoordinate.value) {
+    event.preventDefault();
+    selectActiveItem();
+    return;
+  }
+
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+    event.preventDefault();
+    /** Instead of moving up/down a flat index, we move to the adjacent coordinate */
+    const nextCoordinate = getAdjacentPickerCoordinate(
+      activeRows.value,
+      activeCoordinate.value,
+      getPickerDirection(event.key)
+    );
+
+    if (nextCoordinate) activatePickerItem(nextCoordinate, event.target);
+  }
+}
+```
+
+A trade-off we're making here is faking a focus state on the active icon/emoji. This can easily confuse screen-readers because as far as they are concerned the search input is what is in focus, not the active item.
+
+Using `aria-activedescendant` to identify the active option while retaining focus on the input gives screen-readers a clear indication of which item is active.
+
+## Loading data
+
+The existing component loaded both icon and emoji data on mount.
+
+So regardless of if the user intends to use the component, we hold both entire sets of data in memory.
+
+It's a simple performance gain to move the loading to fire on a `hover` event. This intent-based loading allows us to be efficent with what data we hold in memory. If the user has no intention to use the picker, then they don't need the data.
+
+Also we only load whatever tab is visible by default. For example, if the user opens the picker to the `Icons` tab - only the icons are loaded. Emojis are then loaded, again by an `hover` event when the user hovers over the `Emojis` tab.
+
+```ts title="useIconPickerData.ts"
+export function useIconPickerData() {
+  const iconData = shallowRef<IconData[]>([]);
+  const iconsLoading = ref(false);
+
+  async function loadIconData() {
+    if (iconData.value.length > 0 || iconsLoading.value) return;
+
+    iconsLoading.value = true;
+    try {
+      const module = await import("./lucideIconData");
+      iconData.value = module.lucideIcons;
+    } finally {
+      iconsLoading.value = false;
+    }
+  }
+
+  return { iconData, iconsLoading, loadIconData };
+}
+```
+
+This creates a useful sequence:
+
+1. Prefetch the likely data after pointer intent.
+2. Render a small first set of rows when the popover opens.
+3. Fill the remaining rows over later animation frames.
+4. Keep the full grid available for scrolling and keyboard navigation.
+
+## Custom tooltips
+
+Every option needs a readable name, but mounting more than 1,000 tooltip components creates serious lag. Each tooltip component wraps its own listener and control for hiding, positioning, and showing the tooltip. It locked up my browser immediately.
+
+Instead, the picker renders one shared tooltip. Pointer and keyboard events update its label and position for the current option. A short delay prevents a trail of tooltips when the pointer moves across the grid.
+
+```ts title="IconPicker.vue"
+function showItemTooltipForElement(target: HTMLElement, label: string) {
+  const rect = target.getBoundingClientRect();
+
+  itemTooltip.value = {
+    label,
+    left: rect.left + rect.width / 2,
+    top: rect.top,
+  };
+}
+```
+
+This keeps the option markup small and gives icons and emojis the same naming behaviour. It also makes the readable label available to pointer, keyboard and assistive technology users.
+
+## Conclusion
+
+The goal was taking a component that we already use and giving it a nice tune-up.
+
+I really enjoy this kind of 'MOT' servicing of components because once you've done a few you can find easy wins in most component you use. Many of them can be small gains, but sometimes you stumble on a substantial improvement which improves the user experience.
+
+The new picker opens with useful content at once, supports two-dimensional keyboard movement, and keeps search focused throughout selection. Its wider layout gives each control a clear place, while conditional and lazy loading keep the component suitable for the many parts of n8n that use it.

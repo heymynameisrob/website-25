@@ -73,7 +73,7 @@ export function CodeBlock({
   };
 
   return (
-    <div className="not-prose group/codeblock flex flex-col relative rounded-lg overflow-hidden border-[0.5px] shadow-xs focus-within">
+    <div className="not-prose group/codeblock flex flex-col relative rounded-lg overflow-hidden border-[0.5px] shadow-xs focus-within scrollbar-gutter-auto">
       <div className="flex items-center gap-2 justify-between h-10 bg-gray-2 border-b border-[0.5px] p-2">
         <div className="flex items-center gap-2">
           {language && <LanguageIcon language={language} />}

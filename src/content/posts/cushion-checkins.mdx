@@ -10,8 +10,7 @@ hide: true
 ---
 
 import MediaWrapper from "@/components/MediaWrapper.astro";
-import { Checkin } from "@/components/demos/Checkin";
-import { UIExample } from "@/components/demos/UIExample";
+import { CheckinDemo } from "@/components/post/cushion/CushionDemos";
 
 import featureImageLight from "@/assets/checkin-light.jpg";
 import featureImageDark from "@/assets/checkin-dark.jpg";
@@ -53,9 +52,7 @@ When writing, you can use Markdown syntax to structure your post however you lik
 
 These are logged permanently. Teams can search and comment on each checkin post. If something goes wrong, it's easy to trace.
 
-<UIExample component="checkin" client:load>
-  Tip: You can use Markdown when writing a checkin
-</UIExample>
+<CheckinDemo client:load />
 
 Work happens across multiple platforms: writing posts, updating CRM systems, or pushing code. We automatically import high-priority activities from Cushion into checkins, including written posts, resolved discussions, and provided feedback.
 

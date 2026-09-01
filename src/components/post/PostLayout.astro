@@ -18,7 +18,7 @@ import type { PostFrontmatter } from "@/content.config";
 import type { PostLayouts } from "@/lib/types";
 
 import { cn } from "@/lib/utils";
-import { formatDate } from "date-fns";
+import { format, formatDate } from "date-fns";
 
 import { FORMAT_DATE } from "@/lib/constants";
 export type PostWithImages = Post & {
@@ -104,9 +104,14 @@ const hasHeadings = headings && headings.length > 0;
         <h1 id={data.title} class="font-serif text-primary text-3xl md:text-4x tracking-tight">
           {data.title}
         </h1>
+        <time class="text-sm text-gray-10">{format(data.date, FORMAT_DATE)}</time>
       </header>
       <Prose>
         <slot />
+        <small class="italic text-gray-10"
+          >FYI This post was written by a human. AI was used to proof-read, research topics, and
+          structure sections.</small
+        >
       </Prose>
       <Footer />
     </div>

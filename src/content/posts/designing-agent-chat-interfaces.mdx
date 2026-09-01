@@ -1,13 +1,15 @@
 ---
-title: Agentic Interfaces
-description: Practical notes on agent chat inputs, message patterns, tool activity and human-in-the-loop controls for open-ended AI products.
-date: 2026-07-01
+title: Agent Interfaces
+description: Notes on designing UI for agentic products
+date: 2026-04-01
 type: "post"
 ---
 
-import { UIExample } from "@/components/demos/UIExample";
+import { AgentChatInputDemo, AgentMessagesDemo } from "@/components/post/agents/AgentDemos";
 import { AgentWhileLoop } from "@/components/mdx/AgentWhileLoop";
 import { Disclosure } from "@/components/mdx/Disclosure";
+import { AutosizeTextareaDemo } from "@/components/post/agents/AutosizeTextareaDemo";
+import { SendStopButtonDemo } from "@/components/post/agents/SendStopButtonDemo";
 
 Chatbots have historically been one of the weakest GUI patterns. They offer few affordances for what a system can do or how it works, and most products were better served by buttons, forms, and direct manipulation.
 
@@ -23,9 +25,7 @@ This post breaks the interface into three parts: the chat input, messages, and h
 
 The composer is the main channel of communication with an agent. Because agents respond to open-ended text, the composer has to make writing, reviewing, and sending prompts feel simple.
 
-<UIExample component="agent-chat-input" client:load>
-  The entry point to every app nowadays
-</UIExample>
+<AgentChatInputDemo client:load />
 
 A composer may look like a textbox, but it has to carry more state than a normal input. It often needs model selection, attachments, upload progress, and send state.
 
@@ -64,6 +64,8 @@ As you can see it's essentially a `form` wrapping a `<textarea>` and `<button ro
 That said there a few things going on under the hood that are interesting.
 
 ### Autosize textarea
+
+<AutosizeTextareaDemo client:visible />
 
 Prompts vary in length and often run over one line. Textareas work well because they let users enter free-form text across multiple lines.
 
@@ -220,6 +222,8 @@ We can handle this by adding a focus function to the `onClick` handler of the co
 
 ### Send
 
+<SendStopButtonDemo client:visible />
+
 Chat streams often emit events while they run. Subscribing to stream state with `useChat()` lets us change the button behaviour.
 
 We can also add a speech-to-text option here using the `SpeechRecognition` API.
@@ -258,9 +262,7 @@ Agent messages work best when they are made from parts. A response might start w
 
 The message shell should shrink-wrap simple text, but expand gracefully for richer sections like tool output, files, tables, and human-in-the-loop prompts. The user should be able to scan the conversation first, then inspect details only when they need them.
 
-<UIExample component="agent-messages" client:load>
-  Chat conversations should flow naturally mixing together tools, artefacts, and messages
-</UIExample>
+<AgentMessagesDemo client:load />
 
 ### Messages
 

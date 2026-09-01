@@ -1,21 +1,30 @@
 ---
 title: Motion for UI
-description: Practical lessons for using motion in web interfaces, from easing and gestures to layout transitions and accessible animation.
+description: What I've learnt using motion on the web
 image: /src/assets/bacon-motion.jpg
 imageDark: /src/assets/bacon-motion.jpg
-date: 2025-11-20
+date: 2025-04-20
 type: "post"
 ---
 
-import { UIExample } from "@/components/demos/UIExample";
+import {
+  CalendarDemo,
+  ClipPathDemo,
+  EasingDemo,
+  GalleryDemo,
+  GesturesDemo,
+  ListDemo,
+  ResponsiveContainerDemo,
+  StaggerButtonsDemo,
+} from "@/components/post/motion/MotionDemos";
+
+_This is a notebook of lessons I've learnt that I decided to share. Partly because it helps others learn and partly so I can come back to it when I need to refresh my memory._
 
 Animation can bring joy to an interface.
 
 Whether they are animations via interactions (e.g. clicking on a button) or orchestrated (e.g. animating a moving carousel), motion can give the product a way to express itself. Just like the visual style or language it uses, motion can have a certain tone or message it's trying to convey.
 
-<UIExample component="gallery" client:visible>
-  Tip: Push, pull, or hit esc to close the expanded view
-</UIExample>
+<GalleryDemo client:visible />
 
 The web is traditionally a static, document-based medium. The introduction of the iPhone meant opening up a whole new world of sophisticated animations users are now accustomed to seeing. Even with new APIs and browser capability, this poses challenges on the web.
 
@@ -32,11 +41,11 @@ Easing and duration can also influence the perception of speed. The popover on t
 
 The one on the right uses `ease-out`, which has velocity from the start and comes to a gentle stop. This feels correct and the animation feels faster.
 
-<UIExample component="motion-easing" client:visible />
+<EasingDemo client:visible />
 
 To know what easing & duration to choose, it comes down to experimentation. However I've found I usually stick to `150ms - 300ms` and these easings:
 
-```css
+```css title="Easing.css"
 :root {
   /* Elements enter/leave the viewport */
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -54,7 +63,7 @@ To know what easing & duration to choose, it comes down to experimentation. Howe
 
 Gestures are parts of user interfaces. We use them constantly to trigger events (e.g. clicking a button, hovering over a link). Adding subtle animation can help make these moments feel alive.
 
-<UIExample component="motion-gestures" client:visible />
+<GesturesDemo client:visible />
 
 Adding `active:scale-[0.96]` to the button is a low-effort way to make the click feel much more tactile. Beyond just scale, you can layer multiple properties for richer feedback. Combining scale with slight opacity changes (`hover:opacity-90`), or adding a subtle shadow shift, creates depth and reinforces the interaction.
 
@@ -66,7 +75,7 @@ The key is restraint. Micro-interactions should feel natural, not distracting. A
 
 `clip-path` is an often overlooked CSS function, typically used for drawing shapes around nodes. But it works great for creating interesting animations and interactions. You can stack elements, hiding and revealing them by just changing a value.
 
-<UIExample component="motion-clip" client:visible />
+<ClipPathDemo client:visible />
 
 Stacking these images and adding `clip-path: (0 0 var(--pos) 0)` whilst animating the value (e.g. 50%) creates this before/after slider.
 
@@ -80,11 +89,11 @@ Animating layout changes brings interfaces to life, whether that's swapping cont
 
 Animating transitions between states, such as changing the month on a calendar, requires orchestrating both entrance and exit animations. Framer Motion's `AnimatePresence` handles this by tracking when components mount and unmount.
 
-<UIExample component="motion-calendar" client:visible />
+<CalendarDemo client:visible />
 
 Motion is determined by the `key` prop. When `month` changes, the component with the old key exits while the new one enters:
 
-```tsx
+```tsx title="CalendarTransition.tsx"
 <AnimatePresence initial={false}>
   <motion.div
     key={month}
@@ -102,9 +111,9 @@ Motion is determined by the `key` prop. When `month` changes, the component with
 
 Beyond state changes, animating dimensions and position maintains continuity when layouts shift. Measuring inner content and animating the `height` value adapts the container nicely to content changes.
 
-<UIExample component="motion-responsive" client:visible />
+<ResponsiveContainerDemo client:visible />
 
-```tsx
+```tsx title="ResponsiveContainer.tsx"
 const [ref, bounds] = useMeasure();
 
 <motion.div
@@ -119,7 +128,7 @@ const [ref, bounds] = useMeasure();
 
 For position changes—like reordering lists or moving elements between containers—the `layout` prop automatically animates from old to new positions:
 
-```tsx
+```tsx title="LayoutItem.tsx"
 <motion.div layout transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}>
   {content}
 </motion.div>
@@ -127,7 +136,7 @@ For position changes—like reordering lists or moving elements between containe
 
 Shared element transitions work similarly. Use `layoutId` to morph elements between different views, like a card expanding from a grid into a detail view:
 
-```tsx
+```tsx title="SharedLayout.tsx"
 // Grid view
 <motion.div layoutId={`card-${id}`}>...</motion.div>
 
@@ -147,11 +156,11 @@ Elements shouldn't all move at the same speed or time, especially if they're con
 
 A common orchestration technique is staggering. This means slightly delaying each element's animation based on its order in a group. When done well, staggering creates a ripple effect that feels natural and draws attention sequentially.
 
-<UIExample component="motion-list" client:visible />
+<ListDemo client:visible />
 
 This list animates in with a stagger delay between items. Each item waits `100ms` longer than the previous one:
 
-```tsx
+```tsx title="StaggeredList.tsx"
 {
   ITEMS.map((item, index) => (
     <motion.li
@@ -171,9 +180,9 @@ This list animates in with a stagger delay between items. Each item waits `100ms
 
 The same principle works for action buttons. These buttons stagger in with decreasing delays to create a wave effect:
 
-<UIExample component="motion-stagger" client:visible />
+<StaggerButtonsDemo client:visible />
 
-```tsx
+```tsx title="StaggeredButtons.tsx"
 const STAGGER_DELAYS = [0, 0.05, 0.1];
 
 {
@@ -207,7 +216,7 @@ When possible, use transforms instead:
 
 Prioritize CSS animations over JavaScript when possible. CSS animations are more performant because they run on the compositor thread and reduce bundle size. For simple transitions, use CSS `transition` or `@keyframes`:
 
-```css
+```css title="Button.css"
 .button {
   transition: transform 200ms ease-out;
 }
@@ -223,7 +232,7 @@ For complex orchestrations or layout animations, animation libraries like Framer
 
 Pause or disable looping animations when elements are off-screen. This conserves CPU and GPU resources, especially for users with many tabs open:
 
-```tsx
+```tsx title="OffscreenAnimation.tsx"
 const [isInView, setIsInView] = React.useState(false);
 
 <motion.div
@@ -237,7 +246,7 @@ const [isInView, setIsInView] = React.useState(false);
 
 Avoid triggering transitions during theme changes. When users toggle between light and dark modes, you don't want every element on the page to animate. Use a class to temporarily disable transitions:
 
-```tsx
+```tsx title="ThemeToggle.tsx"
 document.documentElement.classList.add("no-transitions");
 // Apply theme change
 setTimeout(() => {
@@ -245,7 +254,7 @@ setTimeout(() => {
 }, 0);
 ```
 
-```css
+```css title="GlobalStyles.css"
 .no-transitions * {
   transition: none !important;
 }
@@ -263,7 +272,7 @@ Motion isn't universal. Some users experience nausea, dizziness, or distraction 
 
 In practice, this doesn't mean removing all motion. Instead, reduce duration significantly (instant or near-instant), remove bounces and springs, or swap animations for simple fades. The functional outcome (showing/hiding content, transitioning states) remains the same, but the experience becomes comfortable for users who need it.
 
-```css
+```css title="ReducedMotion.css"
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -276,7 +285,7 @@ In practice, this doesn't mean removing all motion. Instead, reduce duration sig
 
 Disable video autoplay for users with `prefers-reduced-motion` enabled. Autoplaying videos can be particularly disorienting:
 
-```tsx
+```tsx title="ReducedMotionVideo.tsx"
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 <video autoPlay={!prefersReducedMotion} />;
@@ -286,7 +295,7 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 
 Provide alternatives for animated content that conveys meaning. Use `aria-hidden` for purely decorative animations like loaders or background effects:
 
-```tsx
+```tsx title="LoadingAnimation.tsx"
 <motion.div aria-hidden="true">
   {/* Decorative animation */}
 </motion.div>
@@ -300,7 +309,7 @@ For animations that communicate state changes, ensure screen reader users receiv
 
 Pause looping animations when elements receive keyboard focus. This prevents distraction and makes it easier for keyboard users to understand what they've focused on:
 
-```tsx
+```tsx title="FocusableAnimation.tsx"
 <motion.div
   onFocus={() => setIsPaused(true)}
   onBlur={() => setIsPaused(false)}

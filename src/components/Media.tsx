@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useIntersectionObserver } from "@/lib/hooks/useIntersectionObserver";
-import { motion } from "motion/react";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/Dialog";
 
 interface MediaItemProps {

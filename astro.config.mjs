@@ -65,7 +65,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      exclude: ["tegaki"],
+      exclude: ["motion", "tegaki"],
     },
   },
 });
