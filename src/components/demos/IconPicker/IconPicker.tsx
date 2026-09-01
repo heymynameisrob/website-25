@@ -11,10 +11,7 @@ import IconPickerContent, {
 } from "@/components/demos/IconPicker/IconPickerContent";
 import IconPickerValue from "@/components/demos/IconPicker/IconPickerValue";
 
-export type {
-  IconOrEmoji,
-  IconPickerContentProps,
-} from "@/components/demos/IconPicker/IconPickerContent";
+export type { IconOrEmoji } from "@/components/demos/IconPicker/IconPickerContent";
 
 const BUTTON_TOOLTIP = "Choose an icon or emoji";
 const DEFAULT_VALUE: IconOrEmoji = {

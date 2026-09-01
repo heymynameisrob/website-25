@@ -109,7 +109,7 @@ export type PickerItem = {
 
 export type IconRegistry = Record<string, IconRegistryEntry>;
 
-export type IconPickerContentProps = {
+type IconPickerContentProps = {
   iconRegistry: IconRegistry | null;
   emojiData: EmojiData | null;
   value?: IconOrEmoji;
@@ -742,7 +742,7 @@ export function IconPickerSearchGrid({
   );
 }
 
-export function IconPickerContent({
+function IconPickerContent({
   iconRegistry,
   emojiData,
   value,
