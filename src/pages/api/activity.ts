@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { getCachedValue } from "@/lib/netlify-blob-cache";
 import type {
   ActivityItem,
   ActivityResponse,
@@ -13,9 +14,25 @@ export const prerender = false;
 const LASTFM_API_URL = "https://ws.audioscrobbler.com/2.0/";
 const GITHUB_API_URL = "https://api.github.com";
 const DEFAULT_GITHUB_USERNAME = "heymynameisrob";
+const TRACK_CACHE_TIMEOUT_MS = 5 * 60 * 1000;
+const PULL_REQUEST_CACHE_TIMEOUT_MS = 60 * 60 * 1000;
+const ACTIVITY_CACHE_STORE = "activity";
 
-export const GET: APIRoute = async () => {
-  const [latestTrack, latestPullRequest] = await Promise.all([getLatestTrack(), getLatestPullRequest()]);
+export const GET: APIRoute = async function GET() {
+  const [latestTrack, latestPullRequest] = await Promise.all([
+    getCachedValue({
+      key: "latest-track",
+      load: getLatestTrack,
+      storeName: ACTIVITY_CACHE_STORE,
+      timeout: TRACK_CACHE_TIMEOUT_MS,
+    }),
+    getCachedValue({
+      key: "latest-pull-request",
+      load: getLatestPullRequest,
+      storeName: ACTIVITY_CACHE_STORE,
+      timeout: PULL_REQUEST_CACHE_TIMEOUT_MS,
+    }),
+  ]);
   const items = [latestTrack, latestPullRequest]
     .filter((item): item is ActivityItem => item !== null)
     .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime());
@@ -64,7 +81,10 @@ async function getLatestTrack(): Promise<Extract<ActivityItem, { type: "track" }
   };
 }
 
-async function getLatestPullRequest(): Promise<Extract<ActivityItem, { type: "pullRequest" }> | null> {
+async function getLatestPullRequest(): Promise<Extract<
+  ActivityItem,
+  { type: "pullRequest" }
+> | null> {
   const username = import.meta.env.GITHUB_USERNAME ?? DEFAULT_GITHUB_USERNAME;
   const url = new URL(`${GITHUB_API_URL}/search/issues`);
   url.searchParams.set("q", `type:pr author:${username}`);
