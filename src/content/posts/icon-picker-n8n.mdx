@@ -8,36 +8,21 @@ import { IconPickerDemo } from "@/components/post/icon-picker/IconPickerDemo";
 import { KeyNavDemo } from "@/components/post/icon-picker/KeyNavDemo";
 import { ProgressiveRenderDemo } from "@/components/post/icon-picker/ProgressiveRenderDemo";
 
-n8n uses icons and emojis to help people identify projects, workflows and AI agents. The `N8nIconPicker` component provides one place to search, preview and select them.
+At n8n icons, along with emojis, are used to help identify projects, workflows and agents.
 
-The picker already supported Lucide icons, emojis, colour choices and skin tones. However, after using it a lot, a few problems surfaced. The popover was cramped. It didn't support any key events, so navigating quickly was impossible. It was also over-complex and hard to maintain.
+The `N8nIconPicker` component provides one place to search, preview and select them. It supports a range of icons from Lucide as well as emojis, colour choices, skin tones. However, after using it a lot, a few problems surfaced. The popover was cramped. It didn't support any key events, so navigating quickly was impossible. It was also over-complex and hard to maintain.
 
 I worked on improving its layout, performance and keyboard support. This post covers three parts of that work: replacing broken virtualisation with progressive rendering, adding X/Y key navigation, and managing performance for thousands of DOM nodes.
 
-You can see the code that shipped for this refactor [here](https://github.com/n8n-io/n8n/pull/35878)
-
 <IconPickerDemo client:load />
 
-## How it works
+I worked on improving the component in three places:
 
-The picker is a controlled Vue component. It accepts either an `icon` or `emoji` via `v-model`. The selected value is shown in the trigger button.
+- Introducing 'progressive rendering', replacing the current virtualisation approach
+- Add key events such as navigating up/down/left/right
+- Tidy up the visual design
 
-When the popover opens, the selected value decides which tab to show. If there is no value, consumers can choose a default tab. This makes the component fit different contexts without adding separate icon-only and emoji-only pickers.
-
-```ts title="IconPicker.vue"
-type IconOrEmoji =
-  | { type: "icon"; value: string; color?: string }
-  | { type: "emoji"; value: string };
-
-function getDefaultTab() {
-  if (model.value) return model.value.type === "emoji" ? "emojis" : "icons";
-  return props.defaultTab;
-}
-```
-
-The wider popover gives the search field and its related actions one clear row. Colour, skin tone and random selection controls appear only when they apply to the current tab. This pattern is common in Notion, Linear and many other web apps.
-
-{/* TODO: Add a labelled screenshot of the picker anatomy. */}
+You can see the code that shipped for this refactor [here](https://github.com/n8n-io/n8n/pull/35878)
 
 ## Progressive rendering
 
