@@ -1,0 +1,290 @@
+---
+title: Load On Intent
+description: Start heavy work before user interaction
+date: 2026-09-04
+company: "Personal"
+---
+
+import { LoadOnIntentDemo } from "@/components/post/intent/LoadOnIntentDemo";
+
+User actions such as hover, click, or focus give a clear signal about what a user wants to achieve. Often, they can also tell us what the user is _about_ to do.
+
+For instance, when a user hovers over a button, we can make a good assumption that they might click it. If that button starts an expensive task (e.g. fetching data or doing calculations), then the hover event gives us a chance to start the work sooner.
+
+However, `hover` can sometimes be too late. You may only get milliseconds between the hover and the click. The pointer has already reached its target by the time you receive the hover event.
+
+But what if we could predict the user’s intent? Instead of waiting for the near certainty of a hover, we could be more optimistic and see if the user _looks_ like they are going towards the element.
+
+This demo shows how we can use pointer direction and velocity to detect intent sooner. As part of a `useLoadOnIntent` hook, we can fire a callback such as fetching data much sooner, creating a faster and better experience.
+
+<LoadOnIntentDemo client:load />
+
+The circle shows the active intent area. It grows when the pointer moves quickly towards the button and shrinks when the pointer slows down or moves away.
+
+By listening to `pointermove`, we can figure out the direction and velocity of the pointer. Once the pointer enters our 'zone of interest', we can begin to fire a callback such as fetching data.
+
+## Dynamic radius
+The radius around the element changes depending on where the pointer is and how fast it's moving towards the target. For each pointer movement, we store a snapshot of the x/y position and the time it occurred.
+
+From these snapshots we can figure out the velocity of the pointer movement. 
+
+```text
+Previous snapshot                 Current snapshot
+(x: 100, y: 200)                 (x: 150, y: 180)
+time: 1,000 ms                   time: 1,100 ms
+
+        ● ────────────────────────────▶ ●
+        A          movement            B
+                  x: +50 px
+                  y: -20 px
+```
+
+When we normalise it, we can change the radius size depending on whether the pointer is moving towards the target at speed, moving away from the target, or slowly progressing towards it.
+
+We also consider the _alignment_, or where the pointer is coming from relative to the element. This means the pointer is measured from the closest point on the element, not the centre. This means we don't upset the calculation if we have a large element.
+
+```text
+   Pointer             Element
+      ●             ┌───────────┐
+                    │           │
+                    └───────────┘
+                    ↑
+             Closest point
+```
+
+## Stopping pass-throughs
+But what if the pointer is just moving past the target element? 
+
+Just because the pointer moves near it doesn't mean we have 'intent'. Part of the idea is we're guessing but we can be smart about what we define as genuine movement towards the target and what is just a quick 'pass-through'.
+
+A simple timer wraps our callback to make sure we don't fire it until the user has dwelled in the radius for a short amount of time. By storing whether the callback has fired before, we prevent repeated function calls.
+
+## Full code
+
+Here's the full hook. It's not tested or used in production, but it works fairly well.
+
+```tsx title="useLoadOnIntent.ts"
+import * as React from "react";
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface PointerSnapshot extends Point {
+  time: number;
+}
+
+interface LoadOnIntentProps {
+  ref: React.RefObject<HTMLElement>;
+  cb: () => void;
+  options?: LoadOnIntentOptions;
+}
+
+interface LoadOnIntentOptions {
+  maxRadius?: number;
+  minRadius?: number;
+  dwellTime?: number;
+  keepObserving?: boolean;
+  onRadiusChange?: (radius: number) => void;
+}
+
+const DEFAULT_MAX_RADIUS = 50;
+const DEFAULT_MIN_RADIUS = 10;
+const DEFAULT_DWELL_TIME = 50;
+
+/** The pointer speed that produces the maximum intent radius. */
+const FULL_RADIUS_SPEED = 1_000;
+
+function clamp(value: number, minimum: number, maximum: number) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function getPointerSnapshot(event: PointerEvent) {
+  return {
+    x: event.clientX,
+    y: event.clientY,
+    /** For each pointer event, we need x/y pos as well as the time so we can calculate the velocity */
+    time: event.timeStamp,
+  };
+}
+
+function getVelocity(prev: PointerSnapshot, current: PointerSnapshot) {
+  const elapsedSeconds = (current.time - prev.time) / 1_000;
+
+  if (elapsedSeconds <= 0) {
+    return { x: 0, y: 0 };
+  }
+
+  return {
+    x: (current.x - prev.x) / elapsedSeconds,
+    y: (current.y - prev.y) / elapsedSeconds,
+  };
+}
+
+function getClosestPoint(pointer: Point, rect: DOMRect) {
+  return {
+    x: clamp(pointer.x, rect.left, rect.right),
+    y: clamp(pointer.y, rect.top, rect.bottom),
+  };
+}
+
+/** Returns 1 for movement toward the element and 0 for sideways or outward movement. */
+function getAlignment(pointer: Point, velocity: Point, rect: DOMRect) {
+  const target = getClosestPoint(pointer, rect);
+
+  const directionToTarget = {
+    x: target.x - pointer.x,
+    y: target.y - pointer.y,
+  };
+
+  const targetDistance = Math.hypot(directionToTarget.x, directionToTarget.y);
+
+  const speed = Math.hypot(velocity.x, velocity.y);
+
+  if (targetDistance === 0 || speed === 0) {
+    return 0;
+  }
+
+  const alignment =
+    (velocity.x * directionToTarget.x + velocity.y * directionToTarget.y) /
+    (speed * targetDistance);
+
+  return clamp(alignment, 0, 1);
+}
+
+function getRadius(
+  velocity: Point,
+  alignment: number,
+  minimumRadius: number,
+  maximumRadius: number
+) {
+  const speed = Math.hypot(velocity.x, velocity.y);
+  const speedFactor = clamp(speed / FULL_RADIUS_SPEED, 0, 1);
+  const intentFactor = speedFactor * alignment;
+
+  return minimumRadius + intentFactor * (maximumRadius - minimumRadius);
+}
+
+function isInsideRadius(point: Point, rect: DOMRect, radius: number) {
+  return (
+    point.x >= rect.left - radius &&
+    point.x <= rect.right + radius &&
+    point.y >= rect.top - radius &&
+    point.y <= rect.bottom + radius
+  );
+}
+
+export function useLoadOnIntent({ ref, cb, options }: LoadOnIntentProps) {
+  const cbRef = React.useRef<LoadOnIntentProps["cb"]>(cb);
+  const onRadiusChangeRef = React.useRef(options?.onRadiusChange);
+  cbRef.current = cb;
+  onRadiusChangeRef.current = options?.onRadiusChange;
+
+  const {
+    maxRadius = DEFAULT_MAX_RADIUS,
+    minRadius = DEFAULT_MIN_RADIUS,
+    dwellTime = DEFAULT_DWELL_TIME,
+    keepObserving = false,
+  } = options ?? {};
+
+  React.useEffect(
+    function handleObservation() {
+      let previousSnapshot: PointerSnapshot | undefined;
+      let dwellTimer: ReturnType<typeof setTimeout> | undefined;
+      let activeRadius: number | undefined;
+      let hasLoaded = false;
+      const element = ref.current;
+
+      if (!element) return;
+
+      onRadiusChangeRef.current?.(minRadius);
+
+      function stopObservation() {
+        cancelTimer();
+        onRadiusChangeRef.current?.(minRadius);
+        window.removeEventListener("pointermove", handlePointerMove);
+        element.removeEventListener("pointerenter", startTimer);
+        element.removeEventListener("pointerleave", cancelTimer);
+        element.removeEventListener("focus", handleCallback);
+      }
+
+      function handleCallback() {
+        if (hasLoaded) return;
+
+        hasLoaded = true;
+
+        if (!keepObserving) {
+          stopObservation();
+        }
+
+        cbRef.current();
+      }
+
+      function startTimer() {
+        if (hasLoaded || dwellTimer !== undefined) {
+          return;
+        }
+
+        dwellTimer = setTimeout(function confirmIntent() {
+          dwellTimer = undefined;
+          handleCallback();
+        }, dwellTime);
+      }
+
+      function cancelTimer() {
+        if (dwellTimer === undefined) return;
+        clearTimeout(dwellTimer);
+        dwellTimer = undefined;
+      }
+
+      function handlePointerMove(event: PointerEvent) {
+        const snapshot = getPointerSnapshot(event);
+
+        /** We need an existing snapshot to measure velocity change between prev and current point.
+         * Create and store first if non-existant
+         */
+        if (!previousSnapshot) {
+          previousSnapshot = snapshot;
+          return;
+        }
+
+        const rect = element.getBoundingClientRect();
+        const velocity = getVelocity(previousSnapshot, snapshot);
+        const alignment = getAlignment(snapshot, velocity, rect);
+        const calculatedRadius = getRadius(
+          velocity,
+          alignment,
+          minRadius,
+          maxRadius,
+        );
+        const radius = Math.max(activeRadius ?? minRadius, calculatedRadius);
+
+        if (isInsideRadius(snapshot, rect, radius)) {
+          activeRadius = radius;
+          startTimer();
+        } else {
+          activeRadius = undefined;
+          cancelTimer();
+        }
+
+        onRadiusChangeRef.current?.(activeRadius ?? calculatedRadius);
+
+        previousSnapshot = snapshot;
+      }
+
+      window.addEventListener("pointermove", handlePointerMove, {
+        passive: true,
+      });
+      element.addEventListener("pointerenter", startTimer);
+      element.addEventListener("pointerleave", cancelTimer);
+      element.addEventListener("focus", handleCallback);
+
+      return function cleanupObservation() {
+        stopObservation();
+      };
+    },
+    [ref, minRadius, maxRadius, dwellTime, keepObserving]
+  );
+}
+```

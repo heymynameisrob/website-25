@@ -1,0 +1,46 @@
+{
+  "languages": {
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "language_servers": ["tsgo", "eslint", "...", "!vtsls"]
+    },
+    "TypeScript": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "language_servers": ["tsgo", "eslint", "...", "!vtsls"]
+    },
+    "TSX": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "language_servers": [
+        "tsgo",
+        "eslint",
+        "tailwindcss-language-server",
+        "css-variables",
+        "...",
+        "!vtsls"
+      ]
+    },
+    "Astro": {
+      "formatter": {
+        "external": {
+          "command": "pnpm",
+          "arguments": ["exec", "oxfmt", "--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    }
+  }
+}

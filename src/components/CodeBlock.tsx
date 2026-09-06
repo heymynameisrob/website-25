@@ -44,6 +44,7 @@ export function CodeBlock({
   // Extract language from className (e.g., "language-tsx" -> "tsx"), or fall
   // back to the data-language attr that Astro's shiki transformer sets.
   const language = className?.match(/language-(\w+)/)?.[1] ?? dataLanguage;
+  const hasTopBar = language !== "text";
 
   const isCollapsible = contentHeight > MAX_COLLAPSED_HEIGHT;
 
@@ -74,41 +75,45 @@ export function CodeBlock({
 
   return (
     <div className="not-prose group/codeblock flex flex-col relative rounded-lg overflow-hidden border-[0.5px] shadow-xs focus-within scrollbar-gutter-auto">
-      <div className="flex items-center gap-2 justify-between h-10 bg-gray-2 border-b border-[0.5px] p-2">
-        <div className="flex items-center gap-2">
-          {language && <LanguageIcon language={language} />}
-          <span className="text-sm font-mono font-medium text-secondary">{resolvedFileName}</span>
+      {hasTopBar ? (
+        <div className="flex items-center gap-2 justify-between h-10 bg-gray-2 border-b border-[0.5px] p-2">
+          <div className="flex items-center gap-2">
+            {language && <LanguageIcon language={language} />}
+            <span className="text-sm font-mono font-medium text-secondary">
+              {resolvedFileName}
+            </span>
+          </div>
+          <Tooltip content={copied ? "Copied!" : "Copy code"}>
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={copied ? "Copied code" : "Copy code"}
+              className="absolute top-2 right-2 opacity-0 group-hover/codeblock:opacity-100 transition-opacity size-6"
+              onClick={copyToClipboard}
+            >
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={copied ? "check" : "copy"}
+                  initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
+                  transition={{
+                    type: "spring",
+                    duration: 0.3,
+                    bounce: 0,
+                  }}
+                >
+                  {copied ? (
+                    <CheckIcon className="size-3.5" />
+                  ) : (
+                    <DocumentDuplicateIcon className="size-3.5" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </Button>
+          </Tooltip>
         </div>
-        <Tooltip content={copied ? "Copied!" : "Copy code"}>
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label={copied ? "Copied code" : "Copy code"}
-            className="absolute top-2 right-2 opacity-0 group-hover/codeblock:opacity-100 transition-opacity size-6"
-            onClick={copyToClipboard}
-          >
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.div
-                key={copied ? "check" : "copy"}
-                initial={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 0.8, filter: "blur(2px)" }}
-                transition={{
-                  type: "spring",
-                  duration: 0.3,
-                  bounce: 0,
-                }}
-              >
-                {copied ? (
-                  <CheckIcon className="size-3.5" />
-                ) : (
-                  <DocumentDuplicateIcon className="size-3.5" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </Button>
-        </Tooltip>
-      </div>
+      ) : null}
 
       <motion.div
         style={{

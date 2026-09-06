@@ -4,7 +4,6 @@ import Divider from "@/components/mdx/Divider.astro";
 import Prose from "@/components/Prose.astro";
 import Footer from "@/components/Footer.astro";
 
-import DefaultHeader from "@/components/post/Header.astro";
 import AgentHeader from "@/components/post/headers/AgentHeader.astro";
 import CommandKHeader from "@/components/post/headers/CommandKHeader.astro";
 import CommentsHeader from "@/components/post/headers/CommentsHeader.astro";
@@ -109,8 +108,7 @@ const hasHeadings = headings && headings.length > 0;
       <Prose>
         <slot />
         <small class="italic text-gray-10"
-          >FYI This post was written by a human. AI was used to proof-read, research topics, and
-          structure sections.</small
+          >FYI: This post uses a mix of AI and human-written content.</small
         >
       </Prose>
       <Footer />
