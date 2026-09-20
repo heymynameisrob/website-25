@@ -9,15 +9,14 @@ import CraftGuides from "@/components/CraftGuides.astro";
 import MeltCraft from "@/components/MeltCraft.astro";
 import { BallpointHandwritten } from "@/components/Handwritten";
 import { ScrambleText } from "@/components/ScrambleText";
-import { Activity } from "@/components/Activity";
+import { Activity, type ActivityProps } from "@/components/Activity";
 
 import LinkWithIcon from "@/components/LinkWithIcon.astro";
+import { PostItems } from "@/components/PostItems";
 import { getCollection } from "astro:content";
 import { filterPosts } from "@/lib/utils";
-import { ArrowDownIcon } from "lucide-react";
-
-const INITIAL_MORE_ITEMS = 4;
-const MORE_ITEMS_PER_LOAD = 4;
+import { HOME_POST_LIMIT } from "@/lib/constants";
+import { getActivityFallback } from "@/lib/activity";
 
 const contact = [
   {
@@ -34,11 +33,14 @@ const contact = [
   },
 ];
 
+const fallbackActivity = await getActivityFallback();
+
 const allPosts = await getCollection("posts");
 const postLinks = filterPosts(allPosts).map(post => ({
   href: `/posts/${post.id}`,
   label: post.data.title,
   description: post.data.description,
+  external:post.data.isExternal
 }));
 ---
 
@@ -53,35 +55,14 @@ const postLinks = filterPosts(allPosts).map(post => ({
         that are rooted in <MeltCraft /> and
         <TextShimmerBurst text="quality" />.
       </h2>
-      <!-- <Activity client:load /> -->
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.2} client:load>
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Now</h3>
-      <Activity client:load />
+      <Activity client:load fallbackData={fallbackActivity} />
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Posts</h3>
-      <ul class="flex flex-col gap-px" data-more-list data-load-count={MORE_ITEMS_PER_LOAD}>
-        {
-          postLinks.map((link, i) => (
-            <li data-more-item hidden={i >= INITIAL_MORE_ITEMS}>
-              <AnimatedListItem {...link} delay={0.3 + (i % MORE_ITEMS_PER_LOAD) * 0.05} />
-            </li>
-          ))
-        }
-      </ul>
-      {
-        postLinks.length > INITIAL_MORE_ITEMS && (
-          <button
-            type="button"
-            class="self-start text-lg font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg"
-            data-more-button
-          >
-            Load more
-            <ArrowDownIcon className="inline-block size-4 color-inherit" />
-          </button>
-        )
-      }
+      <PostItems items={postLinks} client:load />
     </AnimateInUp>
     <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Contact</h3>
@@ -98,45 +79,3 @@ const postLinks = filterPosts(allPosts).map(post => ({
     <Footer />
   </div>
 </Layout>
-
-<script>
-  const list = document.querySelector<HTMLElement>("[data-more-list]");
-  const moreButton = document.querySelector<HTMLButtonElement>("[data-more-button]");
-
-  const animateItems = (items: HTMLElement[]) => {
-    const shouldReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (shouldReduceMotion) return;
-
-    items.forEach((item, index) => {
-      item.animate(
-        [
-          { opacity: 0, transform: "translateY(10px)", filter: "blur(3px)" },
-          { opacity: 1, transform: "translateY(0)", filter: "blur(0px)" },
-        ],
-        {
-          duration: 400,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          delay: index * 50,
-        }
-      );
-    });
-  };
-
-  moreButton?.addEventListener("click", () => {
-    if (!list) return;
-
-    const loadCount = Number(list.dataset.loadCount) || 4;
-    const hiddenItems = Array.from(list.querySelectorAll<HTMLElement>("[data-more-item][hidden]"));
-    const itemsToShow = hiddenItems.slice(0, loadCount);
-
-    itemsToShow.forEach(item => {
-      item.hidden = false;
-    });
-    animateItems(itemsToShow);
-
-    if (hiddenItems.length <= loadCount) {
-      moreButton.hidden = true;
-    }
-  });
-</script>

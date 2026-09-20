@@ -9,10 +9,19 @@ import { Skeleton } from "@/components/Skeleton";
 
 const ACTIVITY_INTERVAL = 5_000;
 
-export function Activity() {
+export type ActivityProps = {
+  /**
+   * Build-time snapshot of /api/activity. Painted instantly on hydrate so
+   * there is no skeleton flash, then revalidated against the live API.
+   */
+  fallbackData?: ActivityResponse;
+};
+
+export function Activity({ fallbackData }: ActivityProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const { data, error, isLoading } = useSWR<ActivityResponse>("/api/activity", fetcher, {
+    fallbackData,
     refreshInterval: 30_000,
   });
 
@@ -25,10 +34,6 @@ export function Activity() {
   );
 
   useEffect(() => {
-    setActiveIndex(0);
-  }, [items.length]);
-
-  useEffect(() => {
     if (items.length < 2 || isPaused) return;
 
     const interval = window.setInterval(() => {
@@ -38,7 +43,7 @@ export function Activity() {
     return () => window.clearInterval(interval);
   }, [isPaused, items.length]);
 
-  if (isLoading) return <Skeleton className="w-64 h-7" />;
+  // if (isLoading) return <Skeleton className="w-64 h-7" />;
 
   const activeItem = items[activeIndex] ?? items[0];
 
