@@ -3,6 +3,7 @@ import type { Post } from "@/content.config";
 import { HOME_POST_LIMIT } from "@/lib/constants";
 import { ArrowDownIcon } from "lucide-react";
 import { AnimateInUp } from "@/components/Motion";
+import { Tooltip } from "./Tooltip";
 
 type PostLink = {
   href: string;
@@ -22,13 +23,16 @@ export function PostItems({ items }: { items: PostLink[] }) {
       ))}
       {items.length > itemCount && (
         <li className="group flex items-center gap-1.5 -mx-4 bg-transparent px-4 min-h-11 py-1.5">
-          <button
-            className="inline-flex gap-2 items-center text-lg lg:text-xl font-medium text-gray-10 hover:underline decoration-2 decoration-gray-10 underline-offset-2 focus rounded-lg"
-            onClick={() => setItemCount(prev => prev + HOME_POST_LIMIT)}
-          >
-            Load more
-            <ArrowDownIcon className="inline-block size-4 color-inherit" />
-          </button>
+          <Tooltip content="See more">
+            <button
+              className="inline-flex gap-2 px-2 h-7 items-center text-lg bg-gray-3 rounded-full font-medium text-gray-10 hover:bg-gray-4 focus"
+              onClick={() => setItemCount(prev => prev + HOME_POST_LIMIT)}
+            >
+              <span className="text-secondary leading-[1lh]" aria-hidden>
+                •••
+              </span>
+            </button>
+          </Tooltip>
         </li>
       )}
     </ul>
