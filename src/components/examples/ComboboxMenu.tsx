@@ -15,7 +15,7 @@ import {
 import React from "react";
 import { Tooltip } from "@/components/Tooltip";
 
-type ResponseCountry = {
+export type ComboboxCountry = {
   flags: {
     png: string;
     svg: string;
@@ -23,8 +23,8 @@ type ResponseCountry = {
   };
   name: {
     common: string;
-    official: string;
-    nativeName: {
+    official?: string;
+    nativeName?: {
       [key: string]: {
         official: string;
         common: string;
@@ -33,8 +33,12 @@ type ResponseCountry = {
   };
 };
 
-export function ComboboxPopoverMenu() {
-  const { data } = useSWR<ResponseCountry[]>(
+interface ComboboxPopoverMenuProps {
+  items?: ComboboxCountry[];
+}
+
+export function ComboboxPopoverMenu({ items }: ComboboxPopoverMenuProps) {
+  const { data } = useSWR<ComboboxCountry[]>(
     `https://restcountries.com/v3.1/all?fields=name,flags`,
     fetcher,
   );
@@ -42,15 +46,16 @@ export function ComboboxPopoverMenu() {
   const [open, setOpen] = React.useState(false);
 
   const countries = React.useMemo(() => {
-    if (!data) return [];
-    return data
+    const countries = items ?? data;
+    if (!countries) return [];
+    return countries
       .map((country) => ({
         value: country.name.common.toLowerCase(),
         label: country.name.common,
         flag: country.flags.svg,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [data]);
+  }, [data, items]);
 
   const countriesByLetter = React.useMemo(() => {
     return countries.reduce(

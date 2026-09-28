@@ -16,6 +16,9 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { Tooltip } from "@/components/Tooltip";
 
+const ROUND_TRIP_DELAY = 175;
+const DEBOUNCE_DELAY = 500;
+
 // Define form options
 const ASSIGNEE_OPTIONS = [
   { value: "rob_hough", label: "Rob Hough" },
@@ -88,18 +91,15 @@ function TasksForm() {
 
   latestWatchedData.current = watchedData;
 
-  // Debounced autosave callback
   const debouncedSave = useDebouncedCallback((data: TaskFormData) => {
     setIsSaving(true);
 
-    // Mock async save with 800ms delay
     setTimeout(() => {
       setTask(data as ArtificialTask);
       setIsSaving(false);
-    }, 800);
-  }, 500);
+    }, ROUND_TRIP_DELAY);
+  }, DEBOUNCE_DELAY);
 
-  // Trigger save on data change (skip first render)
   React.useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -122,10 +122,7 @@ function TasksForm() {
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className={cn(
-          "flex flex-col gap-4 transition-opacity",
-          isSaving && "pointer-events-none opacity-50"
-        )}
+        className={cn("flex flex-col gap-4 transition-opacity")}
       >
         <Controller
           control={control}

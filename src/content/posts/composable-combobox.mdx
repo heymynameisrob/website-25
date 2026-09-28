@@ -5,20 +5,18 @@ date: 2025-11-08
 type: "post"
 ---
 
-import { ComboboxPopoverMenu } from "@/components/examples/ComboboxMenu.tsx";
-import { ComboboxSidebar } from "@/components/examples/ComboboxSidebar.tsx";
-import { ComboboxBasic } from "@/components/examples/ComboboxBasic.tsx";
-import { ComboboxDynamic } from "@/components/examples/ComboboxDynamic.tsx";
-
-import Figure from "@/components/Figure.astro";
+import {
+  ComboboxBasicDemo,
+  ComboboxDynamicDemo,
+  ComboboxPopoverMenuDemo,
+  ComboboxSidebarDemo,
+} from "@/components/post/combobox/ComboboxDemos";
 
 # Combobox
 
 An input with a predefined list of items. Render the items and it will sort and filter them automatically. The combobox has a fully composable API<sup><sup>[wtf?](https://kentcdodds.com/blog/compound-components-with-react-hooks)</sup></sup>, so you can combine with other components and overide styles.
 
-<Figure caption="Typical combobox mounted in a popover menu, making a filterable dropdown menu">
-  <ComboboxPopoverMenu client:load />
-</Figure>
+<ComboboxPopoverMenuDemo client:load />
 
 While working on the design system at [artificial.io](https://artificial.io), we found we needed a component like this.
 There are some [great packages](https://github.com/drip/cmdk) out there that handle this well.
@@ -76,9 +74,7 @@ This means every item stays in the React tree even when hidden. While this is us
 
 This example shows how to use the `useCombobox` hook to access internal state. Here we grab the `query` value and use it to fetch results from an API. Combined with debouncing, this gives us a responsive search experience without hammering the server.
 
-<Figure className="py-8" caption="Mount as a filterable list with async search">
-  <ComboboxSidebar client:load />
-</Figure>
+<ComboboxSidebarDemo client:load />
 
 The key here is that filtering is handled server-side. We just pass the results straight to `ComboboxItem` and let the component handle the rest.
 
@@ -106,9 +102,7 @@ function ComboboxSidebarList() {
 
 A more traditional autocomplete pattern. The input shows the selected value and the dropdown appears on focus. We control the `query` and `value` separately, which lets us update the input text when a selection is made.
 
-<Figure className="py-8" caption="Traditional combobox/autocomplete">
-  <ComboboxBasic client:load />
-</Figure>
+<ComboboxBasicDemo client:load />
 
 Notice how `onValueChange` updates both the selected value and syncs the input text. This keeps the input in sync with the selection, which feels natural.
 
@@ -147,9 +141,7 @@ const handleValueChange = (value: string) => {
 
 A combobox that allows users to add new options on the fly. Useful for label inputs or any scenario where the list of options isn't fixed. Users can add new items by typing the missing item label and hitting `Enter` when no results match their query.
 
-<Figure caption="Add new tags dynamically">
-  <ComboboxDynamic client:load />
-</Figure>
+<ComboboxDynamicDemo client:load />
 
 The key is managing the item list in state and providing a way to add new items:
 
