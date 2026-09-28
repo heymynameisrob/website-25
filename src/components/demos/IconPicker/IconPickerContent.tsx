@@ -442,29 +442,51 @@ export function useIconPickerItems(
   return { iconItems, emojiItems };
 }
 
-function useProgressiveItems(items: PickerItem[]): PickerItem[] {
+function useProgressiveItems(
+  items: PickerItem[],
+  scrollArea: HTMLDivElement | null,
+  sentinel: HTMLDivElement | null
+): PickerItem[] {
   const [visibleRowCount, setVisibleRowCount] = useState(INITIAL_ROWS);
+  const renderedItemsRef = useRef(items);
+  const itemsChanged = renderedItemsRef.current !== items;
 
   useEffect(
-    function renderItemsProgressively() {
+    function resetVisibleRows() {
+      renderedItemsRef.current = items;
       setVisibleRowCount(INITIAL_ROWS);
-      let frame = 0;
-      function renderNextBatch() {
-        setVisibleRowCount(function increaseRows(count) {
-          if (count * COLUMNS >= items.length) return count;
-          frame = window.requestAnimationFrame(renderNextBatch);
-          return count + ROW_BATCH_SIZE;
-        });
-      }
-      frame = window.requestAnimationFrame(renderNextBatch);
-      return function cancelRender() {
-        window.cancelAnimationFrame(frame);
-      };
+      scrollArea?.scrollTo({ top: 0 });
     },
-    [items]
+    [items, scrollArea]
   );
 
-  return items.slice(0, visibleRowCount * COLUMNS);
+  useEffect(
+    function observeScrollEnd() {
+      if (!scrollArea || !sentinel) return;
+
+      const observer = new IntersectionObserver(
+        function loadNextBatch(entries) {
+          if (!entries[0]?.isIntersecting) return;
+          setVisibleRowCount(function increaseVisibleRows(count) {
+            return Math.min(count + ROW_BATCH_SIZE, Math.ceil(items.length / COLUMNS));
+          });
+        },
+        {
+          root: scrollArea,
+          rootMargin: "200px 0px",
+        }
+      );
+
+      observer.observe(sentinel);
+      return function stopObserving() {
+        observer.disconnect();
+      };
+    },
+    [items.length, scrollArea, sentinel]
+  );
+
+  const rowCount = itemsChanged ? INITIAL_ROWS : visibleRowCount;
+  return items.slice(0, rowCount * COLUMNS);
 }
 
 export type IconPickerSearchGridProps = {
@@ -486,6 +508,8 @@ export function IconPickerSearchGrid({
 }: IconPickerSearchGridProps) {
   const [query, setQuery] = useState("");
   const [itemTooltip, setItemTooltip] = useState<ItemTooltip | null>(null);
+  const [scrollArea, setScrollArea] = useState<HTMLDivElement | null>(null);
+  const [scrollSentinel, setScrollSentinel] = useState<HTMLDivElement | null>(null);
   const instanceId = useId();
   const listboxId = `${instanceId}-options`;
   const searchRef = useRef<HTMLInputElement>(null);
@@ -507,7 +531,7 @@ export function IconPickerSearchGrid({
     },
     [items, query]
   );
-  const visibleItems = useProgressiveItems(filteredItems);
+  const visibleItems = useProgressiveItems(filteredItems, scrollArea, scrollSentinel);
 
   useEffect(function clearTooltipTimerOnUnmount() {
     return function clearTooltipTimer() {
@@ -520,6 +544,20 @@ export function IconPickerSearchGrid({
       clearActiveItem();
     },
     [filteredItems]
+  );
+
+  useEffect(
+    function focusSearchWhenTabChanges() {
+      /** Use RAF because Radix steals focus and keeps it on the TabTrigger */
+      const frame = window.requestAnimationFrame(function focusSearch() {
+        searchRef.current?.focus();
+      });
+
+      return function cancelFocus() {
+        window.cancelAnimationFrame(frame);
+      };
+    },
+    [tab]
   );
 
   function hideItemTooltip() {
@@ -663,7 +701,6 @@ export function IconPickerSearchGrid({
             onKeyUp={handleKeyUp}
             onBlur={clearActiveItem}
             role="combobox"
-            autoFocus
             aria-autocomplete="list"
             aria-controls={listboxId}
             aria-expanded="true"
@@ -696,6 +733,7 @@ export function IconPickerSearchGrid({
         </Tooltip>
       </div>
       <div
+        ref={setScrollArea}
         id={listboxId}
         role="listbox"
         aria-label={tab === "icons" ? "Icons" : "Emojis"}
@@ -737,6 +775,9 @@ export function IconPickerSearchGrid({
             </Fragment>
           );
         })}
+        {visibleItems.length < filteredItems.length ? (
+          <div ref={setScrollSentinel} aria-hidden="true" className="col-span-12 h-px" />
+        ) : null}
       </div>
     </>
   );
@@ -806,11 +847,14 @@ function IconPickerContent({
     onChange?.(nextValue);
   }
 
+  const iconToolbar =
+    colorPicker === "visible" ? <IconColorPicker color={color} onChange={setColor} /> : null;
+
   const items = tab === "icons" ? iconItems : emojiItems;
   const toolbar =
-    tab === "icons" && colorPicker === "visible" ? (
-      <IconColorPicker color={color} onChange={setColor} />
-    ) : tab === "emojis" && mode === "all" ? (
+    tab === "icons" ? (
+      iconToolbar
+    ) : mode === "all" ? (
       <SkinTonePicker tone={skinTone} onChange={setSkinTone} />
     ) : null;
 

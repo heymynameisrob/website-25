@@ -32,56 +32,68 @@ In the previous version, the component loaded all these items when the component
 
 Virtualisation reduces the number of elements in the DOM. It is useful for large or complex lists, especially when people scroll through them for long periods.
 
-This is a valid approach, but it has trade-offs. Because only the visible rows are mounted, keyboard navigation and focus management cannot rely on the DOM alone. Search and selection must operate by keeping the entire list in memory and reconciling with the DOM.
-
-For example, if you search for 😂 and that emoji isn't mounted, we must locate it in the data and then either scroll to that element or mount it.
-
-But the biggest trade-off with virutalisation is managing it. It includes managing external dependencies, guessing row heights and a bunch of other stuff which can be a pain.
+This is a valid approach, but it has trade-offs. The biggest trade-off with virutalisation is managing it. It includes managing external dependencies, guessing row heights and a bunch of other stuff which can be a pain. In particular the current n8n pattern for virtualisation was pretty ineffective, so we needed something different.
 
 <ProgressiveRenderDemo client:visible />
 
-I felt simple progressive render was a better fit. Additionally, I moved loading the data to a `hover` event on the trigger so that we only loaded the items when there was clear intent (more below).
+Instead, a simple progressive rendering will do fine. I also moved data loading to a `hover` event on the trigger so that we only load the items when there is clear intent (more below).
 
-Rendering was contained in a composable so the component decides which rows to display. The composable resets when the active rows change and cancels its pending frame when it is no longer needed.
+Rendering is contained in a composable, so the component decides which rows to display. It renders the first 10 rows, then observes a marker at the end of the grid. When that marker approaches the visible scroll area, the composable adds the next 10 rows.
 
 ```ts title="useProgressiveRender.ts"
 const INITIAL_ROW_COUNT = 10;
 const ROW_BATCH_SIZE = 10;
 
-export function useProgressiveRender(rows: Ref<IconPickerRow[]>) {
+export function useProgressiveRender(
+  rows: Ref<IconPickerRow[]>,
+  scrollArea: Ref<HTMLElement | null>,
+  scrollMarker: Ref<HTMLElement | null>
+) {
   const renderedRowCount = ref(INITIAL_ROW_COUNT);
-  let renderFrame: number | undefined;
 
   const visibleRows = computed(function getVisibleRows() {
     return rows.value.slice(0, renderedRowCount.value);
   });
 
-  watch(rows, function restartProgressiveRender() {
+  watch(rows, function resetProgressiveRender() {
     renderedRowCount.value = INITIAL_ROW_COUNT;
-    scheduleNextBatch();
+    scrollArea.value?.scrollTo({ top: 0 });
   });
 
-  function scheduleNextBatch() {
-    renderFrame = requestAnimationFrame(function renderNextBatch() {
-      renderedRowCount.value = Math.min(renderedRowCount.value + ROW_BATCH_SIZE, rows.value.length);
+  watch([scrollArea, scrollMarker], function observeScrollMarker(
+    [root, marker],
+    _previous,
+    onCleanup
+  ) {
+    if (!root || !marker) return;
 
-      if (renderedRowCount.value < rows.value.length) scheduleNextBatch();
+    const observer = new IntersectionObserver(
+      function renderNextBatch(entries) {
+        if (!entries[0]?.isIntersecting) return;
+
+        renderedRowCount.value = Math.min(
+          renderedRowCount.value + ROW_BATCH_SIZE,
+          rows.value.length
+        );
+      },
+      { root, rootMargin: "200px 0px" }
+    );
+
+    observer.observe(marker);
+    onCleanup(function stopObserving() {
+      observer.disconnect();
     });
-  }
-
-  onBeforeUnmount(function cancelPendingRender() {
-    if (renderFrame !== undefined) cancelAnimationFrame(renderFrame);
   });
 
   return { visibleRows };
 }
 ```
 
-When the popover begins to mount, the picker adds 10 rows. It then adds 10 more during each animation frame until the list is complete. This often looks instant.
+When the popover mounts, the picker adds 10 rows. It does no more rendering until the user scrolls towards the end of that set. A small margin starts the next batch before the marker enters view, which prevents an empty gap during normal scrolling.
 
-This approach keeps the first render small without changing the structure of the grid. Once rendering finishes, every option is present. Search, browser find, scrolling and keyboard movement can then use the same rows and coordinates.
+This approach keeps the first render small without changing the grid structure. It also avoids filling the browser's main thread with work on every animation frame. Search still operates on the complete data set, while the DOM only contains the rows needed for the current scroll position.
 
-Any work gets cancelled when the component unmounts, preventing queued frames from continuing after the picker closes or its parent is removed.
+The observer disconnects when its marker changes or the component unmounts. This prevents old observers from continuing after the active tab, search results or parent component changes.
 
 ## Keyboard navigation
 
@@ -156,8 +168,8 @@ This creates a useful sequence:
 
 1. Prefetch the likely data after pointer intent.
 2. Render a small first set of rows when the popover opens.
-3. Fill the remaining rows over later animation frames.
-4. Keep the full grid available for scrolling and keyboard navigation.
+3. Add more rows as the user approaches the end of the rendered grid.
+4. Keep search and keyboard navigation connected to the complete data set.
 
 ## Custom tooltips
 

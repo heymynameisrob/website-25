@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/Button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Popover";
@@ -51,6 +51,14 @@ export function IconPicker() {
   const [iconRegistry, setIconRegistry] = useState<IconRegistry | null>(null);
   const [emojiData, setEmojiData] = useState<EmojiData | null>(null);
   const [open, setOpen] = useState(false);
+
+  useEffect(function preloadIconsAfterMount() {
+    if (iconRegistry) return;
+
+    void loadIconRegistry().then(function storeRegistry(module) {
+      setIconRegistry(module.iconRegistry);
+    });
+  }, [iconRegistry]);
 
   function handleChange(nextValue: IconOrEmoji) {
     setValue(nextValue);
