@@ -1,5 +1,4 @@
 ---
-import { AnimateInUp } from "@/components/Motion.tsx";
 import { ArrowUpRightIcon } from "@heroicons/react/16/solid";
 import { Badge } from "@/components/Badge";
 
@@ -15,7 +14,7 @@ interface Props {
 const { href, label, description, delay = 0.4, external = false } = Astro.props;
 ---
 
-<AnimateInUp delay={delay} client:load>
+<div class="fade-in-up" style={`--intro-delay: ${delay * 1000}ms;`}>
   <a
     href={href}
     target={external ? "_blank" : undefined}
@@ -31,4 +30,4 @@ const { href, label, description, delay = 0.4, external = false } = Astro.props;
       <p class="min-w-0 truncate text-secondary leading-normal">{description}</p>
     </div>
   </a>
-</AnimateInUp>
+</div>

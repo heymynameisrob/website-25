@@ -47,6 +47,10 @@ export function Activity({ fallbackData }: ActivityProps) {
 
   const activeItem = items[activeIndex] ?? items[0];
 
+  if (!activeItem) {
+    return <div className="min-h-11" aria-hidden="true" />;
+  }
+
   return (
     <div
       className="relative min-h-11 overflow-hidden"

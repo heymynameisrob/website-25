@@ -505,7 +505,6 @@
     --gray-11: hsl(60, 3%, 38%);
     --gray-12: hsl(48, 8%, 8%);
 
-    /*--background: hsl(60, 50%, 97%);*/
     --background: var(--gray-1);
     --shadow: hsl(154, 12%, 12%);
     --border: color-mix(in srgb, var(--gray-12) 10%, transparent);
@@ -657,37 +656,14 @@
     }
   }
 
-  /*
-   * `--shimmer-color` is registered as an animatable `<color>` so the overlay
-   * gradient (which references it) recomputes each frame as the value changes
-   * across the `shimmer-burst` keyframes — giving each swipe its own colour.
-   */
+
   @property --shimmer-color {
     syntax: "<color>";
     inherits: false;
     initial-value: transparent;
   }
 
-  /*
-   * shimmer-burst: same gradient sweep as `shimmer`, but each pass runs 5x
-   * faster (0.6s vs the 1.5s default — slowed by half from 0.3s), the sweep
-   * repeats 4 times, then the element holds at rest for 2s before the whole
-   * cycle repeats.
-   *
-   *   pass 1:   0%      -> 13.6364%   (0.6s)
-   *   pass 2:   13.6364% -> 27.2727%
-   *   pass 3:   27.2727% -> 40.9091%
-   *   pass 4:   40.9091% -> 54.5455%
-   *   hold:     54.5455% -> 100%      (2s)
-   *
-   * The +0.0001% keyframes produce an instant reset from -200% back to 200%
-   * between passes (the same discontinuity CSS applies when iterating).
-   */
   @keyframes shimmer-burst {
-    /* Each sweep segment eases with --ease-in-out; resets and the hold stay
-     * linear so the instant snaps remain instant and the hold stays put.
-     * `--shimmer-color` is the registered custom property (see `@property`
-     * above) that drives the per-pass highlight colour. */
     0% {
       background-position: 200%;
       --shimmer-color: var(--color-blue-500);
@@ -765,6 +741,31 @@
       transform: translate3d(var(--dx), var(--fall-y), 0) rotate(var(--rotate));
     }
   }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(3px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 400ms var(--ease-out) var(--intro-delay, 0s) backwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up {
+      animation: none;
+    }
+  }
+
 
   @media (prefers-reduced-motion: reduce) {
     * {

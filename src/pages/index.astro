@@ -3,7 +3,6 @@ import Layout from "@/components/Layout.astro";
 import AnimatedListItem from "@/components/AnimatedListItem.astro";
 import Footer from "@/components/Footer.astro";
 
-import { AnimateInUp } from "@/components/Motion";
 import TextShimmerBurst from "@/components/TextShimmerBurst.astro";
 import CraftGuides from "@/components/CraftGuides.astro";
 import MeltCraft from "@/components/MeltCraft.astro";
@@ -46,25 +45,25 @@ const postLinks = filterPosts(allPosts).map(post => ({
 
 <Layout>
   <div class="w-full max-w-prose mx-auto flex flex-col my-16 gap-16 px-5 pt-8">
-    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.1} client:load>
+    <section class="fade-in-up flex flex-col gap-4" style="--intro-delay: 100ms;">
       <BallpointHandwritten client:load />
-      <h2 class="gap-1 text-xl font-medium leading-normal text-balance lg:text-2xl">
+      <p class="gap-1 text-xl font-medium leading-normal text-balance lg:text-2xl">
         I'm a design engineer working at
         <LinkWithIcon href="https://n8n.io" icon="n8n" label="n8n" />, an open-source project
         building the future of AI automation. I love designing performant, accessible interfaces
         that are rooted in <MeltCraft /> and
         <TextShimmerBurst text="quality" />.
-      </h2>
-    </AnimateInUp>
-    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.2} client:load>
+      </p>
+    </section>
+    <section class="fade-in-up flex flex-col gap-4" style="--intro-delay: 200ms;">
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Now</h3>
       <Activity client:load fallbackData={fallbackActivity} />
-    </AnimateInUp>
-    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.3} client:load>
+    </section>
+    <section class="fade-in-up flex flex-col gap-4" style="--intro-delay: 300ms;">
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Posts</h3>
       <PostItems items={postLinks} client:load />
-    </AnimateInUp>
-    <AnimateInUp as="section" className="flex flex-col gap-4" delay={0.4} client:load>
+    </section>
+    <section class="fade-in-up flex flex-col gap-4" style="--intro-delay: 400ms;">
       <h3 class="text-base font-medium text-gray-10 tracking-tight lg:text-lg">Contact</h3>
       <ul class="flex flex-col gap-px">
         {
@@ -75,7 +74,7 @@ const postLinks = filterPosts(allPosts).map(post => ({
           ))
         }
       </ul>
-    </AnimateInUp>
+    </section>
     <Footer />
   </div>
 </Layout>
