@@ -13,17 +13,21 @@ import {
 
 Nothing feels more daunting than having a big list of you have to go through. Often these items are represented as Checkboxes. The simple UI affordance that tells you if it's on/off can be annoying when you have lots of items to select.
 
-But what if you could 'paint' them instead? 
+But what if you could 'paint' them instead?
+
+Hold Shift and drag your pointer to select nearby options. I struggled to find many examples of this in the wild, except Linear.
 
 <UserTableCheckboxesDemo client:load />
 
-Instead of clicking one by one, holding and dragging your pointer could select options that are close together much quicker. I struggled to find many examples of this done in the wild, except Linear.
+First, we must distinguish a normal click from a Shift-drag. The pointer-down handler only starts painting when the event reports that Shift is pressed.
 
-## How it works
+```ts title="useCheckboxPaint.ts"
+if (!event.shiftKey) return;
+```
 
-First we need determine between a ordinary click which toggles the checkbox or a drag. If the user drags; we also need to track where they started, where they went, and what was already checked before hand.
+A normal click still reaches the checkbox and toggles it. If the user starts painting, we also track where they started, where they moved, and what was checked before the drag.
 
-We can do this is `useRef` quite simply.
+We can store this transient interaction state in `useRef`.
 
 ```ts title="useCheckboxPaint.ts"
 const rootIndexRef = React.useRef<number | null>(null);
@@ -31,9 +35,9 @@ const currentIndexRef = React.useRef<number | null>(null);
 const checkedBeforeDragRef = React.useRef<Set<string>>(new Set());
 const isDragStarted = React.useRef(false);
 const didDragRef = React.useRef(false);
-````
+```
 
-Cleverly, `useRef` allows us to store these values in state without triggered a re-render when they change - like `useState` would. Seeing as changing these values doesn't affect the UI, we don't need to re-render.
+`useRef` stores these values without triggering a re-render when they change, unlike `useState`. These values do not directly affect the UI, so they do not need to trigger a render.
 
 We also need to understand the range of checkboxes you dragged over. Once we have those, we can find those elements and 'check' them.
 
@@ -56,7 +60,7 @@ function updatePaintedRange(currentIndex: number) {
 
 The `getRange` function gives us all the elements inbetween the starting point and where we are so we can check them accordingly.
 
-When setting the range we should always start with the already checked items. This means for each pointer move, we are working from the latest snapshot. 
+When setting the range, we always start with the items that were checked before the drag. Each pointer move rebuilds the range from that fixed snapshot.
 
 <FruitCheckboxesDemo client:load />
 

@@ -82,6 +82,7 @@ function CheckboxGroup({ children, label, values, className }: CheckboxGroupProp
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLElement>) {
+    if (!event.shiftKey) return;
     if (!event.isPrimary) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
@@ -246,7 +247,7 @@ function renderUserDemo() {
 
 export function FruitCheckboxesDemo() {
   return (
-    <PostDemo initialOptions={null} caption="Paint across a simple list of fruit">
+    <PostDemo initialOptions={null} caption="Hold Shift, then click and drag across the list">
       {renderFruitDemo}
     </PostDemo>
   );
@@ -254,7 +255,7 @@ export function FruitCheckboxesDemo() {
 
 export function UserTableCheckboxesDemo() {
   return (
-    <PostDemo initialOptions={null} caption="Click and drag to select multiple rows">
+    <PostDemo initialOptions={null} caption="Hold Shift, then click and drag to select multiple rows">
       {renderUserDemo}
     </PostDemo>
   );
