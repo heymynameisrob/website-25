@@ -1,0 +1,64 @@
+---
+title: Paintable Checkboxes
+description: Easy range selection for long lists
+date: 2026-09-04
+company: "Personal"
+---
+
+import {
+  FruitCheckboxesDemo,
+  UserTableCheckboxesDemo,
+} from "@/components/post/paintable-checkboxes/CheckboxGroup";
+
+
+Nothing feels more daunting than having a big list of you have to go through. Often these items are represented as Checkboxes. The simple UI affordance that tells you if it's on/off can be annoying when you have lots of items to select.
+
+But what if you could 'paint' them instead? 
+
+<UserTableCheckboxesDemo client:load />
+
+Instead of clicking one by one, holding and dragging your pointer could select options that are close together much quicker. I struggled to find many examples of this done in the wild, except Linear.
+
+## How it works
+
+First we need determine between a ordinary click which toggles the checkbox or a drag. If the user drags; we also need to track where they started, where they went, and what was already checked before hand.
+
+We can do this is `useRef` quite simply.
+
+```ts title="useCheckboxPaint.ts"
+const rootIndexRef = React.useRef<number | null>(null);
+const currentIndexRef = React.useRef<number | null>(null);
+const checkedBeforeDragRef = React.useRef<Set<string>>(new Set());
+const isDragStarted = React.useRef(false);
+const didDragRef = React.useRef(false);
+````
+
+Cleverly, `useRef` allows us to store these values in state without triggered a re-render when they change - like `useState` would. Seeing as changing these values doesn't affect the UI, we don't need to re-render.
+
+We also need to understand the range of checkboxes you dragged over. Once we have those, we can find those elements and 'check' them.
+
+```ts title="useCheckboxPaint.ts"
+function updatePaintedRange(currentIndex: number) {
+  const rootIndex = rootIndexRef.current;
+  if (rootIndex === null) return;
+
+  const next = new Set(checkedBeforeDragRef.current);
+  const range = getRange(rootIndex, currentIndex);
+
+  for (const value of range) {
+    next.add(value);
+  }
+
+  setChecked([...next]);
+  currentIndexRef.current = currentIndex;
+}
+```
+
+The `getRange` function gives us all the elements inbetween the starting point and where we are so we can check them accordingly.
+
+When setting the range we should always start with the already checked items. This means for each pointer move, we are working from the latest snapshot. 
+
+<FruitCheckboxesDemo client:load />
+
+This means if we move from 'Apples -> Cherry -> Orange' then go back over Orange, we uncheck it and only have 'Apples -> 
+Cherry' when we set our checked items.
