@@ -4,17 +4,14 @@ import AnimatedListItem from "@/components/AnimatedListItem.astro";
 import Footer from "@/components/Footer.astro";
 
 import TextShimmerBurst from "@/components/TextShimmerBurst.astro";
-import CraftGuides from "@/components/CraftGuides.astro";
 import MeltCraft from "@/components/MeltCraft.astro";
 import { BallpointHandwritten } from "@/components/Handwritten";
-import { ScrambleText } from "@/components/ScrambleText";
-import { Activity, type ActivityProps } from "@/components/Activity";
+import { Activity } from "@/components/Activity";
 
 import LinkWithIcon from "@/components/LinkWithIcon.astro";
 import { PostItems } from "@/components/PostItems";
 import { getCollection } from "astro:content";
 import { filterPosts } from "@/lib/utils";
-import { HOME_POST_LIMIT } from "@/lib/constants";
 import { getActivityFallback } from "@/lib/activity";
 
 const contact = [
@@ -39,7 +36,8 @@ const postLinks = filterPosts(allPosts).map(post => ({
   href: `/posts/${post.id}`,
   label: post.data.title,
   description: post.data.description,
-  external:post.data.isExternal
+  external:post.data.isExternal,
+  hidden: post.data.hide
 }));
 ---
 

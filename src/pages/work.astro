@@ -2,15 +2,17 @@
 import Navbar from "@/components/Navbar.astro";
 import Layout from "@/components/Layout.astro";
 
-import { WorkDemos } from "@/components/demos/WorkDemo";
+import { WorkGallery } from "@/components/demos/WorkGallery";
 ---
 
 <Layout title="Work" description="Interactive component demos and UI examples">
   <Navbar>
-    <p class="text-sm text-gray-10">
-      <span class="font-medium text-primary mr-1">@heymynameisrob</span>
-      Interface gallery
+    <p class="text-sm font-medium text-primary leading-[1lh]">
+      @heymynameisrob
+      <span class="text-gray-10">/work</span>
     </p>
   </Navbar>
-  <WorkDemos client:load />
+  <div class="mx-auto grid w-full max-w-4xl grid-cols-1 gap-16 px-4 pb-8 lg:px-8 lg:py-16 lg:gap-32 [&_figure]:my-0">
+    <WorkGallery client:load />
+  </div>
 </Layout>

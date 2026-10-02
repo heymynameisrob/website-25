@@ -46,7 +46,7 @@
 
   /* Animations */
   --animate-blink: blink 1s step-end infinite;
-  --animate-shimmer-burst: shimmer-burst 4.4s linear infinite;
+  --animate-shimmer-burst: shimmer-burst 12s ease-out infinite;
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
@@ -657,61 +657,14 @@
   }
 
 
-  @property --shimmer-color {
-    syntax: "<color>";
-    inherits: false;
-    initial-value: transparent;
-  }
-
   @keyframes shimmer-burst {
     0% {
       background-position: 200%;
-      --shimmer-color: var(--color-blue-500);
       animation-timing-function: var(--ease-in-out);
     }
-    13.6364% {
-      background-position: -200%;
-      --shimmer-color: var(--color-blue-500);
-      animation-timing-function: linear;
-    }
-    13.6365% {
-      background-position: 200%;
-      --shimmer-color: var(--color-emerald-500);
-      animation-timing-function: var(--ease-in-out);
-    }
-    27.2727% {
-      background-position: -200%;
-      --shimmer-color: var(--color-emerald-500);
-      animation-timing-function: linear;
-    }
-    27.2728% {
-      background-position: 200%;
-      --shimmer-color: var(--color-amber-500);
-      animation-timing-function: var(--ease-in-out);
-    }
-    40.9091% {
-      background-position: -200%;
-      --shimmer-color: var(--color-amber-500);
-      animation-timing-function: linear;
-    }
-    40.9092% {
-      background-position: 200%;
-      --shimmer-color: var(--color-fuchsia-500);
-      animation-timing-function: var(--ease-in-out);
-    }
-    54.5455% {
-      background-position: -200%;
-      --shimmer-color: var(--color-fuchsia-500);
-      animation-timing-function: linear;
-    }
-    54.5456% {
-      background-position: 200%;
-      --shimmer-color: transparent;
-      animation-timing-function: linear;
-    }
+    18.1818%,
     100% {
-      background-position: 200%;
-      --shimmer-color: transparent;
+      background-position: -200%;
     }
   }
 

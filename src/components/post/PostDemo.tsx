@@ -1,9 +1,48 @@
 import * as React from "react";
 import { useInView } from "motion/react";
 
+import { AsciiGlobe } from "@/components/demos/AsciiGlobe";
+import { AsciiGrid } from "@/components/demos/AsciiGrid";
+import { AsciiSmiley } from "@/components/demos/AsciiSmiley";
 import { cn } from "@/lib/utils";
 
-const VIEW_MARGIN = "200px 0px";
+const VIEW_MARGIN = "100px 0px";
+
+export function AsciiGridDemo() {
+  return (
+    <PostDemo initialOptions={null} className="h-auto aspect-4/3 p-0">
+      {renderAsciiGrid}
+    </PostDemo>
+  );
+}
+
+function renderAsciiGrid() {
+  return <AsciiGrid />;
+}
+
+export function AsciiGlobeDemo() {
+  return (
+    <PostDemo initialOptions={null} className="p-0">
+      {renderAsciiGlobe}
+    </PostDemo>
+  );
+}
+
+function renderAsciiGlobe() {
+  return <AsciiGlobe />;
+}
+
+export function AsciiSmileyDemo() {
+  return (
+    <PostDemo initialOptions={null} className="p-0">
+      {renderAsciiSmiley}
+    </PostDemo>
+  );
+}
+
+function renderAsciiSmiley() {
+  return <AsciiSmiley />;
+}
 
 interface PostDemoRenderProps<TOptions> {
   options: TOptions;

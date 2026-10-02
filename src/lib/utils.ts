@@ -98,10 +98,10 @@ export async function waitFor(ms: number): Promise<void> {
 export function filterPosts(posts: Post[]) {
   const isDev = process.env.NODE_ENV === "development";
 
-  /** If prod, then filter out future posts */
+  /** If prod, then filter out future posts and hidden posts */
   const validPosts = !isDev
     ? posts.filter(post => isBefore(post.data.date, new Date()) && !post.data.hide)
-    : posts.filter(post => !post.data.hide);
+    : posts;
   return validPosts.sort(
     (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
   );

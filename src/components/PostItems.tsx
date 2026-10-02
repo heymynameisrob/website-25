@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Post } from "@/content.config";
 import { HOME_POST_LIMIT } from "@/lib/constants";
-import { ArrowDownIcon } from "lucide-react";
+import { ArrowDownIcon, EyeClosedIcon } from "lucide-react";
 import { AnimateInUp } from "@/components/Motion";
 import { Tooltip } from "./Tooltip";
 
@@ -10,6 +10,7 @@ type PostLink = {
   label: Post["data"]["title"];
   description: Post["data"]["description"];
   external?: boolean;
+  hidden?: boolean;
 };
 
 export function PostItems({ items }: { items: PostLink[] }) {
@@ -40,7 +41,7 @@ export function PostItems({ items }: { items: PostLink[] }) {
 }
 
 function PostItem({ item }: { item: PostLink }) {
-  const { href, external, label, description } = item;
+  const { href, external, label, description, hidden } = item;
   return (
     <a
       href={href}
@@ -52,6 +53,7 @@ function PostItem({ item }: { item: PostLink }) {
         <h3 className="shrink-0 text-primary font-medium group-hover:underline decoration-2 decoration-primary underline-offset-2">
           {label}
         </h3>
+        {hidden && <EyeClosedIcon className="size-4 opacity-50 shrink-0" />}
         <p className="min-w-0 truncate text-secondary leading-normal">{description}</p>
       </div>
     </a>
