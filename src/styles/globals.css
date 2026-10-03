@@ -41,7 +41,7 @@
   /* Fonts */
   --font-sans: "InterVariable", sans-serif;
   --font-mono: "Berkley Mono", monospace;
-  --font-serif: "Cooper", serif;
+  --font-serif: "Timeless Serif", serif;
   --font-weight-medium: 500;
 
   /* Animations */
@@ -513,16 +513,10 @@
     --accent-20: rgba(0, 0, 255, 0.2);
     --accent-50: rgba(0, 0, 255, 0.5);
 
-    font-family: Inter, sans-serif;
+    font-family: var(--font-sans);
     font-feature-settings:
       "liga" 1,
       "calt" 1; /* fix for Chrome */
-  }
-
-  @supports (font-variation-settings: normal) {
-    :root {
-      font-family: InterVariable, sans-serif;
-    }
   }
 
   .dark {
@@ -572,10 +566,20 @@
   }
 
   @font-face {
-    font-family: "Cooper";
-    src: url("/fonts/cooper-bt-light.woff2") format("woff2");
-    font-weight: 300;
+    font-family: "Timeless Serif";
+    src: url("/fonts/TimelessSerifVF.woff2") format("woff2");
+    font-weight: 200 700;
     font-style: normal;
+    font-variation-settings: "STYL" 100;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Timeless Serif";
+    src: url("/fonts/TimelessSerifItalicVF.woff2") format("woff2");
+    font-weight: 300 700;
+    font-style: italic;
+    font-display: swap;
   }
 
   body {

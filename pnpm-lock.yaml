@@ -26,6 +26,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.14)(date-fns@4.2.1)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@basementstudio/shader-lab':
+        specifier: ^3.0.2
+        version: 3.0.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.186.1)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -179,6 +182,9 @@ importers:
       tegaki:
         specifier: ^0.17.1
         version: 0.17.1(react@19.2.6)
+      three:
+        specifier: ^0.186.1
+        version: 0.186.1
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
@@ -396,6 +402,13 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@basementstudio/shader-lab@3.0.2':
+    resolution: {integrity: sha512-bJhazKpmafkEfz3h1AVTgsbflUVYcTxJ0M3IT3HgHQsEmeWIlDgTqV/ofvneN5iY4Rk2rWdZotz6DcJA46MHhg==}
+    peerDependencies:
+      react: ^19.0.0
+      react-dom: ^19.0.0
+      three: ^0.183.0
 
   '@capsizecss/unpack@4.0.0':
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
@@ -5857,6 +5870,9 @@ packages:
   text-hex@1.0.0:
     resolution: {integrity: sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==}
 
+  three@0.186.1:
+    resolution: {integrity: sha512-blFeqb49wRCSGUGj7gtpfnSGHy2lwDk94RhUmS1c/hTby70kvChbWpkJ4Pm1390LqzzvTmzgXKHPEafJwCb8jA==}
+
   tiny-inflate@1.0.3:
     resolution: {integrity: sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==}
 
@@ -6824,6 +6840,13 @@ snapshots:
       use-sync-external-store: 1.6.0(react@19.2.6)
     optionalDependencies:
       '@types/react': 19.2.14
+
+  '@basementstudio/shader-lab@3.0.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(three@0.186.1)':
+    dependencies:
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+      three: 0.186.1
+      typescript: 5.9.3
 
   '@capsizecss/unpack@4.0.0':
     dependencies:
@@ -12903,6 +12926,8 @@ snapshots:
       - react-native-b4a
 
   text-hex@1.0.0: {}
+
+  three@0.186.1: {}
 
   tiny-inflate@1.0.3: {}
 
