@@ -4,6 +4,7 @@ import { useInView } from "motion/react";
 import { AsciiGlobe } from "@/components/demos/AsciiGlobe";
 import { AsciiGrid } from "@/components/demos/AsciiGrid";
 import { AsciiSmiley } from "@/components/demos/AsciiSmiley";
+import { AsciiZeus } from "@/components/demos/AsciiZeus";
 import { cn } from "@/lib/utils";
 
 const VIEW_MARGIN = "100px 0px";
@@ -30,6 +31,18 @@ export function AsciiGlobeDemo() {
 
 function renderAsciiGlobe() {
   return <AsciiGlobe />;
+}
+
+export function AsciiZeusDemo() {
+  return (
+    <PostDemo initialOptions={null} className="bg-black p-0">
+      {renderAsciiZeus}
+    </PostDemo>
+  );
+}
+
+function renderAsciiZeus() {
+  return <AsciiZeus />;
 }
 
 export function AsciiSmileyDemo() {

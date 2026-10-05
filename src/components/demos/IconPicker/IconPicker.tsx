@@ -52,13 +52,14 @@ export function IconPicker() {
   const [emojiData, setEmojiData] = useState<EmojiData | null>(null);
   const [open, setOpen] = useState(false);
 
-  useEffect(function preloadIconsAfterMount() {
-    if (iconRegistry) return;
-
+  useEffect(function preloadPickerDataAfterMount() {
     void loadIconRegistry().then(function storeRegistry(module) {
       setIconRegistry(module.iconRegistry);
     });
-  }, [iconRegistry]);
+    void loadEmojiData().then(function storeEmojiData(data) {
+      setEmojiData(data);
+    });
+  }, []);
 
   function handleChange(nextValue: IconOrEmoji) {
     setValue(nextValue);

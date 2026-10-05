@@ -10,6 +10,9 @@ const MAP_WIDTH = 720;
 const MAP_HEIGHT = 360;
 const BASE_OPACITY = 0.5;
 const ROTATION_SPEED = (2 * Math.PI) / 45000;
+const SPIN_DECAY = 0.0018;
+const MIN_SPIN_SPEED = 0.00002;
+const MAX_SPIN_SPEED = 0.025;
 const TILT = (15 * Math.PI) / 180;
 const PULSE_DURATION = 420;
 const WAVE_SPEED = 0.32;
@@ -90,6 +93,17 @@ export function AsciiGlobe() {
     let previousTime: number | null = null;
     let rotation = 0;
     let paused = false;
+    let spinVelocity = 0;
+    let drag: {
+      pointerId: number;
+      startX: number;
+      startRotation: number;
+      width: number;
+      lastX: number;
+      lastTime: number;
+      velocity: number;
+    } | null = null;
+    let didDrag = false;
     let isVisible = true;
     let disposed = false;
 
@@ -125,7 +139,7 @@ export function AsciiGlobe() {
     /** Schedule work only while the globe or a ripple needs to move. */
     function updateAnimation() {
       const shouldAnimate = !disposed && landMask !== null && isVisible && !document.hidden &&
-        !reducedMotion.matches && (!paused || ripples.length > 0);
+        !reducedMotion.matches && ((drag === null && (!paused || spinVelocity !== 0)) || ripples.length > 0);
 
       if (shouldAnimate && frameId === null) {
         frameId = requestAnimationFrame(animate);
@@ -141,7 +155,13 @@ export function AsciiGlobe() {
       frameId = null;
       const elapsed = previousTime === null ? 0 : Math.min(50, now - previousTime);
       previousTime = now;
-      if (!paused) rotation = (rotation + elapsed * ROTATION_SPEED) % (2 * Math.PI);
+      if (drag === null) {
+        const decay = Math.exp(-SPIN_DECAY * elapsed);
+        const spinDistance = spinVelocity * (1 - decay) / SPIN_DECAY;
+        rotation = (rotation + spinDistance + (paused ? 0 : elapsed * ROTATION_SPEED)) % (2 * Math.PI);
+        spinVelocity *= decay;
+        if (Math.abs(spinVelocity) < MIN_SPIN_SPEED) spinVelocity = 0;
+      }
 
       if (ripples.length > 0) {
         ripples = ripples.filter(function keepActiveRipple(ripple) {
@@ -177,9 +197,65 @@ export function AsciiGlobe() {
       updateAnimation();
     }
 
+    /** Capture horizontal drags while leaving vertical touch scrolling available. */
+    function handlePointerDown(event: PointerEvent) {
+      if (!canvas || !event.isPrimary || event.button !== 0 || drag !== null) return;
+      const bounds = canvas.getBoundingClientRect();
+      if (!bounds.width) return;
+      didDrag = false;
+      spinVelocity = 0;
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startRotation: rotation,
+        width: bounds.width,
+        lastX: event.clientX,
+        lastTime: event.timeStamp,
+        velocity: 0,
+      };
+      canvas.setPointerCapture(event.pointerId);
+      previousTime = null;
+      updateAnimation();
+    }
+
+    /** Rotate around the globe's Y axis in the direction of the pointer. */
+    function handlePointerMove(event: PointerEvent) {
+      if (!canvas || !drag || event.pointerId !== drag.pointerId) return;
+      const distance = event.clientX - drag.startX;
+      if (!didDrag && Math.abs(distance) < 4) return;
+      const elapsed = event.timeStamp - drag.lastTime;
+      if (elapsed > 0) {
+        const velocity = -((event.clientX - drag.lastX) / drag.width) * Math.PI * 2 / elapsed;
+        const blend = 1 - Math.exp(-elapsed / 40);
+        drag.velocity += (velocity - drag.velocity) * blend;
+        drag.velocity = Math.max(-MAX_SPIN_SPEED, Math.min(MAX_SPIN_SPEED, drag.velocity));
+      }
+      drag.lastX = event.clientX;
+      drag.lastTime = event.timeStamp;
+      didDrag = true;
+      canvas.style.cursor = "grabbing";
+      rotation = (drag.startRotation - (distance / drag.width) * Math.PI * 2) % (Math.PI * 2);
+      draw();
+    }
+
+    /** Keep the release speed, but discard momentum from stale or cancelled gestures. */
+    function handlePointerEnd(event: PointerEvent) {
+      if (!canvas || !drag || event.pointerId !== drag.pointerId) return;
+      if (event.type === "pointerup" && didDrag && !reducedMotion.matches) {
+        const idleTime = Math.max(0, event.timeStamp - drag.lastTime);
+        spinVelocity = idleTime < 120 ? drag.velocity * Math.exp(-idleTime / 40) : 0;
+        if (Math.abs(spinVelocity) < MIN_SPIN_SPEED) spinVelocity = 0;
+      }
+      drag = null;
+      canvas.style.removeProperty("cursor");
+      if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      previousTime = null;
+      updateAnimation();
+    }
+
     /** Map clicks correctly when the canvas scales to a narrow screen. */
     function handleClick(event: MouseEvent) {
-      if (!canvas) return;
+      if (!canvas || (didDrag && event.detail !== 0)) return;
       const bounds = canvas.getBoundingClientRect();
       if (!bounds.width || !bounds.height) return;
       addRipple(
@@ -188,8 +264,14 @@ export function AsciiGlobe() {
       );
     }
 
-    /** Allow keyboard users to send a wave from the center. */
+    /** Allow keyboard users to rotate the globe or send a centered wave. */
     function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        rotation += event.key === "ArrowLeft" ? Math.PI / 12 : -Math.PI / 12;
+        draw();
+        return;
+      }
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
       if (!event.repeat) addRipple(SIZE / 2, SIZE / 2);
@@ -198,6 +280,7 @@ export function AsciiGlobe() {
     /** Stop both rotation and ripples when reduced motion is enabled. */
     function handleMotionChange() {
       if (reducedMotion.matches) {
+        spinVelocity = 0;
         ripples = [];
         for (const cell of cells) cell.opacity = BASE_OPACITY;
       }
@@ -238,6 +321,7 @@ export function AsciiGlobe() {
     /** Keep the pause control separate from frame-by-frame rendering. */
     function setPaused(nextPaused: boolean) {
       paused = nextPaused;
+      if (paused) spinVelocity = 0;
       previousTime = null;
       updateAnimation();
     }
@@ -251,6 +335,11 @@ export function AsciiGlobe() {
     image.onload = handleMapLoad;
     image.onerror = handleMapError;
     image.src = landMaskUrl;
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerup", handlePointerEnd);
+    canvas.addEventListener("pointercancel", handlePointerEnd);
+    canvas.addEventListener("lostpointercapture", handlePointerEnd);
     canvas.addEventListener("click", handleClick);
     canvas.addEventListener("keydown", handleKeyDown);
     window.addEventListener("resize", resizeCanvas);
@@ -265,6 +354,13 @@ export function AsciiGlobe() {
       image.onerror = null;
       visibilityObserver.disconnect();
       themeObserver.disconnect();
+      if (drag && canvas.hasPointerCapture(drag.pointerId)) canvas.releasePointerCapture(drag.pointerId);
+      canvas.style.removeProperty("cursor");
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerEnd);
+      canvas.removeEventListener("pointercancel", handlePointerEnd);
+      canvas.removeEventListener("lostpointercapture", handlePointerEnd);
       canvas.removeEventListener("click", handleClick);
       canvas.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("resize", resizeCanvas);
@@ -288,8 +384,8 @@ export function AsciiGlobe() {
         height={SIZE}
         role="button"
         tabIndex={0}
-        aria-label="Spinning ASCII world globe. Click to create a ripple, or press Enter or Space for a centered ripple."
-        className="block h-auto w-full aspect-square cursor-pointer text-gray-12 rounded focus-visible:outline-2 focus-visible:outline-offset-4"
+        aria-label="Spinning ASCII world globe. Drag horizontally or use Left and Right arrow keys to rotate. Click to create a ripple, or press Enter or Space for a centered ripple."
+        className="block h-auto w-full aspect-square touch-pan-y cursor-grab text-gray-12 rounded focus-visible:outline-2 focus-visible:outline-offset-4"
       >
         A spinning world globe with recognizable continents made from letters.
       </canvas>
