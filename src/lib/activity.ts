@@ -81,8 +81,8 @@ async function getLatestPullRequest(): Promise<Extract<
 > | null> {
   const username = import.meta.env.GITHUB_USERNAME ?? DEFAULT_GITHUB_USERNAME;
   const url = new URL(`${GITHUB_API_URL}/search/issues`);
-  url.searchParams.set("q", `type:pr author:${username}`);
-  url.searchParams.set("sort", "created");
+  url.searchParams.set("q", `type:pr is:open draft:false author:${username}`);
+  url.searchParams.set("sort", "updated");
   url.searchParams.set("order", "desc");
   url.searchParams.set("per_page", "1");
 
@@ -96,9 +96,6 @@ async function getLatestPullRequest(): Promise<Extract<
   const latestPullRequest = data.items[0];
   if (!latestPullRequest) return null;
 
-  const pullRequestDetails = await getPullRequestDetails(latestPullRequest.pull_request?.url);
-  const pullRequest = pullRequestDetails ?? latestPullRequest;
-
   return {
     type: "pullRequest",
     occurredAt: latestPullRequest.created_at,
@@ -110,9 +107,8 @@ async function getLatestPullRequest(): Promise<Extract<
       author: latestPullRequest.user?.login ?? null,
       repo: repoNameFromApiUrl(latestPullRequest.repository_url),
       state: latestPullRequest.state,
-      status: getPullRequestStatus(pullRequest),
-      additions: pullRequest.additions ?? null,
-      deletions: pullRequest.deletions ?? null,
+      status: getPullRequestStatus(latestPullRequest),
+      ...(await getPullRequestDiff(latestPullRequest.pull_request?.url)),
     },
   };
 }
@@ -134,16 +130,24 @@ function normalizeTrack(track: LastFmResponse["recenttracks"]["track"][number]):
   };
 }
 
-async function getPullRequestDetails(url: string | undefined): Promise<GithubPullRequest | null> {
-  if (!url) return null;
+async function getPullRequestDiff(
+  url: string | undefined
+): Promise<{ additions: number | null; deletions: number | null }> {
+  const fallback = { additions: null, deletions: null };
+  if (!url) return fallback;
 
   const response = await fetch(url, {
     headers: githubHeaders(),
   });
 
-  if (!response.ok) return null;
+  if (!response.ok) return fallback;
 
-  return (await response.json()) as GithubPullRequest;
+  const pullRequest = (await response.json()) as GithubPullRequest;
+
+  return {
+    additions: pullRequest.additions ?? null,
+    deletions: pullRequest.deletions ?? null,
+  };
 }
 
 function githubHeaders(): HeadersInit {
